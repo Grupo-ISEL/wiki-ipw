@@ -1,0 +1,27 @@
+{
+  "name": "cmdb",
+  "version": "1.0.0",
+  "dependencies": {
+    "cors": "^2.8.5",
+    "express": "^4.18.2",
+    "mocha": "^10.1.0",
+    "node-fetch": "^3.2.10",
+    "swagger-ui-express": "^4.6.0",
+    "yamljs": "^0.3.0"
+  },
+  "main": "cmdb-server.mjs.mjs",
+  "directories": {
+    "test": "test"
+  },
+  "devDependencies": {
+    "chai": "*",
+    "mocha": "*"
+  },
+  "scripts": {
+    "test": "mocha test/**/*.mjs"
+  },
+  "keywords": [],
+  "author": "André Monteiro - A37316",
+  "license": "ISC",
+  "description": ""
+}
