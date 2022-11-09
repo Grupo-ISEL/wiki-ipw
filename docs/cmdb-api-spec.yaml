@@ -158,7 +158,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Group'
+                $ref: '#/components/schemas/NewGroupCreated'
         '400':
           description: Bad request
           content:
@@ -187,7 +187,7 @@ paths:
         description: Group ID
         required: true
         schema:
-          type: string
+          type: integer
       responses:
         '200':
           description: OK
@@ -224,6 +224,13 @@ paths:
       operationId: editGroup
       security:
       - bearerAuth: [ ]
+      parameters:
+      - name: id
+        in: path
+        description: Group ID
+        required: true
+        schema:
+          type: integer
       requestBody:
         description: Group details to edit
         required: false
@@ -275,7 +282,7 @@ paths:
         description: Group ID
         required: true
         schema:
-          type: string
+          type: integer
       responses:
         '200':
           description: OK
@@ -368,7 +375,7 @@ paths:
         description: Group ID
         required: true
         schema:
-          type: string
+          type: integer
       - name: movieId
         in: path
         description: Movie ID
@@ -431,6 +438,20 @@ paths:
       summary: Create new user
       description: Adds a user to the system
       operationId: addUser
+      requestBody:
+        description: User name
+        required: true
+        content:
+          application/json:
+            schema:
+              required:
+              - username
+              type: object
+              properties:
+                username:
+                  type: string
+                  description: username
+                  example: andre
       responses:
         '201':
           description: User created
@@ -460,13 +481,16 @@ components:
         id:
           type: string
           description: Movie ID
+          example: "tt0111161"
         title:
           type: string
           description: Movie title
+          example: The Shawshank Redemption
         runtime:
           type: integer
           minimum: 0
           description: Movie runtime
+          example: 142
     Group:
       required:
       - id
@@ -479,12 +503,15 @@ components:
         id:
           type: string
           description: Group ID
+          example: 1
         name:
          type: string
          description: Group name
+         example: My group
         description:
           type: string
           description: Group description
+          example: My favorite movies
         movies:
           type: array
           description: Favorite movies list
@@ -494,6 +521,7 @@ components:
           type: integer
           minimum: 0
           description: Total duration of favorite movies
+          example: 142
     NewGroup:
       required:
       - id
@@ -502,14 +530,18 @@ components:
       type: object
       properties:
         id:
-          type: string
+          type: integer
           description: Group ID
+          minimum: 0
+          example: 1
         name:
           type: string
           description: Group name
+          example: My group
         description:
           type: string
           description: Group description
+          example: My favorite movies
     NewGroupCreated:
       required:
       - status
@@ -522,7 +554,7 @@ components:
           description: Status
           example: New group created
         group:
-          $ref: '#/components/schemas/NewGroup'
+          $ref: '#/components/schemas/Group'
         user:
           $ref: '#/components/schemas/User'
     NewUser:
@@ -537,21 +569,28 @@ components:
           description: status
           example: New user created
         userId:
-          type: string
+          type: integer
           description: User ID
           example: 123456789
         token:
           type: string
           description: User token
+          format: uuid
           example: a3d50b64-e401-4c57-a698-809fa2b85af2
     User:
       required:
       - id
+      - name
       type: object
       properties:
+        id:
+          type: integer
+          description: User ID
+          example: 123456789
         name:
           type: string
-          description: User ID
+          description: User name
+          example: andre
     InvalidRequest:
       type: object
       properties:
