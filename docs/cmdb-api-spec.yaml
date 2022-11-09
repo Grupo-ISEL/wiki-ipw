@@ -10,50 +10,50 @@ info:
     url: https://www.apache.org/licenses/LICENSE-2.0.html
   version: 1.0.0
 servers:
-  - url: http://localhost:1337
-    description: Local server
+- url: http://localhost:1337
+  description: Local server
 
 
 tags:
-  - name: Movies
-    description: Movies operations
-  - name: Groups
-    description: Groups operations
-  - name: Users
-    description: Users operations
+- name: Movies
+  description: Movies operations
+- name: Groups
+  description: Groups operations
+- name: Users
+  description: Users operations
 
 
 paths:
   /movies:
     get:
       tags:
-        - Movies
+      - Movies
       summary: Get movies
       description: Get movies
       operationId: getMovies
       parameters:
-        - name: title
-          in: query
-          description: Movie title to search
-          required: false
-          schema:
-            type: string
-        - name: limit
-          in: query
-          description: Number of returned movie (max 250)
-          required: false
-          schema:
-            minimum: 0
-            maximum: 250
-            type: integer
-        - name: offset
-          in: query
-          description: Offset to return movies
-          required: false
-          schema:
-            minimum: 0
-            maximum: 250
-            type: integer
+      - name: title
+        in: query
+        description: Movie title to search
+        required: false
+        schema:
+          type: string
+      - name: limit
+        in: query
+        description: Number of returned movie (max 250)
+        required: false
+        schema:
+          minimum: 0
+          maximum: 250
+          type: integer
+      - name: offset
+        in: query
+        description: Offset to return movies
+        required: false
+        schema:
+          minimum: 0
+          maximum: 250
+          type: integer
       responses:
         '200':
           description: Search results matching criteria
@@ -61,7 +61,8 @@ paths:
             application/json:
               schema:
                 type: array
-                $ref: '#/components/schemas/Movie'
+                items:
+                  $ref: '#/components/schemas/Movie'
         '400':
           description: Bad request
           content:
@@ -71,26 +72,26 @@ paths:
   /movies/top:
     get:
       tags:
-        - Movies
+      - Movies
       summary: Get top movies
       description: Get top movies
       operationId: getTopMovies
       parameters:
-        - name: limit
-          in: query
-          description: Number of returned movie (max 250)
-          required: false
-          schema:
-            minimum: 0
-            maximum: 250
-            type: integer
-        - name: offset
-          in: query
-          description: Offset to return movies
-          required: false
-          schema:
-            minimum: 0
-            type: integer
+      - name: limit
+        in: query
+        description: Number of returned movies (max 250)
+        required: false
+        schema:
+          minimum: 0
+          maximum: 250
+          type: integer
+      - name: offset
+        in: query
+        description: Offset to return movies
+        required: false
+        schema:
+          minimum: 0
+          type: integer
       responses:
         '200':
           description: Get top movies
@@ -98,7 +99,8 @@ paths:
             application/json:
               schema:
                 type: array
-                $ref: '#/components/schemas/Movie'
+                items:
+                  $ref: '#/components/schemas/Movie'
         '400':
           description: Bad request
           content:
@@ -108,20 +110,12 @@ paths:
   /groups:
     get:
       tags:
-        - Groups
+      - Groups
       summary: List all groups
       description: List all groups
       operationId: getAllGroups
       security:
-        - bearerAuth: [ ]
-      parameters:
-        - name: Authorization
-          in: header
-          description: Bearer token
-          required: true
-          schema:
-            type: string
-            format: uuid
+      - bearerAuth: [ ]
       responses:
         '200':
           description: All groups
@@ -145,23 +139,15 @@ paths:
                 $ref: '#/components/schemas/NotAuthorized'
     post:
       tags:
-        - Groups
+      - Groups
       summary:  Create group
       description: Create group
       operationId: createGroup
       security:
-        - bearerAuth: [ ]
-      parameters:
-        - name: Authorization
-          in: header
-          description: Bearer token
-          required: true
-          schema:
-            type: string
-            format: uuid
+      - bearerAuth: [ ]
       requestBody:
-        description: User to add
-        required: false
+        description: Group to create
+        required: true
         content:
           application/json:
            schema:
@@ -172,9 +158,7 @@ paths:
           content:
             application/json:
               schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/Group'
+                $ref: '#/components/schemas/Group'
         '400':
           description: Bad request
           content:
@@ -187,29 +171,23 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/NotAuthorized'
+
   /groups/{id}:
     get:
       tags:
-        - Groups
+      - Groups
       summary: Get group by ID
       description: Get group by ID
       operationId: getGroup
       security:
-        - bearerAuth: [ ]
+      - bearerAuth: [ ]
       parameters:
-        - name: Authorization
-          in: header
-          description: Bearer token
-          required: true
-          schema:
-            type: string
-            format: uuid
-        - name: id
-          in: path
-          description: Group ID
-          required: true
-          schema:
-            type: string
+      - name: id
+        in: path
+        description: Group ID
+        required: true
+        schema:
+          type: string
       responses:
         '200':
           description: OK
@@ -223,22 +201,29 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/InvalidRequest'
+        '401':
+          description: Not Authorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotAuthorized'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Forbidden'
+        404:
+          description: Group not found
+          content: { }
     put:
       tags:
-        - Groups
+      - Groups
       summary: Edit group
       description: Edit group
       operationId: editGroup
       security:
-        - bearerAuth: [ ]
-      parameters:
-        - name: Authorization
-          in: header
-          description: Bearer token
-          required: true
-          schema:
-            type: string
-            format: uuid
+      - bearerAuth: [ ]
       requestBody:
         description: Group details to edit
         required: false
@@ -254,7 +239,7 @@ paths:
               schema:
                 type: array
                 items:
-                  $ref: '#/components/schemas/Group'
+                  $ref: '#/components/schemas/NewGroupCreated'
         '400':
           description: Bad request
           content:
@@ -267,6 +252,15 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/NotAuthorized'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Forbidden'
+        404:
+          description: Group not found
+          content: { }
     delete:
       tags:
         - Groups
@@ -274,21 +268,14 @@ paths:
       description: Delete group by ID
       operationId: deleteGroup
       security:
-        - bearerAuth: [ ]
+      - bearerAuth: [ ]
       parameters:
-        - name: Authorization
-          in: header
-          description: Bearer token
-          required: true
-          schema:
-            type: string
-            format: uuid
-        - name: id
-          in: path
-          description: Group ID
-          required: true
-          schema:
-            type: string
+      - name: id
+        in: path
+        description: Group ID
+        required: true
+        schema:
+          type: string
       responses:
         '200':
           description: OK
@@ -302,35 +289,43 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/InvalidRequest'
+        '401':
+          description: Not Authorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotAuthorized'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Forbidden'
+        404:
+          description: Group not found
+          content: { }
   /groups/{id}/movies/{movieId}:
     put:
       tags:
-        - Groups
+      - Groups
       summary: Add movie to group
       description: Add movie to group
       operationId: addMovieToGroup
       security:
-        - bearerAuth: [ ]
+      - bearerAuth: [ ]
       parameters:
-        - name: Authorization
-          in: header
-          description: Bearer token
-          required: true
-          schema:
-            type: string
-            format: uuid
-        - name: id
-          in: path
-          description: Group ID
-          required: true
-          schema:
-            type: string
-        - name: movieId
-          in: path
-          description: Movie ID
-          required: true
-          schema:
-            type: string
+      - name: id
+        in: path
+        description: Group ID
+        required: true
+        schema:
+          type: string
+      - name: movieId
+        in: path
+        description: Movie ID
+        required: true
+        schema:
+          type: string
       responses:
         '200':
           description: OK
@@ -344,34 +339,42 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/InvalidRequest'
+        '401':
+          description: Not Authorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotAuthorized'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Forbidden'
+        404:
+          description: Group or Movie not found
+          content: { }
     delete:
       tags:
-        - Groups
+      - Groups
       summary: Remove movie from group
       description: Remove movie from group
       operationId: delMovieFromGroup
       security:
-        - bearerAuth: [ ]
+      - bearerAuth: [ ]
       parameters:
-        - name: Authorization
-          in: header
-          description: Bearer token
-          required: true
-          schema:
-            type: string
-            format: uuid
-        - name: id
-          in: path
-          description: Group ID
-          required: true
-          schema:
-            type: string
-        - name: movieId
-          in: path
-          description: Movie ID
-          required: true
-          schema:
-            type: string
+      - name: id
+        in: path
+        description: Group ID
+        required: true
+        schema:
+          type: string
+      - name: movieId
+        in: path
+        description: Movie ID
+        required: true
+        schema:
+          type: string
       responses:
         '200':
           description: OK
@@ -385,6 +388,21 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/InvalidRequest'
+        '401':
+          description: Not Authorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotAuthorized'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Forbidden'
+        404:
+          description: Group or Movie not found
+          content: { }
   /users:
     get:
       tags:
@@ -413,32 +431,19 @@ paths:
       summary: Create new user
       description: Adds a user to the system
       operationId: addUser
-      requestBody:
-        description: User to add
-        required: false
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/NewUser'
       responses:
         '201':
           description: User created
           content:
             application/json:
               schema:
-                required:
-                  - token
-                properties:
-                  token:
-                    type: string
-                    format: uuid
+                $ref: '#/components/schemas/NewUser'
         '400':
           description: Bad request
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/InvalidRequest'
-        x-codegen-request-body-name: user
 components:
   securitySchemes:
     bearerAuth:
@@ -447,9 +452,9 @@ components:
   schemas:
     Movie:
       required:
-        - id
-        - title
-        - runtime
+      - id
+      - title
+      - runtime
       type: object
       properties:
         id:
@@ -464,52 +469,84 @@ components:
           description: Movie runtime
     Group:
       required:
-        - id
-        - description
-        - movies
-        - total-duration
+      - id
+      - name
+      - description
+      - movies
+      - total-duration
       type: object
       properties:
         id:
           type: string
           description: Group ID
+        name:
+         type: string
+         description: Group name
         description:
           type: string
           description: Group description
         movies:
           type: array
           description: Favorite movies list
+          items:
+            $ref: '#/components/schemas/Movie'
         total-duration:
           type: integer
+          minimum: 0
           description: Total duration of favorite movies
     NewGroup:
       required:
-      - groupName
+      - id
+      - name
       - description
-      - userName
       type: object
       properties:
-        groupName:
+        id:
           type: string
-          description: Group description
-        movies:
-          type: array
-          description: Favorite movies list
-        userName:
-          type: string
-          description: User name
-    NewUser:
-      required:
-        - userName
-      type: object
-      properties:
+          description: Group ID
         name:
           type: string
-          description: User name
-          example: andre
+          description: Group name
+        description:
+          type: string
+          description: Group description
+    NewGroupCreated:
+      required:
+      - status
+      - group
+      - user
+      type: object
+      properties:
+        status:
+          type: string
+          description: Status
+          example: New group created
+        group:
+          $ref: '#/components/schemas/NewGroup'
+        user:
+          $ref: '#/components/schemas/User'
+    NewUser:
+      required:
+      - status
+      - userId
+      - token
+      type: object
+      properties:
+        status:
+          type: string
+          description: status
+          example: New user created
+        userId:
+          type: string
+          description: User ID
+          example: 123456789
+        token:
+          type: string
+          description: User token
+          example: a3d50b64-e401-4c57-a698-809fa2b85af2
     User:
       required:
-        - id
+      - id
       type: object
       properties:
         name:
