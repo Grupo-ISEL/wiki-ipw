@@ -35,7 +35,7 @@ paths:
       - name: title
         in: query
         description: Movie title to search
-        required: false
+        required: true
         schema:
           type: string
       - name: limit
