@@ -1,17 +1,6 @@
 // Module contains all management logic
-
-import cmdbMoviesData from "../data/cmdb-movies-data.mjs";
 import cmdbData from "../data/cmdb-data-mem.mjs";
 import error from "../errors.mjs";
-
-async function createUser() {
-    const user = await cmdbData.createUser()
-    console.log("Services - Created user with token: " + user.token)
-    if (!user) {
-        throw "Error creating user"
-    }
-    return user
-}
 
 
 const getGroup = handleTokenValidation(getGroupInternal)
@@ -40,31 +29,34 @@ async function getGroupsInternal() {
         return groups
     }
     catch {
-        throw new error(5, "Internal Server Error")
+        throw error.UNKNOWN()
     }
 }
 
 async function getGroupInternal(groupId, userId) {
-        //if (!isNaN(groupId))
-        //    throw new error(4, "Group id must be a number")
+        console.log(`Services: Getting group ${groupId} for user: ${userId}`)
+        groupId = Number(groupId)
+        if (isNaN(groupId))
+            throw error.INVALID_PARAMETER('groupId must be a number')
+        console.log(`Services: Getting group with id: ${groupId}`)
         const group = await cmdbData.getGroup(groupId)
         if (!group)
-            throw new error(4, `Group with id ${groupId} not found`)
+            throw error.GROUP_NOT_FOUND(groupId)
 
         if (group.userId !== userId)
-            throw new error(3, `Access denied to group ${groupId}`)
+            throw error.GROUP_ACCESS_DENIED(groupId)
 
         return group
 }
 
 function handleTokenValidation(action)  {
     return async function (token, groupId=null,  movieId=null) {
-        const id = await validateToken(token)
-        if (id) {
-            console.log("Running action")
-            return action(groupId,id,movieId)
+        const userId = await validateToken(token)
+        if (userId) {
+            console.log(`Running action: groupId: ${groupId} userId: ${userId} movieId: ${movieId}`)
+            return action(groupId,userId,movieId)
         }
-        throw new error(1, 'No user with the given token')
+        throw error.GROUP_ACCESS_DENIED(groupId)
     }
 }
 
@@ -85,19 +77,8 @@ function addMovieToGroupInternal(groupId, userId) {
 function removeMovieFromGroupInternal(groupId, userId) {
     throw "Not implemented";
 }
-function getTopMovies(maximum = 250) {
-    throw "Not implemented";
-}
 
-async function getMovies(search_text, maximum = 250) {
-    return cmdbMoviesData.getMovies();
-}
-
-
-
-const services = {
-    createUser,
-    getMovies,
+const servicesGroups = {
     getGroups,
     getGroup,
     createGroup,
@@ -105,7 +86,6 @@ const services = {
     updateGroup,
     addMovieToGroup,
     removeMovieFromGroup,
-    getTopMovies
 }
 
-export default services
+export default servicesGroups

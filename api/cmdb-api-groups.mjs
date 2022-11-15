@@ -3,27 +3,9 @@
 //  - Obtain data from requests. Request data can be obtained from: URI(path, query, fragment), headers, body
 //  - Invoke the corresponding operation on services
 //  - Generate the response
-import cmdbServices from "../services/cmdb-services.mjs"
-
-
-// List all movies
-export async function getMovies(req, rsp) {
-    const movies = await cmdbServices.getMovies()
-
-    if (movies) {
-        rsp.status(200).json(movies)
-    } else {
-        rsp.status(500).json({error: `Error getting movies`})
-    }
-
-}
-
-
-// Get Top Movies
-export function getTopMovies(req, rsp) {
-    throw new Error("Not implemented")
-}
-
+import cmdbServices from "../services/cmdb-services-groups.mjs"
+import httpErrors from "./http-errors.mjs"
+import getHTTPError from "./http-errors.mjs";
 
 export let getGroup = handleRequest(getGroupInternal)
 export let getGroups = handleRequest(getGroupsInternal)
@@ -94,7 +76,8 @@ function updateGroupInternal(req, rsp) {
         const group = cmdbServices.updateGroup(req.token, groupId, groupData)
     }
     catch (e) {
-
+        console.log("Error updating group: " + e.message)
+        rsp.status(403).json({error: `Access denied to update group`})
     }
 }
 
@@ -104,28 +87,6 @@ function addMovieToGroupInternal(req, rsp) {
 
 function removeMovieFromGroupInternal(req, rsp) {
     throw new Error("Not implemented")
-}
-
-// List Users
-export function getUsers(req, rsp) {
-    throw new Error("Not implemented")
-}
-
-
-// Create a new user
-export async function createUser(req, rsp) {
-    try {
-        const newUser = await cmdbServices.createUser()
-        console.log(`Creating user id ${newUser.id} - ${newUser.userName} with token ${newUser.token}`)
-        rsp.status(201).json({
-            status: `New user created`,
-            userId: newUser.id,
-            userName: newUser.userName,
-            token: newUser.token
-        })
-    } catch (e) {
-        rsp.status(400).json({error: `Error creating user: ${e} `})
-    }
 }
 
 function handleRequest(handler) {
@@ -139,8 +100,15 @@ function handleRequest(handler) {
                 token = token.replace("Bearer ", "")
                 if (token !== "") {
                     req.token = token
-                    console.log(`Token ${token} is valid`)
-                    handler(req, rsp)
+                    console.log(`Found Bearer ${token}`)
+                    try {
+                        handler(req, rsp)
+                    }
+                    catch (e) {
+
+                        const httpError = getHTTPError(e.error, e.message)
+                        rsp.status(httpError.status).json({status: httpError.message})
+                    }
                 }
             } else {
                 rsp.status(401).json({error: `Invalid token`})
@@ -148,3 +116,15 @@ function handleRequest(handler) {
         }
     }
 }
+
+const apiGroups = {
+    getGroup,
+    getGroups,
+    createGroup,
+    deleteGroup,
+    updateGroup,
+    addMovieToGroup,
+    removeMovieFromGroup
+}
+
+export default apiGroups
