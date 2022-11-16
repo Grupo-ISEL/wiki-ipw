@@ -14,27 +14,33 @@ export default {
             message: `Group with id ${groupId} not found`
         }
     },
-    USER_NOT_FOUND: (userId) => {
+    GROUPS_NOT_FOUND: () => {
         return {
             code: 3,
+            message: `Groups not found`
+        }
+    },
+    USER_NOT_FOUND: (userId) => {
+        return {
+            code: 4,
             message: `User with id ${userId} not found`
         }
     },
     MOVIE_NOT_FOUND: (movieId) => {
         return {
-            code: 4,
+            code: 5,
             message: `Movie with id ${movieId} not found`
         }
     },
     GROUP_ACCESS_DENIED: (groupId) => {
         return {
-            code: 5,
+            code: 6,
             message: `Access denied to ${groupId}`
         }
     },
     UNKNOWN: () => {
         return {
-            code: 6,
+            code: 7,
             message: `Unknown error`
         }
     }
