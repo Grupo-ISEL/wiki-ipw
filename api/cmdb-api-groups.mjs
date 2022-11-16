@@ -32,14 +32,14 @@ async function getGroupInternal(req, rsp) {
 }
 
 async function getGroupsInternal(req, rsp) {
-    try {
         const groups = await cmdbServices.getGroups(req.token)
         //console.log ("API - Got groups: " + JSON.stringify(groups))
-        rsp.json(groups)
-    } catch(e) {
-        console.log("Error getting groups with token: " + req.token)
-        rsp.status(401).json({error: `Access denied to groups`})
-    }
+        if (groups !== undefined) {
+            rsp.json(groups)
+        } else {
+            console.log("Error getting groups with token: " + req.token)
+            rsp.status(401).json({error: `Access denied to groups`})
+        }
 }
 
 // Create a new group

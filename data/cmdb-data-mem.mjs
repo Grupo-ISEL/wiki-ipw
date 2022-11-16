@@ -50,8 +50,8 @@ let users = [
 ]
 let nextUserId = users.length + 1
 
-function getGroups() {
-    return groups.length > 0 ? Promise.resolve(groups) : Promise.reject("No groups")
+async function getGroups() {
+    return groups
 }
 
 async function getGroup(groupId) {

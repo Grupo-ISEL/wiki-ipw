@@ -22,18 +22,19 @@ async function validateToken(token) {
 }
 
 
-async function getGroupsInternal() {
-    try {
-        const groups = await cmdbData.getGroups()
-        //console.log("Services - Got groups: " + JSON.stringify(groups))
-        return groups
-    }
-    catch {
+async function getGroupsInternal(userId) {
+    console.log(`Services: Getting groups for user: ${userId}`)
+    const groups = await cmdbData.getGroups()
+        if (groups) {
+            const userGroups = groups.filter(group => group.userId === userId)
+            if (!userGroups)
+                throw error.GROUP_NOT_FOUND()
+            return userGroups
+        }
         throw error.UNKNOWN()
-    }
 }
 
-async function getGroupInternal(groupId, userId) {
+async function getGroupInternal(userId, groupId) {
         console.log(`Services: Getting group ${groupId} for user: ${userId}`)
         groupId = Number(groupId)
         if (isNaN(groupId))
@@ -50,11 +51,11 @@ async function getGroupInternal(groupId, userId) {
 }
 
 function handleTokenValidation(action)  {
-    return async function (token, groupId=null,  movieId=null) {
+    return async function (token, groupId=null, movieId=null) {
         const userId = await validateToken(token)
         if (userId) {
             console.log(`Running action: groupId: ${groupId} userId: ${userId} movieId: ${movieId}`)
-            return action(groupId,userId,movieId)
+            return action(userId, groupId, movieId)
         }
         throw error.GROUP_ACCESS_DENIED(groupId)
     }
