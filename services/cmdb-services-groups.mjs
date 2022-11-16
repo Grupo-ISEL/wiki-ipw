@@ -11,17 +11,6 @@ const updateGroup = handleTokenValidation(updateGroupInternal)
 const addMovieToGroup = handleTokenValidation(addMovieToGroupInternal)
 const removeMovieFromGroup = handleTokenValidation(removeMovieFromGroupInternal)
 
-
-
-async function validateToken(token) {
-    console.log(`Validating token: ${token}`)
-
-    const user = await cmdbData.getUserByToken(token)
-    console.log(`UserId: ${user.id} - UserToken: ${user.token}`)
-    return user.id
-}
-
-
 async function getGroupsInternal(userId) {
     console.log(`Services: Getting groups for user: ${userId}`)
     const groups = await cmdbData.getGroups()
@@ -52,10 +41,12 @@ async function getGroupInternal(userId, groupId) {
 
 function handleTokenValidation(action)  {
     return async function (token, groupId=null, movieId=null) {
-        const userId = await validateToken(token)
-        if (userId) {
-            console.log(`Running action: groupId: ${groupId} userId: ${userId} movieId: ${movieId}`)
-            return action(userId, groupId, movieId)
+        console.log(`Services: Handling token validation for action: ${action.name}`)
+        const user = cmdbData.getUserByToken(token)
+        console.log(`UserId: ${user.id} - Username: ${user.name} UserToken: ${user.token}`)
+        if (user.id) {
+            console.log(`Running action: groupId: ${groupId} userId: ${user.id} movieId: ${movieId}`)
+            return action(user.id, groupId, movieId)
         }
         throw error.GROUP_ACCESS_DENIED(groupId)
     }

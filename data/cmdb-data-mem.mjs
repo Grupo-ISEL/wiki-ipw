@@ -45,8 +45,8 @@ let groups = [
 ]
 
 let users = [
-    {id: 1, userName: "Andre", token : "abc"},
-    {id: 2, userName: "Monteiro", token : "zxc"},
+    {id: 1, name: "Andre", token : "abc"},
+    {id: 2, name: "Monteiro", token : "zxc"},
 ]
 let nextUserId = users.length + 1
 
@@ -70,12 +70,12 @@ function createUser(userName) {
 
 function getUserByToken(token) {
     const user = users.find(user => user.token === token)
-    return user ? Promise.resolve(user): Promise.reject("User not found")
+    return user
 }
 
 
-function getUsers() {
-    return Promise.resolve(users)
+async function getUsers() {
+    return users
 }
 
 const cmdbData = {
