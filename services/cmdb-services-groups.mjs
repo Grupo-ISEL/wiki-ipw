@@ -56,17 +56,17 @@ function createGroupInternal(userId, body) {
     throw "Not implemented";
 }
 
-function deleteGroupInternal(groupId, userId) {
+function deleteGroupInternal(userId, groupId) {
     throw "Not implemented";
 }
 
-function updateGroupInternal(groupId, userId) {
+function updateGroupInternal(userId, groupId, body) {
     throw "Not implemented";
 }
-function addMovieToGroupInternal(groupId, userId) {
+function addMovieToGroupInternal(userId, groupId, movieId) {
     throw "Not implemented";
 }
-function removeMovieFromGroupInternal(groupId, userId) {
+function removeMovieFromGroupInternal(userId, groupId, movieId) {
     throw "Not implemented";
 }
 

@@ -20,12 +20,12 @@ async function getTopMoviesInternal(offset = 0, limit = 250) {
     return topMovies
 }
 
-async function getMoviesInternal(search_text, offset = 0, limit = MAX_LIMIT) {
+async function getMoviesInternal(offset = 0, limit = MAX_LIMIT, search_text) {
     console.log("services-getMovies")
     if (!search_text)
         throw error.INVALID_PARAMETER("search string is required")
 
-    const movies = await cmdbMoviesData.getMovies(search_text, offset, limit)
+    const movies = await cmdbMoviesData.getMovies(offset, limit, search_text)
     return movies
 }
 
@@ -36,7 +36,7 @@ async function getMoviesInternal(search_text, offset = 0, limit = MAX_LIMIT) {
 
 async function handleMovieRequest(action) {
 
-    return async function (search_text, offset = 0, limit = MAX_LIMIT) {
+    return async function (offset = 0, limit = MAX_LIMIT, search_text) {
 
         if (isNaN(offset) || isNaN(limit)) {
             throw error.INVALID_PARAMETER("Offset and limit must be numbers")
@@ -47,20 +47,7 @@ async function handleMovieRequest(action) {
         if (limit > MAX_LIMIT || offset + limit > MAX_LIMIT) {
             throw error.INVALID_PARAMETER(`Limit and Offset+Limit must be less than or equal to ${MAX_LIMIT}`)
         }
-        return action(search_text, offset, limit)
-    }
-
-
-}
-
-
-function handleTokenValidation(action)  {
-    return async function (token, groupId=null,  movieId=null) {
-        const userId = await validateToken(token)
-        if (userId) {
-            console.log(`Running action: groupId: ${groupId} userId: ${userId} movieId: ${movieId}`)
-            return action(groupId,userId,movieId)
-        }
-        throw new error(1, 'No user with the given token')
+        console.log(`Running action: search_text: ${search_text} offset: ${offset} limit: ${limit}`)
+        return action(offset, limit, search_text)
     }
 }
