@@ -7,7 +7,7 @@ import cmdbServices from "../services/cmdb-services-groups.mjs"
 import getHTTPError from "./http-errors.mjs";
 import debugInit from 'debug';
 
-const debug= debugInit("cmdb:api:groups")
+const debug = debugInit("cmdb:api:groups")
 
 export let getGroup = handleRequest(getGroupInternal)
 export let getGroups = handleRequest(getGroupsInternal)
@@ -34,14 +34,14 @@ async function getGroupInternal(req, rsp) {
 }
 
 async function getGroupsInternal(req, rsp) {
-        const groups = await cmdbServices.getGroups(req.token)
-        debug(`Got groups %O`, groups)
-        if (groups !== undefined) {
-            rsp.json(groups)
-        } else {
-            debug(`Error getting groups with token ${req.token}`)
-            rsp.status(401).json({error: `Access denied to groups`})
-        }
+    const groups = await cmdbServices.getGroups(req.token)
+    debug(`Got groups %O`, groups)
+    if (groups !== undefined) {
+        rsp.json(groups)
+    } else {
+        debug(`Error getting groups with token ${req.token}`)
+        rsp.status(401).json({error: `Access denied to groups`})
+    }
 }
 
 // Create a new group
@@ -50,8 +50,7 @@ function createGroupInternal(req, rsp) {
     try {
         const group = cmdbServices.createGroup(req.token, groupData)
         rsp.status(201).json(group)
-    }
-    catch (e) {
+    } catch (e) {
         debug(`Error creating group: ${e.message}`)
         rsp.status(403).json({error: `Access denied to create group`})
     }
@@ -64,8 +63,7 @@ function deleteGroupInternal(req, rsp) {
     try {
         const group = cmdbServices.deleteGroup(req.token, groupId)
         rsp.json({status: `Group deleted`, group})
-    }
-    catch (e) {
+    } catch (e) {
         debug(`Error deleting group: ${e.message}`)
         rsp.status(403).json({error: `Access denied to delete group`})
     }
@@ -76,8 +74,7 @@ function updateGroupInternal(req, rsp) {
     const groupData = req.body
     try {
         const group = cmdbServices.updateGroup(req.token, groupId, groupData)
-    }
-    catch (e) {
+    } catch (e) {
         debug(`Error updating group: ${e.message}`)
         rsp.status(403).json({error: `Access denied to update group`})
     }
@@ -105,8 +102,7 @@ function handleRequest(handler) {
                     debug(`Found Bearer token ${token}`)
                     try {
                         handler(req, rsp)
-                    }
-                    catch (e) {
+                    } catch (e) {
 
                         const httpError = getHTTPError(e.error, e.message)
                         rsp.status(httpError.status).json({status: httpError.message})

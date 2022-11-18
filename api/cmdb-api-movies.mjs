@@ -2,7 +2,7 @@
 import cmdbServices from "../services/cmdb-services-groups.mjs";
 import debugInit from 'debug';
 
-const debug= debugInit("cmdb:api:movies")
+const debug = debugInit("cmdb:api:movies")
 
 async function getMovies(req, rsp) {
     debug(`Searching movies with title ${req.query.search}`)

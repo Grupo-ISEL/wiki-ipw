@@ -106,8 +106,8 @@ async function fetchFromImdb(url) {
     const response = await fetch(url)
     const data = response.json()
     const errMsg = data["errorMessage"]
-    if(!errMsg)
-         throw errMsg
+    if (!errMsg)
+        throw errMsg
     return data["results"]
 }
 

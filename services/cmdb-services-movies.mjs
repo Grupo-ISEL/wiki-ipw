@@ -6,7 +6,6 @@ const debug = debugInit("cmdb:services:movies")
 
 const MAX_LIMIT = 250
 
-
 const getTopMovies = handleMovieRequest(getTopMoviesInternal)
 const getMovies = handleMovieRequest(getMoviesInternal)
 

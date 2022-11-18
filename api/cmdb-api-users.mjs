@@ -2,7 +2,7 @@
 import servicesUsers from "../services/cmdb-services-users.mjs";
 import debugInit from 'debug';
 
-const debug= debugInit("cmdb:api:users")
+const debug = debugInit("cmdb:api:users")
 
 function getUsers(req, rsp) {
     throw new Error("Not implemented")

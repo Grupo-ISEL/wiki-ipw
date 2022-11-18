@@ -18,10 +18,10 @@ const HTTP_ERRORS_MAPPING = {
 // Return an object with status code and message based on the error code
 // TODO: Find a better way to do this??
 function getHTTPError(errorCode, message) {
-   return {
-         status: HTTP_ERRORS_MAPPING[errorCode] || HTTP_ERRORS.INTERNAL_SERVER_ERROR,
-         message: message || `Error ${errorCode}`
-   }
+    return {
+        status: HTTP_ERRORS_MAPPING[errorCode] || HTTP_ERRORS.INTERNAL_SERVER_ERROR,
+        message: message || `Error ${errorCode}`
+    }
 }
 
 export default getHTTPError

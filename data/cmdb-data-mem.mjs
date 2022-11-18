@@ -41,15 +41,15 @@ let groups = [
         id: 5,
         name: "Horror",
         description: "Horror movies",
-        movies: ["tt1",  "tt4"],
+        movies: ["tt1", "tt4"],
         totalDuration: 671,
         userId: 2
     }
 ]
 
 let users = [
-    {id: 1, name: "Andre", token : "abc"},
-    {id: 2, name: "Monteiro", token : "zxc"},
+    {id: 1, name: "Andre", token: "abc"},
+    {id: 2, name: "Monteiro", token: "zxc"},
 ]
 let nextUserId = users.length + 1
 
@@ -66,7 +66,7 @@ async function getGroup(groupId) {
 
 function createUser(userName) {
     // TODO: Add username from request
-    const user= { id: nextUserId, userName: "User-" + nextUserId++, token: crypto.randomUUID() }
+    const user = {id: nextUserId, userName: "User-" + nextUserId++, token: crypto.randomUUID()}
     users.push(user)
     return Promise.resolve(user)
 }
