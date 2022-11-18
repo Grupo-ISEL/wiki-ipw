@@ -1,4 +1,4 @@
-import cmdbMoviesData from "../data/cmdb-movies-data.mjs";
+import cmdbMoviesData from "../data/imdb-movies-data.mjs";
 import error from "../errors.mjs";
 import debugInit from 'debug';
 

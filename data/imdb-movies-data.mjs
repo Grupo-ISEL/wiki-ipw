@@ -4,7 +4,7 @@ import fetch from 'node-fetch'
 import {readFile} from 'node:fs/promises'
 import debugInit from 'debug';
 
-const debug = debugInit("cmdb:data:movies")
+const debug = debugInit("cmdb:imdb:data:movies")
 
 let movies = [
     {
