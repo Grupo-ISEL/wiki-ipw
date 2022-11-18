@@ -50,7 +50,7 @@ function getApiKey() {
 // TODO: Figure out which fields to return and if we need to fetch more data from the API, i.e. runtime
 // TODO: Handle offset and limit
 async function getMovies(search, offset, limit) {
-    debug("getMovies with search: %s, offset: %s, limit: %s", search, offset, limit)
+    debug(`getMovies with search: ${search}, offset: ${offset}, limit: ${limit}`)
     if (search) {
         return await searchMovie(search)
     }
@@ -58,20 +58,20 @@ async function getMovies(search, offset, limit) {
 
 // Not used at the moment
 function getMoviebyId(movieId) {
-    debug("getMoviebyId with movieId: %s", movieId)
+    debug(`getMoviebyId with movieId: ${movieId}`)
     return movies.find(movie => movie.id === movieId)
 }
 
 // Not used at the moment
 async function getMovie(movieId) {
-    debug("getMovie with movieId: %s", movieId)
+    debug(`getMovie with movieId: ${movieId}`)
     const url = `https://imdb-api.com/en/API/Title/${API_KEY}/${movieId}`
     return fetchFromImdb(url)
 }
 
 // TODO: Figure out which fields to return and if we need to fetch more data from the API, i.e. runtime
 async function searchMovie(search_text) {
-    debug("searchMovie with search_text: %s", search_text)
+    debug(`searchMovie with search_text: ${search_text}`)
     if (IMDB_API_DISABLED) {
         return searchMovieLocal(search_text)
     }
@@ -80,7 +80,7 @@ async function searchMovie(search_text) {
 }
 
 async function searchMovieLocal(search_text) {
-    debug("searchMovieLocal with search_text: %s", search_text)
+    debug(`searchMovieLocal with search_text: ${search_text}`)
     return movies.filter(movie => movie.title.toLowerCase().includes(search_text.toLowerCase()))
 }
 
@@ -102,7 +102,7 @@ async function getTopMoviesLocal() {
 }
 
 async function fetchFromImdb(url) {
-    debug("fetchFromImdb with url: %s", url)
+    debug(`fetchFromImdb with url: ${url}`)
     const response = await fetch(url)
     const data = response.json()
     const errMsg = data["errorMessage"]
