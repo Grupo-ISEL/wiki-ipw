@@ -4,8 +4,10 @@
 //  - Invoke the corresponding operation on services
 //  - Generate the response
 import cmdbServices from "../services/cmdb-services-groups.mjs"
-import httpErrors from "./http-errors.mjs"
 import getHTTPError from "./http-errors.mjs";
+import debugInit from 'debug';
+
+const debug= debugInit("cmdb:api:groups")
 
 export let getGroup = handleRequest(getGroupInternal)
 export let getGroups = handleRequest(getGroupsInternal)
@@ -26,18 +28,18 @@ async function getGroupInternal(req, rsp) {
             rsp.status(404).json({error: `Group with id ${groupId} not found`})
         }
     } else {
-        console.log("Error getting group with id: " + groupId)
+        debug(`Error getting group with id ${groupId}`)
         rsp.status(403).json({error: `Access denied to group ${groupId}`})
     }
 }
 
 async function getGroupsInternal(req, rsp) {
         const groups = await cmdbServices.getGroups(req.token)
-        //console.log ("API - Got groups: " + JSON.stringify(groups))
+        debug(`Got groups %O`, groups)
         if (groups !== undefined) {
             rsp.json(groups)
         } else {
-            console.log("Error getting groups with token: " + req.token)
+            debug(`Error getting groups with token ${req.token}`)
             rsp.status(401).json({error: `Access denied to groups`})
         }
 }
@@ -50,7 +52,7 @@ function createGroupInternal(req, rsp) {
         rsp.status(201).json(group)
     }
     catch (e) {
-        console.log("Error creating group: " + e.message)
+        debug(`Error creating group: ${e.message}`)
         rsp.status(403).json({error: `Access denied to create group`})
     }
     throw new Error("Not implemented")
@@ -64,7 +66,7 @@ function deleteGroupInternal(req, rsp) {
         rsp.json({status: `Group deleted`, group})
     }
     catch (e) {
-        console.log("Error deleting group: " + e.message)
+        debug(`Error deleting group: ${e.message}`)
         rsp.status(403).json({error: `Access denied to delete group`})
     }
 }
@@ -76,7 +78,7 @@ function updateGroupInternal(req, rsp) {
         const group = cmdbServices.updateGroup(req.token, groupId, groupData)
     }
     catch (e) {
-        console.log("Error updating group: " + e.message)
+        debug(`Error updating group: ${e.message}`)
         rsp.status(403).json({error: `Access denied to update group`})
     }
 }
@@ -92,7 +94,7 @@ function removeMovieFromGroupInternal(req, rsp) {
 function handleRequest(handler) {
     return function (req, rsp) {
         let token = req.get("Authorization")
-        console.log(`Validating token ${token}`)
+        debug(`Handling request for ${req.path} with token ${token}`)
         if (token === undefined) {
             rsp.status(401).json({error: `Missing token`})
         } else {
@@ -100,7 +102,7 @@ function handleRequest(handler) {
                 token = token.replace("Bearer ", "")
                 if (token !== "") {
                     req.token = token
-                    console.log(`Found Bearer ${token}`)
+                    debug(`Found Bearer token ${token}`)
                     try {
                         handler(req, rsp)
                     }

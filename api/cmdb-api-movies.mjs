@@ -1,8 +1,11 @@
 // List all movies
 import cmdbServices from "../services/cmdb-services-groups.mjs";
+import debugInit from 'debug';
+
+const debug= debugInit("cmdb:api:movies")
 
 async function getMovies(req, rsp) {
-    console.log(`Searching movies with text ${req.query.search}`)
+    debug(`Searching movies with title ${req.query.search}`)
     const movies = await cmdbServices.getMovies(req.query.search, req.query.limit, req.query.offset)
 
     if (movies) {

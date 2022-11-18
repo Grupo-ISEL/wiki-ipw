@@ -1,4 +1,7 @@
 import crypto from "node:crypto";
+import debugInit from 'debug';
+
+const debug = debugInit("cmdb:data:mem")
 
 let groups = [
     {
@@ -55,9 +58,9 @@ async function getGroups() {
 }
 
 async function getGroup(groupId) {
-    console.log(`Data: Getting group with id: ${groupId}`)
+    debug(`getGroup with groupId: ${groupId}`)
     const group = groups.find(group => group.id === groupId)
-    console.log("Group: " + JSON.stringify(group, null, 2))
+    debug(`Found group: %O`, group)
     return group
 }
 

@@ -2,6 +2,9 @@
 // access to the Internet Movies Database API.
 import fetch from 'node-fetch'
 import {readFile} from 'node:fs/promises'
+import debugInit from 'debug';
+
+const debug = debugInit("cmdb:data:movies")
 
 let movies = [
     {
@@ -47,7 +50,7 @@ function getApiKey() {
 // TODO: Figure out which fields to return and if we need to fetch more data from the API, i.e. runtime
 // TODO: Handle offset and limit
 async function getMovies(search, offset, limit) {
-    console.log("movies-data-getMovies");
+    debug("getMovies with search: %s, offset: %s, limit: %s", search, offset, limit)
     if (search) {
         return await searchMovie(search)
     }
@@ -55,20 +58,20 @@ async function getMovies(search, offset, limit) {
 
 // Not used at the moment
 function getMoviebyId(movieId) {
-    console.log("getMoviebyId");
+    debug("getMoviebyId with movieId: %s", movieId)
     return movies.find(movie => movie.id === movieId)
 }
 
 // Not used at the moment
 async function getMovie(movieId) {
-    console.log("getMovie from IMDB");
+    debug("getMovie with movieId: %s", movieId)
     const url = `https://imdb-api.com/en/API/Title/${API_KEY}/${movieId}`
     return fetchFromImdb(url)
 }
 
 // TODO: Figure out which fields to return and if we need to fetch more data from the API, i.e. runtime
 async function searchMovie(search_text) {
-    console.log("searchMovie");
+    debug("searchMovie with search_text: %s", search_text)
     if (IMDB_API_DISABLED) {
         return searchMovieLocal(search_text)
     }
@@ -77,13 +80,13 @@ async function searchMovie(search_text) {
 }
 
 async function searchMovieLocal(search_text) {
-    console.log("searchMovieLocal");
+    debug("searchMovieLocal with search_text: %s", search_text)
     return movies.filter(movie => movie.title.toLowerCase().includes(search_text.toLowerCase()))
 }
 
 
 async function getTopMovies() {
-    console.log("getTopMovies");
+    debug("getTopMovies")
     if (IMDB_API_DISABLED) {
         return getTopMoviesLocal()
     }
@@ -93,13 +96,13 @@ async function getTopMovies() {
 
 // TODO: Only return some movie fields
 async function getTopMoviesLocal() {
-    console.log("getTopMoviesLocal");
+    debug("getTopMoviesLocal")
     const movies = await readFile(TOP_250)
     return JSON.parse(movies)
 }
 
 async function fetchFromImdb(url) {
-    console.log("fetchFromImdb");
+    debug("fetchFromImdb with url: %s", url)
     const response = await fetch(url)
     const data = response.json()
     const errMsg = data["errorMessage"]
