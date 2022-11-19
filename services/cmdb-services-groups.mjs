@@ -2,6 +2,7 @@
 import cmdbData from "../data/cmdb-data-mem.mjs";
 import error from "../errors.mjs";
 import debugInit from 'debug';
+import servicesMovies from "./cmdb-services-movies.mjs";
 
 const debug = debugInit("cmdb:services:groups")
 
@@ -13,8 +14,27 @@ const updateGroup = handleTokenValidation(updateGroupInternal)
 const addMovieToGroup = handleTokenValidation(addMovieToGroupInternal)
 const removeMovieFromGroup = handleTokenValidation(removeMovieFromGroupInternal)
 
+const servicesGroups = {
+    getGroups, getGroup, createGroup, deleteGroup, updateGroup, addMovieToGroup, removeMovieFromGroup,
+}
+
+export default servicesGroups
+
+function handleTokenValidation(action) {
+    return async function (token, groupId = undefined, movieId = undefined, name = undefined, description = undefined) {
+        debug(`Handling token validation for action: '${action.name}'`)
+        const user = cmdbData.getUserByToken(token)
+        debug(`User: %O`, user)
+        if (user.id) {
+            debug(`Running action: '${action.name}' group: '${groupId}' userId: '${user.id}' movie: '${movieId}'`)
+            return action(user.id, groupId, movieId)
+        }
+        throw error.GROUP_ACCESS_DENIED(groupId)
+    }
+}
+
 async function getGroupsInternal(userId) {
-    debug(`Getting groups for user: ${userId}`)
+    debug(`Getting groups for user: '${userId}'`)
     const groups = await cmdbData.getGroups()
     if (groups) {
         const userGroups = groups.filter(group => group.userId === userId)
@@ -26,8 +46,8 @@ async function getGroupsInternal(userId) {
 }
 
 async function getGroupInternal(userId, groupId) {
+    debug(`Getting group '${groupId}' for user: '${userId}'`)
     groupId = Number(groupId)
-    debug(`Getting group ${groupId} for user: ${userId}`)
     if (isNaN(groupId))
         throw error.INVALID_PARAMETER('groupId must be a number')
     const group = await cmdbData.getGroup(groupId)
@@ -40,47 +60,52 @@ async function getGroupInternal(userId, groupId) {
     return group
 }
 
-function handleTokenValidation(action) {
-    return async function (token, groupId = null, movieId = null) {
-        debug(`Handling token validation for action: ${action.name}`)
-        const user = cmdbData.getUserByToken(token)
-        debug(`User: %O`, user)
-        if (user.id) {
-            debug(`Running action: ${action.name} group: ${groupId} userId: ${user.id} movie: ${movieId}`)
-            return action(user.id, groupId, movieId)
-        }
-        throw error.GROUP_ACCESS_DENIED(groupId)
-    }
+function createGroupInternal(userId, name, description) {
+    debug(`Creating new group for user: '${userId}' with name: '${name}' and description: '${description}'`)
+    const group = cmdbData.createGroup(userId, name, description)
+    if (!group)
+        throw error.UNKNOWN()
+    return group
 }
 
-function createGroupInternal(userId, body) {
-    throw "Not implemented";
+async function deleteGroupInternal(userId, groupId) {
+    debug(`Deleting group '${groupId}' with user: '${userId}'`)
+    const group = await getGroupInternal(groupId)
+    const deletedGroup = await cmdbData.deleteGroup(group.id)
+    if (!deletedGroup)
+        throw error.UNKNOWN()
+    return deletedGroup
 }
 
-function deleteGroupInternal(userId, groupId) {
-    throw "Not implemented";
+async function updateGroupInternal(userId, groupId, name, description) {
+    debug(`Updating group '${groupId}' with user: '${userId}' and name: '${name}' and description: '${description}'`)
+    const group = getGroupInternal(userId, groupId)
+    const updatedGroup = await cmdbData.updateGroup(group.id, name, description)
+    if (!updatedGroup)
+        throw error.UNKNOWN()
+    return updatedGroup
 }
 
-function updateGroupInternal(userId, groupId, body) {
-    throw "Not implemented";
+async function addMovieToGroupInternal(userId, groupId, movieId) {
+    debug(`Adding Movie '${movieId}' to group '${groupId}' with user: '${userId}'`)
+    return await handleGroupMovieActions(userId, groupId, movieId, cmdbData.addMovieToGroup)
 }
 
-function addMovieToGroupInternal(userId, groupId, movieId) {
-    throw "Not implemented";
+async function removeMovieFromGroupInternal(userId, groupId, movieId) {
+    debug(`Removing Movie '${movieId}' from group '${groupId}' with user: '${userId}'`)
+    return await handleGroupMovieActions(userId, groupId, movieId, cmdbData.removeMovieFromGroup)
 }
 
-function removeMovieFromGroupInternal(userId, groupId, movieId) {
-    throw "Not implemented";
+async function handleGroupMovieActions(userId, groupId, movieId, action) {
+    debug(`Handling movie action: '${action}' for group: '${groupId}' and movie: '${movieId}'`)
+    const group = await getGroupInternal(userId, groupId)
+    if (!group)
+        throw error.GROUP_NOT_FOUND(groupId)
+    const movie = await servicesMovies.getMovie(movieId)
+    if (!movie)
+        throw error.MOVIE_NOT_FOUND(movieId)
+    const updatedGroup = await action(group.id, movie.id)
+    if (!updatedGroup)
+        throw error.UNKNOWN()
+    return updatedGroup
 }
-
-const servicesGroups = {
-    getGroups,
-    getGroup,
-    createGroup,
-    deleteGroup,
-    updateGroup,
-    addMovieToGroup,
-    removeMovieFromGroup,
-}
-
-export default servicesGroups
