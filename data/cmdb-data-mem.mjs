@@ -1,6 +1,5 @@
 import crypto from "node:crypto";
 import debugInit from 'debug';
-import error from "../errors.mjs";
 
 const debug = debugInit("cmdb:data:mem")
 
@@ -137,8 +136,9 @@ async function removeMovieFromGroup(groupId, movieId) {
 }
 
 async function createUser(userName) {
+    debug(`Creating user with id '${nextUserId}' name '${userName}'`)
     userName = userName || "User " + nextUserId
-    const user = {id: nextUserId, name: userName + nextUserId++, token: crypto.randomUUID()}
+    const user = {id: nextUserId++, name: userName, token: crypto.randomUUID()}
     debug(`Created user: '${user.id}' - '${user.name}' - '${user.token}'`)
     users.push(user)
     return user
@@ -146,8 +146,7 @@ async function createUser(userName) {
 
 async function getUserByToken(token) {
     debug(`getUserByToken with token: '${token}'`)
-    const user = users.find(user => user.token === token)
-    return user
+    return users.find(user => user.token === token)
 }
 
 

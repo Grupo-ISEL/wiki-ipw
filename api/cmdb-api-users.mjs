@@ -11,12 +11,12 @@ function getUsers(req, rsp) {
 // Create a new user
 async function createUser(req, rsp) {
     try {
-        const newUser = await servicesUsers.createUser()
+        const newUser = await servicesUsers.createUser(req.body.username)
         debug(`Created user: ${newUser.id} - ${newUser.name} - ${newUser.token}`)
         rsp.status(201).json({
             status: `New user created`,
             userId: newUser.id,
-            userName: newUser.userName,
+            username: newUser.name,
             token: newUser.token
         })
     } catch (e) {
