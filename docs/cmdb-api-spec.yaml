@@ -339,7 +339,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Group'
+                $ref: '#/components/schemas/MovieAddedToGroup'
         '400':
           description: Bad request
           content:
@@ -388,7 +388,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Group'
+                $ref: '#/components/schemas/MovieRemovedFromGroup'
         '400':
           description: Bad request
           content:
@@ -491,6 +491,30 @@ components:
           minimum: 0
           description: Movie runtime
           example: 142
+    MovieAddedToGroup:
+      required:
+        - status
+        - group
+      type: object
+      properties:
+        status:
+          type: string
+          description: Status
+          example: "New movie added to group"
+        group:
+          $ref: '#/components/schemas/Group'
+    MovieRemovedFromGroup:
+      required:
+        - status
+        - group
+      type: object
+      properties:
+        status:
+          type: string
+          description: Status
+          example: "Movie removed from group"
+        group:
+          $ref: '#/components/schemas/Group'
     Group:
       required:
       - id
@@ -546,7 +570,6 @@ components:
       required:
       - status
       - group
-      - user
       type: object
       properties:
         status:
@@ -555,8 +578,6 @@ components:
           example: New group created
         group:
           $ref: '#/components/schemas/Group'
-        user:
-          $ref: '#/components/schemas/User'
     NewUser:
       required:
       - status
