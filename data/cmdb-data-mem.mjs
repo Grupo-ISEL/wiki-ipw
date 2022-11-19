@@ -77,13 +77,14 @@ async function getGroups() {
 }
 
 async function getGroup(groupId) {
-    debug(`getGroup with groupId: ${groupId}`)
+    debug(`getGroup with groupId: '${groupId}'`)
     const group = groups.find(group => group.id === groupId)
     debug(`Found group: %O`, group)
     return group
 }
 
 async function createGroup(userId, name, description) {
+    debug(`Creating group with id '${nextGroupId}' name '${name}' description '${description}'`)
     const group = {
         id: nextGroupId++,
         name,
@@ -93,11 +94,11 @@ async function createGroup(userId, name, description) {
         userId
     }
     groups.push(group)
-    return group.id
+    return group
 }
 
 async function deleteGroup(groupId) {
-    debug(`Deleting group ${groupId} with user: ${userId}`)
+    debug(`Deleting group '${groupId}'`)
     const group = getGroup(groupId)
     if (group)
         groups = groups.filter(group => group.id !== groupId)
@@ -105,7 +106,7 @@ async function deleteGroup(groupId) {
 }
 
 async function updateGroup(groupId, name, description) {
-    debug(`Updating group ${groupId}`)
+    debug(`Updating group '${groupId}'`)
     const group = getGroup(groupId)
     if (group) {
         group.name = name
@@ -115,7 +116,7 @@ async function updateGroup(groupId, name, description) {
 }
 
 async function addMovieToGroup(groupId, movieId, duration) {
-    debug(`Adding Movie ${movieId }to group ${groupId}`)
+    debug(`Adding Movie '${movieId}' to group '${groupId}' with duration '${duration}'`)
     const group = getGroup(groupId)
     if (group) {
         group.movies.push(movieId)
@@ -125,7 +126,7 @@ async function addMovieToGroup(groupId, movieId, duration) {
 }
 
 async function removeMovieFromGroup(groupId, movieId) {
-    debug(`Removing movie ${movieId} from group ${groupId}`)
+    debug(`Removing movie '${movieId}' from group '${groupId}'`)
     const group = getGroup(groupId)
     if (group) {
         const movie = group.movies.find(movie => movie === movieId)
@@ -136,15 +137,15 @@ async function removeMovieFromGroup(groupId, movieId) {
 }
 
 async function createUser(userName) {
-    const name = userName || "User " + nextUserId
-    const user = {id: nextUserId, userName: name + nextUserId++, token: crypto.randomUUID()}
-    debug(`Created user: ${user.id} - ${user.name} - ${user.token}`)
+    userName = userName || "User " + nextUserId
+    const user = {id: nextUserId, name: userName + nextUserId++, token: crypto.randomUUID()}
+    debug(`Created user: '${user.id}' - '${user.name}' - '${user.token}'`)
     users.push(user)
     return user
 }
 
 async function getUserByToken(token) {
-    debug(`getUserByToken with token: ${token}`)
+    debug(`getUserByToken with token: '${token}'`)
     const user = users.find(user => user.token === token)
     return user
 }
