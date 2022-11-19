@@ -57,7 +57,7 @@ async function getMovies(search, offset, limit) {
 }
 
 // Not used at the moment
-function getMoviebyId(movieId) {
+async function getMoviebyId(movieId) {
     debug(`getMoviebyId with movieId: ${movieId}`)
     return movies.find(movie => movie.id === movieId)
 }

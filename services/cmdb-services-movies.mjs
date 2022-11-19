@@ -11,15 +11,15 @@ const getMovies = handleMovieRequest(getMoviesInternal)
 
 const servicesMovies = {
     getTopMovies,
-    getMovies
+    getMovies,
+    getMovie
 }
 
 export default servicesMovies
 
 async function getTopMoviesInternal(offset = 0, limit = 250) {
     debug(`getTopMoviesInternal with offset ${offset} and limit ${limit}`)
-    const topMovies = await cmdbMoviesData.getTopMovies(offset, limit)
-    return topMovies
+    return await cmdbMoviesData.getTopMovies(offset, limit)
 }
 
 async function getMoviesInternal(offset = 0, limit = MAX_LIMIT, search_text) {
@@ -27,10 +27,16 @@ async function getMoviesInternal(offset = 0, limit = MAX_LIMIT, search_text) {
     if (!search_text)
         throw error.INVALID_PARAMETER("search string is required")
 
-    const movies = await cmdbMoviesData.getMovies(offset, limit, search_text)
-    return movies
+    return await cmdbMoviesData.getMovies(offset, limit, search_text)
 }
 
+async function getMovie(movieId) {
+    debug(`getMovie with movieId: ${movieId}`)
+    if (!movieId)
+        throw error.INVALID_PARAMETER("movieId is required")
+
+    return await cmdbMoviesData.getMoviebyId(movieId);
+}
 
 // Validate offset and limit
 // Call data layer
