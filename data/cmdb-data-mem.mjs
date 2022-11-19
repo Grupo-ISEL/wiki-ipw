@@ -1,5 +1,6 @@
 import crypto from "node:crypto";
 import debugInit from 'debug';
+import error from "../errors.mjs";
 
 const debug = debugInit("cmdb:data:mem")
 
@@ -52,6 +53,24 @@ let users = [
     {id: 2, name: "Monteiro", token: "zxc"},
 ]
 let nextUserId = users.length + 1
+let nextGroupId = groups.length + 1
+
+
+const cmdbData = {
+    getGroups,
+    getGroup,
+    createGroup,
+    deleteGroup,
+    updateGroup,
+    addMovieToGroup,
+    removeMovieFromGroup,
+    createUser,
+    getUsers,
+    getUserByToken
+}
+
+export default cmdbData
+
 
 async function getGroups() {
     return groups
@@ -64,14 +83,68 @@ async function getGroup(groupId) {
     return group
 }
 
-function createUser(userName) {
-    // TODO: Add username from request
-    const user = {id: nextUserId, userName: "User-" + nextUserId++, token: crypto.randomUUID()}
-    users.push(user)
-    return Promise.resolve(user)
+async function createGroup(userId, name, description) {
+    const group = {
+        id: nextGroupId++,
+        name,
+        description,
+        movies: [],
+        totalDuration: 0,
+        userId
+    }
+    groups.push(group)
+    return group.id
 }
 
-function getUserByToken(token) {
+async function deleteGroup(groupId) {
+    debug(`Deleting group ${groupId} with user: ${userId}`)
+    const group = getGroup(groupId)
+    if (group)
+        groups = groups.filter(group => group.id !== groupId)
+    return group
+}
+
+async function updateGroup(groupId, name, description) {
+    debug(`Updating group ${groupId}`)
+    const group = getGroup(groupId)
+    if (group) {
+        group.name = name
+        group.description = description
+    }
+    return group
+}
+
+async function addMovieToGroup(groupId, movieId, duration) {
+    debug(`Adding Movie ${movieId }to group ${groupId}`)
+    const group = getGroup(groupId)
+    if (group) {
+        group.movies.push(movieId)
+        group.totalDuration += duration
+    }
+    return group
+}
+
+async function removeMovieFromGroup(groupId, movieId) {
+    debug(`Removing movie ${movieId} from group ${groupId}`)
+    const group = getGroup(groupId)
+    if (group) {
+        const movie = group.movies.find(movie => movie === movieId)
+        group.movies = group.movies.filter(movie => movie !== movieId)
+        group.totalDuration -= movie.duration
+    }
+    return group
+}
+
+async function createUser(userName) {
+    const name = userName || "User " + nextUserId
+    const user = {id: nextUserId, userName: name + nextUserId++, token: crypto.randomUUID()}
+    debug(`Created user: ${user.id} - ${user.name} - ${user.token}`)
+    users.push(user)
+    return user
+}
+
+async function getUserByToken(token) {
+    debug(`getUserByToken with token: ${token}`)
     const user = users.find(user => user.token === token)
     return user
 }
@@ -80,13 +153,3 @@ function getUserByToken(token) {
 async function getUsers() {
     return users
 }
-
-const cmdbData = {
-    getGroups,
-    getGroup,
-    createUser,
-    getUsers,
-    getUserByToken
-}
-
-export default cmdbData
