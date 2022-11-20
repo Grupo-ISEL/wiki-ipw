@@ -25,11 +25,11 @@ function handleTokenValidation(action) {
         debug(`Handling token validation for action: '${action.name}'`)
         const user = await cmdbData.getUserByToken(token)
         debug(`User: %O`, user)
-        if (user.id) {
+        if (user) {
             debug(`Running action: '${action.name}' group: '${groupId}' userId: '${user.id}' movie: '${movieId}'`)
             return action(user.id, groupId, movieId, name, description)
         }
-        throw error.GROUP_ACCESS_DENIED(groupId)
+        throw error.GROUPS_NOT_FOUND()
     }
 }
 
@@ -39,7 +39,7 @@ async function getGroupsInternal(userId) {
     if (groups) {
         const userGroups = groups.filter(group => group.userId === userId)
         if (!userGroups)
-            throw error.GROUP_NOT_FOUND()
+            throw error.GROUPS_NOT_FOUND()
         return userGroups
     }
     throw error.UNKNOWN()
@@ -98,10 +98,8 @@ async function removeMovieFromGroupInternal(userId, groupId, movieId) {
 }
 
 async function handleGroupMovieActions(userId, groupId, movieId, action) {
-    debug(`Handling movie action: '${action}' for group: '${groupId}' and movie: '${movieId}'`)
+    debug(`Handling movie action: '${action.name}' for group: '${groupId}' and movie: '${movieId}'`)
     const group = await getGroupInternal(userId, groupId)
-    if (!group)
-        throw error.GROUP_NOT_FOUND(groupId)
     const movie = await servicesMovies.getMovie(movieId)
     if (!movie)
         throw error.MOVIE_NOT_FOUND(movieId)
