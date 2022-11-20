@@ -90,7 +90,7 @@ function handleRequest(handler) {
                         debug(`Response: %O`, resp)
                         rsp.json(resp)
                     } catch (e) {
-                        const httpError = getHTTPError(e.error, e.message)
+                        const httpError = getHTTPError(e.code, e.message)
                         rsp.status(httpError.status).json({error: httpError.message})
                     }
                 }
