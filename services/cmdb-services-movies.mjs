@@ -22,7 +22,8 @@ async function getTopMoviesInternal(offset = 0, limit = 250) {
     const movies = await cmdbMoviesData.getTopMovies(offset, limit)
     //debug(`Found %O`, movies)
     if (!movies) {
-        throw error.NOT_FOUND("No movies found")
+        debug(`No movies found`)
+        throw error.UNKNOWN("No movies found")
     }
     return movies
 }
