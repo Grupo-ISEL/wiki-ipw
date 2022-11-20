@@ -19,7 +19,12 @@ export default servicesMovies
 
 async function getTopMoviesInternal(offset = 0, limit = 250) {
     debug(`getTopMoviesInternal with offset ${offset} and limit ${limit}`)
-    return await cmdbMoviesData.getTopMovies(offset, limit)
+    const movies = await cmdbMoviesData.getTopMovies(offset, limit)
+    //debug(`Found %O`, movies)
+    if (!movies) {
+        throw error.NOT_FOUND("No movies found")
+    }
+    return movies
 }
 
 async function getMoviesInternal(offset = 0, limit = MAX_LIMIT, search_text) {
@@ -38,24 +43,23 @@ async function getMovie(movieId) {
     return await cmdbMoviesData.getMoviebyId(movieId);
 }
 
-// Validate offset and limit
-// Call data layer
-// Return results
-
-async function handleMovieRequest(action) {
-
+function handleMovieRequest(action) {
     return async function (offset = 0, limit = MAX_LIMIT, search_text) {
-
+        offset = Number(offset)
+        limit = Number(limit)
         if (isNaN(offset) || isNaN(limit)) {
+            debug(`Invalid offset or limit: ${offset} - ${limit}`)
             throw error.INVALID_PARAMETER("Offset and limit must be numbers")
         }
         if (offset < 0 || limit < 0) {
+            debug(`Invalid offset or limit: ${offset} - ${limit}`)
             throw error.INVALID_PARAMETER("Offset and limit must be positive")
         }
-        if (limit > MAX_LIMIT || offset + limit > MAX_LIMIT) {
-            throw error.INVALID_PARAMETER(`Limit and Offset+Limit must be less than or equal to ${MAX_LIMIT}`)
+        //if (limit > MAX_LIMIT || offset + limit > MAX_LIMIT) {
+        if (limit > MAX_LIMIT) {
+            throw error.INVALID_PARAMETER(`Limit must be less than or equal to ${MAX_LIMIT}`)
         }
-        debug(`Running action: search_text: ${search_text} offset: ${offset} limit: ${limit}`)
-        return action(offset, limit, search_text)
+        debug(`Running action: ${action.name} search_text: ${search_text} offset: ${offset} limit: ${limit}`)
+        return await action(offset, limit, search_text)
     }
 }

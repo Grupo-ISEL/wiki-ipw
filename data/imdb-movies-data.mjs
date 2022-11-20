@@ -29,9 +29,11 @@ let movies = [
     }
 ]
 
-const TOP_250 = "./top250.json"
+const TOP_250 = "./data/top250.json"
+const SEARCH_MOVIES = "./data/search.json"
 const API_KEY = getApiKey()
 const IMDB_API_DISABLED = true
+const MAX_LIMIT = 250
 
 function getApiKey() {
     if (process.env.hasOwnProperty("IMDB_API_KEY") && process.env["IMDB_API_KEY"] !== "")
@@ -49,10 +51,12 @@ function getApiKey() {
 
 // TODO: Figure out which fields to return and if we need to fetch more data from the API, i.e. runtime
 // TODO: Handle offset and limit
-async function getMovies(search, offset, limit) {
+async function getMovies(offset, limit, search) {
     debug(`getMovies with search: ${search}, offset: ${offset}, limit: ${limit}`)
     if (search) {
-        return await searchMovie(search)
+        const movies = await searchMovie(search)
+        const end = limit < MAX_LIMIT ? offset + limit : movies.length
+        return movies.slice(offset, end)
     }
 }
 
@@ -85,10 +89,14 @@ async function searchMovieLocal(search_text) {
 }
 
 
-async function getTopMovies() {
+async function getTopMovies(offset, limit) {
     debug("getTopMovies")
     if (IMDB_API_DISABLED) {
-        return getTopMoviesLocal()
+        const topMovies = await getTopMoviesLocal()
+        const end = limit < MAX_LIMIT ? offset + limit : topMovies.length
+        const slicedMovies = topMovies.slice(offset, end)
+        //  debug(`getTopMovies topMovies: %O`, topMovies)
+        return slicedMovies
     }
     const url = `https://imdb-api.com/en/API/Top250Movies/${API_KEY}`
     return fetchFromImdb(url)
@@ -96,9 +104,12 @@ async function getTopMovies() {
 
 // TODO: Only return some movie fields
 async function getTopMoviesLocal() {
-    debug("getTopMoviesLocal")
-    const movies = await readFile(TOP_250)
-    return JSON.parse(movies)
+    //debug(`getTopMoviesLocal cwd: ${process.cwd()}`)
+    const movies = await readFile(TOP_250, "utf-8")
+    //debug(`getTopMoviesLocal movies: %O`, movies)
+    const parsed = JSON.parse(movies)["items"]
+    //debug(`getTopMoviesLocal parsed: %O`, parsed)
+    return parsed
 }
 
 async function fetchFromImdb(url) {

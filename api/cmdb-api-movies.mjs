@@ -1,23 +1,35 @@
 // List all movies
-import cmdbServices from "../services/cmdb-services-groups.mjs";
+import cmdbServices from "../services/cmdb-services-movies.mjs";
 import debugInit from 'debug';
+import getHTTPError from "./http-errors.mjs";
 
 const debug = debugInit("cmdb:api:movies")
 
 async function getMovies(req, rsp) {
     debug(`Searching movies with title ${req.query.search}`)
-    const movies = await cmdbServices.getMovies(req.query.search, req.query.limit, req.query.offset)
-
-    if (movies) {
+    if (!req.query.search) {
+        rsp.status(400).json({error: "Missing search parameter"})
+        return
+    }
+    try {
+        const movies = await cmdbServices.getMovies(req.query.offset, req.query.limit, req.query.search)
         rsp.status(200).json(movies)
-    } else {
-        rsp.status(500).json({error: `Error getting movies`})
+    } catch (e) {
+        const httpError = getHTTPError(e.error, e.message)
+        rsp.status(httpError.status).json({error: httpError.message})
     }
 }
 
 // Get Top Movies
-function getTopMovies(req, rsp) {
-    throw new Error("Not implemented")
+async function getTopMovies(req, rsp) {
+    debug(`Getting top 250 movies`)
+    try {
+        const movies = await cmdbServices.getTopMovies(req.query.limit, req.query.offset)
+        rsp.status(200).json(movies)
+    } catch (e) {
+        const httpError = getHTTPError(e.error, e.message)
+        rsp.status(httpError.status).json({error: httpError.message})
+    }
 }
 
 const apiMovies = {
