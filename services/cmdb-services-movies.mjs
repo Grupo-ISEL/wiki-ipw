@@ -61,6 +61,13 @@ function handleMovieRequest(action) {
             throw error.INVALID_PARAMETER(`Limit must be less than or equal to ${MAX_LIMIT}`)
         }
         debug(`Running action: ${action.name} search_text: ${search_text} offset: ${offset} limit: ${limit}`)
+        try {
+            const movies = await action(offset, limit, search_text)
+        } catch (e) {
+            debug(`Error: %O`, e)
+            throw error.UNKNOWN(e.toString())
+        }
+
         return await action(offset, limit, search_text)
     }
 }

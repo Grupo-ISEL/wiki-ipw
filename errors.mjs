@@ -38,10 +38,10 @@ export default {
             message: `Access denied to ${groupId}`
         }
     },
-    UNKNOWN: () => {
+    UNKNOWN: (message) => {
         return {
             code: 7,
-            message: `Unknown error`
+            message: message || `Unknown error`
         }
     }
 }
