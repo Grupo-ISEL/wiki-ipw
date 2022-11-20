@@ -100,7 +100,7 @@ paths:
               schema:
                 type: array
                 items:
-                  $ref: '#/components/schemas/Movie'
+                  $ref: '#/components/schemas/TopMovie'
         '400':
           description: Bad request
           content:
@@ -491,6 +491,27 @@ components:
           minimum: 0
           description: Movie runtime
           example: 142
+    TopMovie:
+      required:
+        - id
+        - title
+        - rank
+      type: object
+      properties:
+        id:
+          type: string
+          description: Movie ID
+          example: "tt0111161"
+        title:
+          type: string
+          description: Movie title
+          example: The Shawshank Redemption
+        rank:
+          type: integer
+          minimum: 1
+          description: Movie imdb rank
+          example: 10
+
     MovieAddedToGroup:
       required:
         - status

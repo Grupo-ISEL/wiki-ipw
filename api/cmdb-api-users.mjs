@@ -1,6 +1,7 @@
 // List Users
 import servicesUsers from "../services/cmdb-services-users.mjs";
 import debugInit from 'debug';
+import getHTTPError from "./http-errors.mjs";
 
 const debug = debugInit("cmdb:api:users")
 
@@ -15,12 +16,13 @@ async function createUser(req, rsp) {
         debug(`Created user: ${newUser.id} - ${newUser.name} - ${newUser.token}`)
         rsp.status(201).json({
             status: `New user created`,
-            userId: newUser.id,
-            username: newUser.name,
+            id: newUser.id,
+            name: newUser.name,
             token: newUser.token
         })
     } catch (e) {
-        rsp.status(400).json({error: `Error creating user: ${e} `})
+        const httpError = getHTTPError(e.code, e.message)
+        rsp.status(httpError.status).json({error: httpError.message})
     }
 }
 
