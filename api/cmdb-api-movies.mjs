@@ -5,32 +5,8 @@ import getHTTPError from "./http-errors.mjs";
 
 const debug = debugInit("cmdb:api:movies")
 
-async function getMovies(req, rsp) {
-    debug(`Searching movies with title ${req.query.search}`)
-    if (!req.query.search) {
-        rsp.status(400).json({error: "Missing search parameter"})
-        return
-    }
-    try {
-        const movies = await cmdbServices.getMovies(req.query.offset, req.query.limit, req.query.search)
-        rsp.status(200).json(movies)
-    } catch (e) {
-        const httpError = getHTTPError(e.error, e.message)
-        rsp.status(httpError.status).json({error: httpError.message})
-    }
-}
-
-// Get Top Movies
-async function getTopMovies(req, rsp) {
-    debug(`Getting top 250 movies`)
-    try {
-        const movies = await cmdbServices.getTopMovies(req.query.limit, req.query.offset)
-        rsp.status(200).json(movies)
-    } catch (e) {
-        const httpError = getHTTPError(e.error, e.message)
-        rsp.status(httpError.status).json({error: httpError.message})
-    }
-}
+const getMovies = handleMovies(getMoviesInternal)
+const getTopMovies = handleMovies(getTopMoviesInternal)
 
 const apiMovies = {
     getMovies,
@@ -38,3 +14,31 @@ const apiMovies = {
 }
 
 export default apiMovies
+
+async function getMoviesInternal(offset, limit, search) {
+    debug(`Searching movies with title ${search}`)
+    const movies = await cmdbServices.getMovies(offset, limit, search)
+    return movies
+}
+
+// Get Top Movies
+async function getTopMoviesInternal(offset, limit) {
+    debug(`Getting top 250 movies`)
+    const movies = await cmdbServices.getTopMovies(offset, limit)
+    return movies
+}
+
+
+function handleMovies(handler) {
+    return async function (req, rsp) {
+        try {
+            debug(`Handling request for ${req.originalUrl}`)
+            const movies = await handler(req.query.offset, req.query.limit, req.query.search)
+            rsp.json(movies)
+        } catch (e) {
+            debug(`Error handling request: %O`, e)
+            const httpError = getHTTPError(e.code, e.message)
+            rsp.status(httpError.status).json({error: httpError.message})
+        }
+    }
+}

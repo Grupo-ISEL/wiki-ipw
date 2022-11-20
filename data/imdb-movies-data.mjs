@@ -32,7 +32,7 @@ let movies = [
 const TOP_250 = "./data/top250.json"
 const SEARCH_MOVIES = "./data/search.json"
 const API_KEY = getApiKey()
-const IMDB_API_DISABLED = true
+const IMDB_API_DISABLED = false
 const MAX_LIMIT = 250
 
 function getApiKey() {
@@ -53,10 +53,18 @@ function getApiKey() {
 // TODO: Handle offset and limit
 async function getMovies(offset, limit, search) {
     debug(`getMovies with search: ${search}, offset: ${offset}, limit: ${limit}`)
+    let movies = []
+    const end = limit < MAX_LIMIT ? offset + limit : movies.length
     if (search) {
-        const movies = await searchMovie(search)
-        const end = limit < MAX_LIMIT ? offset + limit : movies.length
-        return movies.slice(offset, end)
+        movies = await searchMovie(search).map(movie => {
+            return {id: movie.id, title: movie.title, runtime: 100}
+        })
+        return movies.map(movie => {
+            return {id: movie.id, title: movie.title, runtime: 100}
+        }).slice(offset, end)
+    } else {
+        debug(`No search text`)
+        return []
     }
 }
 
@@ -70,17 +78,17 @@ async function getMoviebyId(movieId) {
 async function getMovie(movieId) {
     debug(`getMovie with movieId: ${movieId}`)
     const url = `https://imdb-api.com/en/API/Title/${API_KEY}/${movieId}`
-    return fetchFromImdb(url)
+    return await fetchFromImdb(url)
 }
 
 // TODO: Figure out which fields to return and if we need to fetch more data from the API, i.e. runtime
 async function searchMovie(search_text) {
     debug(`searchMovie with search_text: ${search_text}`)
     if (IMDB_API_DISABLED) {
-        return searchMovieLocal(search_text)
+        return await searchMovieLocal(search_text)
     }
     const url = `https://imdb-api.com/en/API/SearchMovie/${API_KEY}/${search_text}`
-    return fetchFromImdb(url)
+    return (await fetchFromImdb(url))["results"]
 }
 
 async function searchMovieLocal(search_text) {
@@ -91,15 +99,20 @@ async function searchMovieLocal(search_text) {
 
 async function getTopMovies(offset, limit) {
     debug("getTopMovies")
+    let topMovies = []
     if (IMDB_API_DISABLED) {
-        const topMovies = await getTopMoviesLocal()
-        const end = limit < MAX_LIMIT ? offset + limit : topMovies.length
-        const slicedMovies = topMovies.slice(offset, end)
+        topMovies = await getTopMoviesLocal()
         //  debug(`getTopMovies topMovies: %O`, topMovies)
-        return slicedMovies
+    } else {
+        const url = `https://imdb-api.com/en/API/Top250Movies/${API_KEY}`
+        topMovies = (await fetchFromImdb(url))["items"]
+        topMovies = topMovies.map(movie => {
+            return {id: movie.id, title: movie.title, rank: movie.rank}
+        })
+        debug(`getTopMovies topMovies: %O`, topMovies)
     }
-    const url = `https://imdb-api.com/en/API/Top250Movies/${API_KEY}`
-    return fetchFromImdb(url)
+    const end = limit < MAX_LIMIT ? offset + limit : topMovies.length
+    return topMovies.slice(offset, end)
 }
 
 // TODO: Only return some movie fields
@@ -117,9 +130,9 @@ async function fetchFromImdb(url) {
     const response = await fetch(url)
     const data = response.json()
     const errMsg = data["errorMessage"]
-    if (!errMsg)
+    if (errMsg)
         throw errMsg
-    return data["results"]
+    return data
 }
 
 const moviesData = {
