@@ -31,8 +31,8 @@ let movies = [
 
 const TOP_250 = "./data/top250.json"
 const SEARCH_MOVIES = "./data/search.json"
-const API_KEY = getApiKey()
-const IMDB_API_DISABLED = false
+const IMDB_API_DISABLED = true
+const API_KEY = IMDB_API_DISABLED ? "" : getApiKey()
 const MAX_LIMIT = 250
 
 function getApiKey() {
@@ -130,7 +130,7 @@ async function fetchFromImdb(url) {
     const response = await fetch(url)
     const data = await response.json()
     const errMsg = data["errorMessage"]
-    debug(`fetchFromImdb data: ${data}`)
+    debug(`fetchFromImdb data: %o`, data)
     if (errMsg){
         debug(`fetchFromImdb errMsg: ${errMsg}`)
         throw errMsg
