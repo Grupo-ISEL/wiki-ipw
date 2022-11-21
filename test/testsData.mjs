@@ -30,5 +30,10 @@ export const testData = {
             "totalDuration": 671,
             "userId": 1
         }
-    ]
+    ],
+    groupNotFoundError : {
+        code: 3,
+        message: `Groups not found`
+    },
+    invalidToken : "for now proper tokens are not specified"
 }
