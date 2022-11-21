@@ -24,8 +24,7 @@ const apiGroups = {
 export default apiGroups
 
 async function getGroupInternal(req, rsp) {
-    const groupId = req.params.id
-    return await cmdbServices.getGroup(req.token, groupId)
+    return await cmdbServices.getGroup(req.token, req.params.id)
 }
 
 async function getGroupsInternal(req, rsp) {
@@ -36,40 +35,30 @@ async function getGroupsInternal(req, rsp) {
 
 // Create a new group
 async function createGroupInternal(req, rsp) {
-    const groupName = req.body.name
-    const groupDesc = req.body.description
-    debug(`Creating group with name '${groupName}' and description '${groupDesc}'`)
-    const group = await cmdbServices.createGroup(req.token, groupName, groupDesc)
+    debug(`Creating group with name '${req.body.name}' and description '${req.body.description}'`)
+    const group = await cmdbServices.createGroup(req.token, req.body.name, req.body.description)
     rsp.status(201)
     return {status: "Group created", group}
 }
 
 // Delete a group by id
 async function deleteGroupInternal(req, rsp) {
-    const groupId = req.params.id
-    const group = await cmdbServices.deleteGroup(req.token, groupId)
+    const group = await cmdbServices.deleteGroup(req.token, req.params.id)
     return {status: `Group deleted`, group}
 }
 
 async function updateGroupInternal(req, rsp) {
-    const groupId = req.params.id
-    const groupName = req.body.name
-    const groupDesc = req.body.description
-    const group = await cmdbServices.updateGroup(req.token, groupId, groupName, groupDesc)
+    const group = await cmdbServices.updateGroup(req.token, req.params.id, req.body.name, req.body.description)
     return {status: "Group updated", group}
 }
 
 async function addMovieToGroupInternal(req, rsp) {
-    const groupId = req.params.id
-    const movieId = req.params.movieId
-    const group = await cmdbServices.addMovieToGroup(req.token, groupId, movieId)
+    const group = await cmdbServices.addMovieToGroup(req.token, req.params.id, req.params["movieId"])
     return {status: "Movie added to group", group}
 }
 
 async function removeMovieFromGroupInternal(req, rsp) {
-    const groupId = req.params.id
-    const movieId = req.params.movieId
-    const group = await cmdbServices.removeMovieFromGroup(req.token, groupId, movieId)
+    const group = await cmdbServices.removeMovieFromGroup(req.token, req.params.id, req.params["movieId"])
     return {status: "Movie removed from group", group}
 }
 
@@ -77,7 +66,7 @@ function handleRequest(handler) {
     return async function (req, rsp) {
         let token = req.get("Authorization")
         debug(`Handling request for '${req.path}' with token '${token}'`)
-        if (token === undefined) {
+        if (!token) {
             rsp.status(401).json({error: `Missing token`})
         } else {
             if (token.startsWith("Bearer ")) {
