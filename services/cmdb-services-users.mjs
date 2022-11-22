@@ -1,19 +1,22 @@
-import cmdbData from "../data/cmdb-data-mem.mjs";
 import debugInit from 'debug';
+import error from "../errors.mjs";
 
-const debug = debugInit("cmdb:services:users")
+export default function (cmdbData) {
+    const debug = debugInit("cmdb:services:users")
 
-export async function createUser(username) {
-    const user = await cmdbData.createUser(username)
-    debug(`Created user: ${user.id} - ${user.name} - ${user.token}`)
-    if (!user) {
-        throw "Error creating user"
+    if(!cmdbData) {
+        throw error.INVALID_PARAMETER('cmdbData')
     }
-    return user
-}
+    return {
+        createUser
+    }
 
-const servicesUsers = {
-    createUser
+    async function createUser(username) {
+        const user = await cmdbData.createUser(username)
+        debug(`Created user: ${user.id} - ${user.name} - ${user.token}`)
+        if (!user) {
+            throw "Error creating user"
+        }
+        return user
+    }
 }
-
-export default servicesUsers

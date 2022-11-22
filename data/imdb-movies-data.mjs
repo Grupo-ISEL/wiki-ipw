@@ -3,10 +3,11 @@
 import fetch from 'node-fetch'
 import {readFile} from 'node:fs/promises'
 import debugInit from 'debug';
+import error from '../errors.mjs'
 
 const debug = debugInit("cmdb:imdb:data:movies")
 
-let movies = [
+const movies = [
     {
         id: "tt1",
         title: "The Shawshank Redemption",
@@ -28,7 +29,7 @@ let movies = [
         runtime: 152,
     }
 ]
-
+// TODO: Use dependency injection for to be able to mock fetch
 const TOP_250 = "./data/top250.json"
 const SEARCH_MOVIES = "./data/search.json"
 const IMDB_API_DISABLED = true
@@ -42,6 +43,15 @@ function getApiKey() {
         throw new Error("IMDB_API_KEY is not set in environment variables.")
 }
 
+const moviesData = {
+    getMoviebyId,
+    getMovies,
+    getTopMovies,
+    searchMovie
+}
+
+export default moviesData
+
 /*
  Example search api calls
  https://imdb-api.com/en/API/SearchMovie/API_KEY/inception 2010
@@ -53,19 +63,13 @@ function getApiKey() {
 // TODO: Handle offset and limit
 async function getMovies(offset, limit, search) {
     debug(`getMovies with search: ${search}, offset: ${offset}, limit: ${limit}`)
-    let movies = []
     const end = limit < MAX_LIMIT ? offset + limit : movies.length
     if (search) {
-        movies = await searchMovie(search).map(movie => {
-            return {id: movie.id, title: movie.title, runtime: 100}
-        })
-        return movies.map(movie => {
-            return {id: movie.id, title: movie.title, runtime: 100}
-        }).slice(offset, end)
-    } else {
-        debug(`No search text`)
-        return []
+        const movies = await searchMovie(search).map(movie => ({id: movie.id, title: movie.title, runtime: 100})) // TODO: Use runtime from API
+        return movies.slice(offset, end)
     }
+    debug(`No search text`)
+    return []
 }
 
 // Not used at the moment
@@ -131,18 +135,11 @@ async function fetchFromImdb(url) {
     const data = await response.json()
     const errMsg = data["errorMessage"]
     debug(`fetchFromImdb data: %o`, data)
-    if (errMsg){
+    if (errMsg) {
         debug(`fetchFromImdb errMsg: ${errMsg}`)
-        throw errMsg
+        throw error.UNKNOWN(errMsg)
     }
     return data
 }
 
-const moviesData = {
-    getMoviebyId,
-    getMovies,
-    getTopMovies,
-    searchMovie
-}
 
-export default moviesData
