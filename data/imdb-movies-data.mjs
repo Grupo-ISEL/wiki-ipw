@@ -131,10 +131,16 @@ async function getTopMoviesLocal() {
 
 async function fetchFromImdb(url) {
     debug(`fetchFromImdb with url: ${url}`)
-    const response = await fetch(url)
-    const data = await response.json()
-    const errMsg = data["errorMessage"]
+    let data
+    try {
+        const response = await fetch(url)
+        data = await response.json()
+    } catch (e) {
+        debug(`fetchFromImdb error: %O`, e)
+        throw error.UNKNOWN(e)
+    }
     debug(`fetchFromImdb data: %o`, data)
+    const errMsg = data["errorMessage"]
     if (errMsg) {
         debug(`fetchFromImdb errMsg: ${errMsg}`)
         throw error.UNKNOWN(errMsg)
