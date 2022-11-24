@@ -1,30 +1,57 @@
 import servicesGroups from "../services/cmdb-services-groups.mjs";
 import {testData} from "./testsData.mjs";
-import * as chai from "chai";
-import assert from 'node:assert/strict'
+import error from "../errors.mjs";
+import chai from "chai";
+import chaiAsPromised from "chai-as-promised";
+
+
+const should = chai.should()
+chai.use(chaiAsPromised)
+
 
 describe('cmdb-services-groups tests', function () {
 
-    const user1 = testData.users[0]
-
+    const user1 = testData.mochUser
+    const validTestToken = user1.token
     describe('handle token validation tests & getGroups tests', function () {
-        const validTestToken = user1.token
-        it(`successful token validation scenario`,async function () {
+
+        it(`successful token validation scenario & return of user1 groups`,async function () {
 
             let res = await servicesGroups.getGroups(validTestToken)
-
-            chai.assert.deepEqual(res,testData.id1Groups, "Groups are not equal")
+            return chai.assert.deepEqual(res,testData.mochUserGroups, "Groups are not equal")
 
         })
         it('unsuccessful token validation scenario', async function (){
-            /*try {
-                let res = await servicesGroups.getGroups(testData.invalidToken)
-            }catch (e) {
-                chai.assert.deepEqual(e,testData.groupNotFoundError)
-            }*/
-            chai.should().Throw(async () => await servicesGroups.getGroups(testData.invalidToken))
+            return await servicesGroups.getGroups(testData.invalidToken)
+                .should.be.rejectedWith(error.GROUPS_NOT_FOUND.message)
         })
 
+
     })
-    //describe()
+    describe('getGroup test', function () {
+
+        it('successful group acquisition scenario', async function () {
+            let res = await servicesGroups.getGroup(validTestToken,testData.mochUserGroups[0].id)
+
+            return chai.assert.deepEqual(res,testData.mochUserGroups[0])
+        } )
+        it('should throw due to invalid groupId', async function () {
+            //GroupId is passed as undefined
+            return await servicesGroups.getGroup(validTestToken)
+                .should.be.rejectedWith(error.INVALID_PARAMETER.message)
+        } )
+        it('should throw due to nonexistent groupId', async function () {
+            //GroupId is passed with an int value that does not exist in the database
+            return servicesGroups.getGroup(validTestToken,testData.intInjection).should.be
+                .rejectedWith(error.GROUPS_NOT_FOUND.message)
+        } )
+        it('should throw due to group not belonging to user', async function () {
+            //GroupId does not belong to user
+            return servicesGroups.getGroup(validTestToken,testData.notUserGroup.id).should.be
+                .rejectedWith(error.GROUP_ACCESS_DENIED.message)
+        } )
+
+
+
+    })
 })

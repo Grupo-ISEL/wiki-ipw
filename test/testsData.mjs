@@ -1,9 +1,8 @@
 export const testData = {
-    users: [
-        {id: 1, name: "Andre", token: "abc"},
-        {id: 2, name: "Monteiro", token: "zxc"},
-    ],
-    id1Groups:[
+    mochUser:
+        {id: 1, name: "Andre", token: "abc"}
+    ,
+    mochUserGroups:[
         {
             "id": 1,
             "name": "Action",
@@ -31,9 +30,18 @@ export const testData = {
             "userId": 1
         }
     ],
+    notUserGroup: {
+        id: 2,
+        name: "Drama",
+        description: "Drama movies",
+        movies: ["tt1", "tt2", "tt3"],
+        totalDuration: 519,
+        userId: 2
+    },
     groupNotFoundError : {
         code: 3,
         message: `Groups not found`
     },
-    invalidToken : "for now proper tokens are not specified"
+    invalidToken : "for now proper tokens are not specified",
+    intInjection: 999
 }
