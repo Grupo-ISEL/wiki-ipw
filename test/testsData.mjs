@@ -43,5 +43,11 @@ export const testData = {
         message: `Groups not found`
     },
     invalidToken : "for now proper tokens are not specified",
-    intInjection: 999
+    intInjection: 999,
+    faultyGroupDataBase: {
+        getUserByToken:(token) =>{
+            return {id: "valid token"}
+        },
+        createGroup: async () => { return "Bad group creation"}
+    }
 }
