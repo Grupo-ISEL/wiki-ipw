@@ -16,7 +16,7 @@ export default function (cmdbData, moviesData) {
         getGroup: handleTokenValidation(getGroupInternal),
         getGroups: handleTokenValidation(getGroupsInternal),
         createGroup: handleTokenValidation(createGroupInternal) ,
-        deleteGroup:handleTokenValidation(createGroupInternal),
+        deleteGroup: handleTokenValidation(deleteGroupInternal),
         updateGroup: handleTokenValidation(updateGroupInternal),
         addMovieToGroup: handleTokenValidation(addMovieToGroupInternal),
         removeMovieFromGroup: handleTokenValidation(removeMovieFromGroupInternal),
@@ -105,7 +105,7 @@ export default function (cmdbData, moviesData) {
         const movie = await moviesData.getMovie(movieId)
         if (!movie)
             throw error.MOVIE_NOT_FOUND(movieId)
-        const updatedGroup = await action(group.id, movie.id)
+        const updatedGroup = await action(group.id, movie)
         if (!updatedGroup)
             throw error.UNKNOWN()
         return updatedGroup
