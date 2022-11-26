@@ -36,11 +36,13 @@ const IMDB_API_DISABLED = true
 const API_KEY = IMDB_API_DISABLED ? "" : getApiKey()
 const MAX_LIMIT = 250
 
+
+// Reads the IMDB API key from an environment variable if it exists
 function getApiKey() {
     if (process.env.hasOwnProperty("IMDB_API_KEY") && process.env["IMDB_API_KEY"] !== "")
         return process.env.IMDB_API_KEY
     else
-        throw new Error("IMDB_API_KEY is not set in environment variables.")
+        throw error.UNKNOWN("IMDB_API_KEY not set")
 }
 
 const moviesData = {
@@ -100,7 +102,7 @@ async function searchMovieLocal(search_text) {
     return movies.filter(movie => movie.title.toLowerCase().includes(search_text.toLowerCase()))
 }
 
-
+// Fetches the top 250 movies from IMDB API
 async function getTopMovies(offset, limit) {
     debug("getTopMovies")
     let topMovies = []
@@ -129,6 +131,8 @@ async function getTopMoviesLocal() {
     return parsed
 }
 
+
+// Fetch data from IMDB API
 async function fetchFromImdb(url) {
     debug(`fetchFromImdb with url: ${url}`)
     let data

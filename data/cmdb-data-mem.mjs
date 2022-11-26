@@ -64,17 +64,17 @@ const cmdbData = {
     addMovieToGroup,
     removeMovieFromGroup,
     createUser,
-    getUsers,
     getUserByToken
 }
 
 export default cmdbData
 
-
+// Return all groups
 async function getGroups() {
     return groups
 }
 
+// Get a group by id
 async function getGroup(groupId) {
     debug(`getGroup with groupId: '${groupId}'`)
     const group = groups.find(group => group.id === groupId)
@@ -82,6 +82,7 @@ async function getGroup(groupId) {
     return group
 }
 
+// Create a new group
 async function createGroup(userId, name, description) {
     debug(`Creating group with id '${nextGroupId}' name '${name}' description '${description}'`)
     const group = {
@@ -96,6 +97,7 @@ async function createGroup(userId, name, description) {
     return group
 }
 
+// Delete a group
 async function deleteGroup(groupId) {
     debug(`Deleting group '${groupId}'`)
     const group = getGroup(groupId)
@@ -104,6 +106,7 @@ async function deleteGroup(groupId) {
     return group
 }
 
+// Update a group name and description
 async function updateGroup(groupId, name, description) {
     debug(`Updating group '${groupId}'`)
     const group = getGroup(groupId)
@@ -114,6 +117,7 @@ async function updateGroup(groupId, name, description) {
     return group
 }
 
+// Add a movie to a group
 async function addMovieToGroup(groupId, movieId, duration) {
     debug(`Adding Movie '${movieId}' to group '${groupId}' with duration '${duration}'`)
     const group = getGroup(groupId)
@@ -124,6 +128,7 @@ async function addMovieToGroup(groupId, movieId, duration) {
     return group
 }
 
+// Remove a movie from a group
 async function removeMovieFromGroup(groupId, movieId) {
     debug(`Removing movie '${movieId}' from group '${groupId}'`)
     const group = getGroup(groupId)
@@ -135,6 +140,7 @@ async function removeMovieFromGroup(groupId, movieId) {
     return group
 }
 
+// Create a new user
 async function createUser(userName) {
     debug(`Creating user with id '${nextUserId}' name '${userName}'`)
     userName = userName || "User " + nextUserId
@@ -144,12 +150,9 @@ async function createUser(userName) {
     return user
 }
 
+// Get user by token
 async function getUserByToken(token) {
     debug(`getUserByToken with token: '${token}'`)
     return users.find(user => user.token === token)
 }
 
-
-async function getUsers() {
-    return users
-}
