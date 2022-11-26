@@ -7,13 +7,15 @@ import swaggerUi from 'swagger-ui-express'
 import yamljs from 'yamljs'
 import cmdbData from "./data/cmdb-data-mem.mjs";
 import moviesData from "./data/imdb-movies-data.mjs"
+import mockFetch from "./data/imdb-mock-data.mjs"
 import servicesInit from "./services/cmdb-services.mjs"
 import apiInit from "./api/cmdb-api.mjs"
 
 const swaggerDocument = yamljs.load('./docs/cmdb-api-spec.yaml')
 const PORT = 1337
 
-const services = servicesInit(cmdbData, moviesData)
+// mockFetch is optional
+const services = servicesInit(cmdbData, moviesData, mockFetch)
 const api = apiInit(services.groups, services.movies, services.users)
 
 console.log("Start setting up server")
