@@ -1,16 +1,25 @@
 import error from "../errors.mjs";
 import debugInit from 'debug';
+import nodeFetch from 'node-fetch'
+import {MAX_LIMIT} from "./cmdb-services-constants.mjs";
 
 
-
-export default function (moviesData) {
+export default function (moviesInit, fetchModule) {
     // Validate arguments
-    if (!moviesData) {
+    if (!moviesInit) {
         throw new Error("moviesData is mandatory")
     }
 
     const debug = debugInit("cmdb:services:movies")
-    const MAX_LIMIT = 250
+    if (!fetchModule) {
+        debug("fetchModule not provided, using node-fetch")
+    }
+    // Use default node-fetch if not provided
+    const fetch = nodeFetch || fetchModule
+
+    // Initialize moviesData module with fetch function
+    const moviesData = moviesInit(fetch)
+
 
     return {
         getTopMovies: handleMovieRequest(getTopMoviesInternal),
