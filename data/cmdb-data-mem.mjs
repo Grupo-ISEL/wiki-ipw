@@ -1,5 +1,6 @@
 import crypto from "node:crypto";
 import debugInit from 'debug';
+import error from "../errors.mjs";
 
 const debug = debugInit("cmdb:data:mem")
 
@@ -100,7 +101,7 @@ async function createGroup(userId, name, description) {
 // Delete a group
 async function deleteGroup(groupId) {
     debug(`Deleting group '${groupId}'`)
-    const group = getGroup(groupId)
+    const group = await getGroup(groupId)
     if (group)
         groups = groups.filter(group => group.id !== groupId)
     return group
@@ -109,7 +110,7 @@ async function deleteGroup(groupId) {
 // Update a group name and description
 async function updateGroup(groupId, name, description) {
     debug(`Updating group '${groupId}'`)
-    const group = getGroup(groupId)
+    const group = await getGroup(groupId)
     if (group) {
         group.name = name
         group.description = description
@@ -118,23 +119,26 @@ async function updateGroup(groupId, name, description) {
 }
 
 // Add a movie to a group
-async function addMovieToGroup(groupId, movieId, duration) {
-    debug(`Adding Movie '${movieId}' to group '${groupId}' with duration '${duration}'`)
-    const group = getGroup(groupId)
+async function addMovieToGroup(groupId, movie) {
+    debug(`Adding Movie '${movie.id}' to group '${groupId}' with duration '${movie.duration}'`)
+    const group = await getGroup(groupId)
     if (group) {
-        group.movies.push(movieId)
-        group.totalDuration += duration
+        group.movies.push(movie.id)
+        group.totalDuration += movie.duration
     }
     return group
 }
 
 // Remove a movie from a group
-async function removeMovieFromGroup(groupId, movieId) {
-    debug(`Removing movie '${movieId}' from group '${groupId}'`)
-    const group = getGroup(groupId)
+async function removeMovieFromGroup(groupId, movie) {
+    debug(`Removing movie '${movie.id}' from group '${groupId}'`)
+    const group = await getGroup(groupId)
     if (group) {
-        const movie = group.movies.find(movie => movie === movieId)
-        group.movies = group.movies.filter(movie => movie !== movieId)
+        const movie = group.movies.find(movie => movie === movie.id)
+        if (!movie) {
+            throw error.MOVIE_NOT_FOUND(`Movie '${movie.id}' not found in group '${groupId}'`)
+        }
+        group.movies = group.movies.filter(movie => movie !== movie.id)
         group.totalDuration -= movie.duration
     }
     return group
