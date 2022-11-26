@@ -15,7 +15,7 @@ export default function (moviesInit, fetchModule) {
         debug("fetchModule not provided, using node-fetch")
     }
     // Use default node-fetch if not provided
-    const fetch = nodeFetch || fetchModule
+    const fetch = fetchModule || nodeFetch
 
     // Initialize moviesData module with fetch function
     const moviesData = moviesInit(fetch)
