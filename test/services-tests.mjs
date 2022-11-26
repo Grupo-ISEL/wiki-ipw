@@ -1,6 +1,7 @@
 import groupServices from "../services/cmdb-services-groups.mjs";
+import movieServices from "../services/cmdb-services-movies.mjs"
 import cmdbData from "../data/cmdb-data-mem.mjs";
-
+import moviesData from "../data/imdb-movies-data.mjs"
 import {testData} from "./testsData.mjs";
 import error from "../errors.mjs";
 import chai from "chai";
@@ -210,6 +211,17 @@ describe('cmdb-services-groups tests', function () {
             /*chai.assert.isBelow(res.totalDuration, targetGroup.totalDuration + 1,
                 "Total duration cannot be higher than original")*/ // TODO: duration management yet to implement
             chai.assert.equal(res.userId, targetGroup.userId, "GroupId should not have been altered")
+        })
+
+    })
+})
+describe('cmdb-services-movies tests', function () {
+    describe('get movie test', function () {
+        const servicesMovies = movieServices(moviesData)
+        it('should get a movie id', async function () {
+            const movieId = testData.mochUserGroups[0].movies[0]
+            let res = await servicesMovies.getMovie(movieId)
+            chai.assert.equal(res,movieId)
         })
 
     })
