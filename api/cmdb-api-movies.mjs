@@ -4,6 +4,9 @@ import getHTTPError from "./http-errors.mjs";
 
 export default function(moviesServices) {
 
+    if (!moviesServices) {
+        throw new Error("moviesServices is mandatory")
+    }
     const debug = debugInit("cmdb:api:movies")
 
     return {

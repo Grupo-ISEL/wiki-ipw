@@ -5,18 +5,17 @@ import getHTTPError from "./http-errors.mjs";
 
 export default function (servicesUsers) {
 
+    if (!servicesUsers) {
+        throw new Error("servicesUsers is mandatory")
+    }
+
     const debug = debugInit("cmdb:api:users")
 
     return {
-        //getUsers,
         createUser
     }
 
-    function getUsers(req, rsp) {
-        throw new Error("Not implemented")
-    }
-
-// Create a new user
+    // Create a new user
     async function createUser(req, rsp) {
         try {
             const newUser = await servicesUsers.createUser(req.body.username)

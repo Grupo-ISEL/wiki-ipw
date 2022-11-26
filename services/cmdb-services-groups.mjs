@@ -5,7 +5,10 @@ import debugInit from 'debug';
 export default function (cmdbData, moviesData) {
     // Validate arguments
     if (!cmdbData) {
-        throw error.INVALID_PARAMETER('moviesData')
+        throw new Error("cmdbData is mandatory")
+    }
+    if (!moviesData) {
+        throw new Error("moviesData is mandatory")
     }
     const debug = debugInit("cmdb:services:groups")
 

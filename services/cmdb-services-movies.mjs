@@ -6,7 +6,7 @@ import debugInit from 'debug';
 export default function (moviesData) {
     // Validate arguments
     if (!moviesData) {
-        throw error.INVALID_PARAMETER('moviesData')
+        throw new Error("moviesData is mandatory")
     }
 
     const debug = debugInit("cmdb:services:movies")
@@ -18,6 +18,7 @@ export default function (moviesData) {
         getMovie,
     }
 
+    // Get Top Movies
     async function getTopMoviesInternal(offset = 0, limit = 250) {
         debug(`getTopMoviesInternal with offset ${offset} and limit ${limit}`)
         const movies = await moviesData.getTopMovies(offset, limit)
@@ -29,6 +30,7 @@ export default function (moviesData) {
         return movies
     }
 
+    // Get Movies
     async function getMoviesInternal(offset = 0, limit = MAX_LIMIT, search_text) {
         debug(`getMoviesInternal with ${offset} limit ${limit} and search: ${search_text}`)
         if (!search_text)
@@ -37,6 +39,7 @@ export default function (moviesData) {
         return await moviesData.getMovies(offset, limit, search_text)
     }
 
+    // Get Movie by ID
     async function getMovie(movieId) {
         debug(`getMovie with movieId: ${movieId}`)
         if (!movieId)
@@ -45,6 +48,10 @@ export default function (moviesData) {
         return await moviesData.getMoviebyId(movieId);
     }
 
+    // Handle Movie Request
+    // Validate and sanitize input parameters
+    // Call the appropriate function
+    // Return the movie list
     function handleMovieRequest(action) {
         return async function (offset = 0, limit = MAX_LIMIT, search_text) {
             offset = Number(offset)
@@ -57,9 +64,8 @@ export default function (moviesData) {
                 debug(`Invalid offset or limit: ${offset} - ${limit}`)
                 throw error.INVALID_PARAMETER("Offset and limit must be positive")
             }
-            //if (limit > MAX_LIMIT || offset + limit > MAX_LIMIT) {
-            if (limit > MAX_LIMIT) {
-                throw error.INVALID_PARAMETER(`Limit must be less than or equal to ${MAX_LIMIT}`)
+            if ( offset > MAX_LIMIT || limit > MAX_LIMIT) {
+                throw error.INVALID_PARAMETER(`Offset and limit must be less than or equal to ${MAX_LIMIT}`)
             }
             debug(`Running action: ${action.name} search_text: ${search_text} offset: ${offset} limit: ${limit}`)
             const movies = await action(offset, limit, search_text)
