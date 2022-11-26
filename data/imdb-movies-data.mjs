@@ -12,7 +12,10 @@ export default function (fetchModule) {
     }
 
     const debug = debugInit("cmdb:imdb:data:movies")
-    const API_KEY = getApiKey()
+
+    // TODO: Init module with API key?
+    const API_KEY = "k_123abc"
+    //const API_KEY = getApiKey()
 
     // Reads the IMDB API key from an environment variable if it exists
     function getApiKey() {
@@ -22,6 +25,8 @@ export default function (fetchModule) {
             throw error.UNKNOWN("IMDB_API_KEY not set")
     }
     const fetch = fetchModule
+    debug(`fetchModule provided ${fetchModule.name}`)
+
     return {
         getMovies,
         getMoviebyId,
@@ -77,7 +82,7 @@ export default function (fetchModule) {
 
         topMovies = (await fetchFromImdb(url))["items"]
         topMovies = topMovies.map(movie => { return {id: movie.id, title: movie.title, rank: movie.rank} })
-        debug(`getTopMovies topMovies: %O`, topMovies)
+        //debug(`getTopMovies topMovies: %O`, topMovies)
         const end = limit < MAX_LIMIT ? offset + limit : topMovies.length
         return topMovies.slice(offset, end)
     }
@@ -93,7 +98,7 @@ export default function (fetchModule) {
             debug(`fetchFromImdb error: %O`, e)
             throw error.UNKNOWN(e)
         }
-        debug(`fetchFromImdb data: %o`, data)
+        //debug(`fetchFromImdb data: %o`, data)
         const errMsg = data["errorMessage"]
         if (errMsg) {
             debug(`fetchFromImdb errMsg: ${errMsg}`)
