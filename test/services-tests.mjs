@@ -160,13 +160,14 @@ describe('cmdb-services-groups tests', function () {
 
     })
     describe('add movie to group test',function () {
-        const targetGroup = testData.mochUserGroups[1]
+        //Also tests handleGroupMovieActions
+        const targetGroup = testData.mochUserGroups[0]
         it('successfully adding a movie to the group',async function () {
 
-            let res = await servicesGroups.addMovieToGroup(validTestToken,targetGroup.id,testData.newMovieId.id)
+            let res = await servicesGroups.addMovieToGroup(validTestToken,targetGroup.id,testData.newMovieId)
             chai.assert.equal(res.id,targetGroup.id,"Group ID should remain the same")
             chai.assert.equal(res.name,targetGroup.name,"Name should remain the same")
-            chai.assert.equal(res.description,targetGroup.description,"Description should reamin the same")
+            chai.assert.equal(res.description,targetGroup.description,"Description should remain the same")
             chai.assert.equal(res.movies[res.movies.length - 1],
                 testData.newMovieId,
                 "Desired id was not place in the movies array")
@@ -179,7 +180,37 @@ describe('cmdb-services-groups tests', function () {
             const servicesWithBadDatabase = groupServices(testData.unresponsiveGroupDataBase,testData)
 
             return await servicesWithBadDatabase.addMovieToGroup(validTestToken,targetGroup.id,testData.newMovieId)
+                .should.be.rejectedWith(error.UNKNOWN.message)
 
         })
+        it('should throw due to faulty movie dataBase',async function () {
+            const servicesWithBadDatabase = groupServices(cmdbData,testData.unresponsiveMovieDataBase)
+
+            await servicesWithBadDatabase.addMovieToGroup(validTestToken,targetGroup.id,testData.newMovieId)
+                .should.be.rejectedWith(error.MOVIE_NOT_FOUND.message)
+
+        })
+    })
+    describe('remove movie from group test',function () {
+        const targetGroup = testData.mochUserGroups[0]
+        it('successfully removing a movie from the group', async function () {
+            const movieToRemove = targetGroup.movies[0]
+
+            const storedMovies = await servicesGroups.getGroup(validTestToken,targetGroup.id)
+            const finalSize = storedMovies.movies.length - 1
+
+            let res = await servicesGroups.removeMovieFromGroup(validTestToken, targetGroup.id, movieToRemove )
+            let decision = res.movies.find(movie => movie === movieToRemove)
+
+            chai.assert.equal(res.id, targetGroup.id, "Group ID should remain the same")
+            chai.assert.equal(res.name, targetGroup.name, "Name should remain the same")
+            chai.assert.equal(res.description, targetGroup.description, "Description should remain the same")
+            chai.assert.isUndefined(decision,"Movie should no longer be in the array")
+            chai.assert.equal(res.movies.length ,finalSize,"Movies should have only one less element")
+            /*chai.assert.isBelow(res.totalDuration, targetGroup.totalDuration + 1,
+                "Total duration cannot be higher than original")*/ // TODO: duration management yet to implement
+            chai.assert.equal(res.userId, targetGroup.userId, "GroupId should not have been altered")
+        })
+
     })
 })

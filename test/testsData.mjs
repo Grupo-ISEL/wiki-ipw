@@ -55,10 +55,7 @@ export const testData = {
     },
     newMovieId:"newMovie",
     getMovie: async (movieId) => {
-        return {
-            id: testData.newMovieId,
-            duration:50
-        }
+            return { id : movieId, duration : 100}
     },
     groupNotFoundError: {
         code: 3,
@@ -77,14 +74,12 @@ export const testData = {
         updateGroup: async () => {
         },
         deleteGroup : async () => {
+        },
+        addMovieToGroup : async () => {
         }
 
     },
-    rogueGroupDataBase: {
-        getUserByToken: (token) => "not respecting convention"
-        ,
-        createGroup: async () => {
-            return "no respect"
-        }
+    unresponsiveMovieDataBase: {
+        getMovie: (movieId) => {}
     }
 }
