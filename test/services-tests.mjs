@@ -25,11 +25,11 @@ describe('cmdb-services-groups tests', function () {
         it(`successful token validation scenario & return of user1 groups`, async function () {
 
             let res = await servicesGroups.getGroups(validTestToken)
-            return chai.assert.deepEqual(res, testData.mochUserGroups, "Groups are not equal")
+            chai.assert.deepEqual(res, testData.mochUserGroups, "Groups are not equal")
 
         })
         it('unsuccessful token validation scenario', async function () {
-            return await servicesGroups.getGroups(testData.invalidToken)
+            await servicesGroups.getGroups(testData.invalidToken)
                 .should.be.rejectedWith(error.GROUPS_NOT_FOUND.message)
         })
 
@@ -40,21 +40,21 @@ describe('cmdb-services-groups tests', function () {
         it('successful group acquisition scenario', async function () {
             let res = await servicesGroups.getGroup(validTestToken, testData.mochUserGroups[0].id)
 
-            return chai.assert.deepEqual(res, testData.mochUserGroups[0])
+            chai.assert.deepEqual(res, testData.mochUserGroups[0])
         })
         it('should throw due to invalid groupId', async function () {
             //GroupId is passed as undefined
-            return await servicesGroups.getGroup(validTestToken)
+            await servicesGroups.getGroup(validTestToken)
                 .should.be.rejectedWith(error.INVALID_PARAMETER.message)
         })
         it('should throw due to nonexistent groupId', async function () {
             //GroupId is passed with an int value that does not exist in the database
-            return servicesGroups.getGroup(validTestToken, testData.intInjection).should.be
+            servicesGroups.getGroup(validTestToken, testData.intInjection).should.be
                 .rejectedWith(error.GROUPS_NOT_FOUND.message)
         })
         it('should throw due to group not belonging to user', async function () {
             //GroupId does not belong to user
-            return servicesGroups.getGroup(validTestToken, testData.notUserGroup.id).should.be
+            servicesGroups.getGroup(validTestToken, testData.notUserGroup.id).should.be
                 .rejectedWith(error.GROUP_ACCESS_DENIED.message)
         })
     })
@@ -91,13 +91,13 @@ describe('cmdb-services-groups tests', function () {
             const servicesWithBadDatabase = groupServices(testData.unresponsiveGroupDataBase, testData)
             //Database does not return a valid group
 
-            return await servicesWithBadDatabase.createGroup(validTestToken, group.name, group.description)
+            await servicesWithBadDatabase.createGroup(validTestToken, group.name, group.description)
                 .should.be.rejectedWith(error.UNKNOWN.message)
         })
 
         it('should throw due to non existent user', async function () {
             //GroupId does not belong to user
-            return await servicesGroups.getGroup(testData.invalidToken, group.name, group.description).should.be
+            await servicesGroups.getGroup(testData.invalidToken, group.name, group.description).should.be
                 .rejectedWith(error.GROUPS_NOT_FOUND.message)
         })
     })
@@ -118,14 +118,14 @@ describe('cmdb-services-groups tests', function () {
             chai.assert.equal(res.totalDuration, newGroup.totalDuration, "Total duration should not have been altered")
             chai.assert.equal(res.userId, newGroup.userId, "Group should still belong to same user")
             //Since function works as intended, to reverse changes
-            return await servicesGroups.updateGroup(validTestToken, groupInfo.id, groupInfo.name, groupInfo.description)
+            await servicesGroups.updateGroup(validTestToken, groupInfo.id, groupInfo.name, groupInfo.description)
 
         })
         it('should throw due to faulty dataBase returning undefined group response', async function () {
             //Database does not return a valid group
             const servicesWithBadDatabase = groupServices(testData.unresponsiveGroupDataBase, testData)
 
-            return await servicesWithBadDatabase
+            await servicesWithBadDatabase
                 .updateGroup(
                     validTestToken,
                     testData.mochUserGroups[0].id,
@@ -154,7 +154,7 @@ describe('cmdb-services-groups tests', function () {
             //Database does not return a valid group
             const servicesWithBadDatabase = groupServices(testData.unresponsiveGroupDataBase, testData)
 
-            return await servicesWithBadDatabase
+            await servicesWithBadDatabase
                 .deleteGroup(
                     validTestToken,
                     testData.mochUserGroups[0].id
@@ -182,7 +182,7 @@ describe('cmdb-services-groups tests', function () {
         it('should throw due to faulty cmdb dataBase', async function () {
             const servicesWithBadDatabase = groupServices(testData.unresponsiveGroupDataBase, testData)
 
-            return await servicesWithBadDatabase.addMovieToGroup(validTestToken, targetGroup.id, testData.newMovieId)
+            await servicesWithBadDatabase.addMovieToGroup(validTestToken, targetGroup.id, testData.newMovieId)
                 .should.be.rejectedWith(error.UNKNOWN.message)
 
         })
@@ -329,7 +329,7 @@ describe('cmdb-services-movies tests', function () {
 describe('cmdb-services-users tests', function () {
     const servicesUsers = userServices(testData)
     describe('create user test', function () {
-        it(' should successfully create a new user ', async function () {
+        it('should successfully create a new user', async function () {
 
             let res = await servicesUsers.createUser(testData.newUserData.name)
             chai.assert.containsAllDeepKeys(res, testData.newUserData)
@@ -341,7 +341,7 @@ describe('cmdb-services-users tests', function () {
 
             const faultyUserDatabase = userServices(testData.unresponsiveUserDataBase)
 
-            return faultyUserDatabase.createUser(testData.newUserData).should.be
+            faultyUserDatabase.createUser(testData.newUserData).should.be
                 .rejectedWith(error.UNKNOWN.message)
 
         })
