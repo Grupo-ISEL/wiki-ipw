@@ -53,6 +53,13 @@ export const testData = {
         totalDuration: 519,
         userId: 2
     },
+    newMovieId:"newMovie",
+    getMovie: async (movieId) => {
+        return {
+            id: testData.newMovieId,
+            duration:50
+        }
+    },
     groupNotFoundError: {
         code: 3,
         message: `Groups not found`
@@ -60,21 +67,8 @@ export const testData = {
     invalidToken: "for now proper tokens are not specified",
     intInjection: 999,
     unresponsiveGroupDataBase: {
-        getGroup: async (groupID) => {
-            return {
-                "id": 1,
-                "name": "Action",
-                "description": "Action movies",
-                "movies": [
-                    "tt1",
-                    "tt2",
-                    "tt3",
-                    "tt4"
-                ],
-                "totalDuration": 671,
-                "userId": 1
-            }
-        },
+        getGroup: async (groupID) => testData.mochUserGroups[0]
+        ,
         getUserByToken: (token) => {
             return {id: 1}
         },

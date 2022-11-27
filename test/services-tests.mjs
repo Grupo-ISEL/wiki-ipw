@@ -1,6 +1,6 @@
 import groupServices from "../services/cmdb-services-groups.mjs";
 import cmdbData from "../data/cmdb-data-mem.mjs";
-import imdbMoviesData from "../data/imdb-movies-data.mjs";
+
 import {testData} from "./testsData.mjs";
 import error from "../errors.mjs";
 import chai from "chai";
@@ -13,7 +13,7 @@ chai.use(chaiAsPromised)
 
 describe('cmdb-services-groups tests', function () {
 
-    const servicesGroups = groupServices(cmdbData, imdbMoviesData)
+    const servicesGroups = groupServices(cmdbData, testData)
 
     const user1 = testData.mochUser
     const validTestToken = user1.token
@@ -85,7 +85,7 @@ describe('cmdb-services-groups tests', function () {
         })
         it('should throw due to faulty dataBase returning undefined group response', async function () {
 
-            const servicesWithBadDatabase = groupServices(testData.unresponsiveGroupDataBase, imdbMoviesData)
+            const servicesWithBadDatabase = groupServices(testData.unresponsiveGroupDataBase, testData)
             //Database does not return a valid group
 
             return await servicesWithBadDatabase.createGroup(validTestToken, group.name, group.description)
@@ -120,7 +120,7 @@ describe('cmdb-services-groups tests', function () {
         })
         it('should throw due to faulty dataBase returning undefined group response', async function () {
             //Database does not return a valid group
-            const servicesWithBadDatabase = groupServices(testData.unresponsiveGroupDataBase, imdbMoviesData)
+            const servicesWithBadDatabase = groupServices(testData.unresponsiveGroupDataBase,testData)
 
             return await servicesWithBadDatabase
                 .updateGroup(
@@ -133,7 +133,7 @@ describe('cmdb-services-groups tests', function () {
 
     })
     describe(' delete group tests', function () {
-        const toDelete = testData.mochUserGroups[0]
+        const toDelete = testData.mochUserGroups[1]
         it('should successfully return the deleted group', async function () {
 
             let res = await servicesGroups.deleteGroup(validTestToken, toDelete.id)
@@ -149,7 +149,7 @@ describe('cmdb-services-groups tests', function () {
 
         it('should throw due to faulty dataBase returning undefined group response when trying to delete', async function () {
             //Database does not return a valid group
-            const servicesWithBadDatabase = groupServices(testData.unresponsiveGroupDataBase, imdbMoviesData)
+            const servicesWithBadDatabase = groupServices(testData.unresponsiveGroupDataBase, testData)
 
             return await servicesWithBadDatabase
                 .deleteGroup(
@@ -158,5 +158,28 @@ describe('cmdb-services-groups tests', function () {
                 ).should.be.rejectedWith(error.UNKNOWN.message)
         })
 
+    })
+    describe('add movie to group test',function () {
+        const targetGroup = testData.mochUserGroups[1]
+        it('successfully adding a movie to the group',async function () {
+
+            let res = await servicesGroups.addMovieToGroup(validTestToken,targetGroup.id,testData.newMovieId.id)
+            chai.assert.equal(res.id,targetGroup.id,"Group ID should remain the same")
+            chai.assert.equal(res.name,targetGroup.name,"Name should remain the same")
+            chai.assert.equal(res.description,targetGroup.description,"Description should reamin the same")
+            chai.assert.equal(res.movies[res.movies.length - 1],
+                testData.newMovieId,
+                "Desired id was not place in the movies array")
+            chai.assert.isAbove(res.totalDuration,targetGroup.totalDuration - 1,
+                "Total duration cannot be lower than original")
+            chai.assert.equal(res.userId,targetGroup.userId,"GroupId should not have been altered")
+        })
+
+        it('should throw due to faulty cmdb dataBase',async function () {
+            const servicesWithBadDatabase = groupServices(testData.unresponsiveGroupDataBase,testData)
+
+            return await servicesWithBadDatabase.addMovieToGroup(validTestToken,targetGroup.id,testData.newMovieId)
+
+        })
     })
 })
