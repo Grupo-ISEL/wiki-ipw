@@ -54,6 +54,18 @@ export const testData = {
         userId: 2
     },
     newMovieId:"newMovie",
+    newUserData:{
+        id:20,
+        name :"New User",
+        token :"Another token"
+    },
+    createUser: async (username) => {
+      return {
+          id: testData.newUserData.id,
+          name: username,
+          token: testData.newUserData.token
+      }
+    },
     getMovie: async (movieId) => {
             return { id : movieId, duration : 100}
     },
@@ -81,5 +93,8 @@ export const testData = {
     },
     unresponsiveMovieDataBase: {
         getMovie: (movieId) => {}
+    },
+    unresponsiveUserDataBase: {
+        createUser: (username) => {}
     }
 }

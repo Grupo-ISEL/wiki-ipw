@@ -1,7 +1,8 @@
 import groupServices from "../services/cmdb-services-groups.mjs";
 import movieServices from "../services/cmdb-services-movies.mjs"
 import cmdbData from "../data/cmdb-data-mem.mjs";
-import moviesData from "../data/imdb-movies-data.mjs"
+import moviesData from "../data/imdb-movies-data.mjs";
+import userServices from "../services/cmdb-services-users.mjs"
 import {testData} from "./testsData.mjs";
 import error from "../errors.mjs";
 import chai from "chai";
@@ -215,13 +216,45 @@ describe('cmdb-services-groups tests', function () {
 
     })
 })
+
 describe('cmdb-services-movies tests', function () {
-    describe('get movie test', function () {
-        const servicesMovies = movieServices(moviesData)
+    const servicesMovies = movieServices(moviesData)
+    //TODO: movie object to be defined
+    /*describe('get movie test', function () {
+
         it('should get a movie id', async function () {
             const movieId = testData.mochUserGroups[0].movies[0]
             let res = await servicesMovies.getMovie(movieId)
             chai.assert.equal(res,movieId)
+        })
+
+    })*/
+    describe('get top movies tests', function () {
+
+        it('teest',async function(){
+            let res = servicesMovies.getTopMovies()
+        })
+    })
+})
+
+describe('cmdb-services-users tests', function () {
+    const servicesUsers = userServices(testData)
+    describe('create user test',function () {
+        it(' should successfully create a new user ', async function () {
+
+            let res = await servicesUsers.createUser(testData.newUserData.name)
+            chai.assert.containsAllDeepKeys(res,testData.newUserData)
+            chai.assert.equal(res.id,testData.newUserData.id)
+            chai.assert.equal(res.name,testData.newUserData.name)
+            chai.assert.equal(res.token,testData.newUserData.token)
+        })
+        it('should throw due to faulty user dataBase', async function(){
+
+            const faultyUserDatabase = userServices(testData.unresponsiveUserDataBase)
+
+            return faultyUserDatabase.createUser(testData.newUserData).should.be
+                .rejectedWith(error.UNKNOWN.message)
+
         })
 
     })
