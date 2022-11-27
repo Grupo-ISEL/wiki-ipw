@@ -1,6 +1,7 @@
 // Module contains all management logic
 import error from "../errors.mjs";
 import debugInit from 'debug';
+import nodeFetch from "node-fetch";
 
 export default function (cmdbData, moviesData) {
     // Validate arguments
@@ -15,7 +16,7 @@ export default function (cmdbData, moviesData) {
     return {
         getGroup: handleTokenValidation(getGroupInternal),
         getGroups: handleTokenValidation(getGroupsInternal),
-        createGroup: handleTokenValidation(createGroupInternal) ,
+        createGroup: handleTokenValidation(createGroupInternal),
         deleteGroup: handleTokenValidation(deleteGroupInternal),
         updateGroup: handleTokenValidation(updateGroupInternal),
         addMovieToGroup: handleTokenValidation(addMovieToGroupInternal),

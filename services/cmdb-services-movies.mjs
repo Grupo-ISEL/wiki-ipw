@@ -4,22 +4,14 @@ import nodeFetch from 'node-fetch'
 import {MAX_LIMIT} from "./cmdb-services-constants.mjs";
 
 
-export default function (moviesInit, fetchModule) {
+export default function (moviesData) {
     // Validate arguments
-    if (!moviesInit) {
+    if (!moviesData) {
         throw new Error("moviesData is mandatory")
     }
 
     const debug = debugInit("cmdb:services:movies")
-    if (!fetchModule) {
-        debug("fetchModule not provided, using node-fetch")
-    }
     // Use default node-fetch if not provided
-    const fetch = fetchModule || nodeFetch
-
-    // Initialize moviesData module with fetch function
-    const moviesData = moviesInit(fetch)
-
 
     return {
         getTopMovies: handleMovieRequest(getTopMoviesInternal),
