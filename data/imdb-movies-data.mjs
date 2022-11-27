@@ -14,7 +14,7 @@ export default function (fetchModule) {
     const debug = debugInit("cmdb:imdb:data:movies")
 
     // TODO: Init module with API key?
-    const API_KEY = "k_123abc"
+    const API_KEY = "k_1234abcd"
     //const API_KEY = getApiKey()
 
     // Reads the IMDB API key from an environment variable if it exists
@@ -24,6 +24,7 @@ export default function (fetchModule) {
         else
             throw error.UNKNOWN("IMDB_API_KEY not set")
     }
+
     const fetch = fetchModule
     debug(`fetchModule provided ${fetchModule.name}`)
 
@@ -45,13 +46,27 @@ export default function (fetchModule) {
     // TODO: Handle offset and limit
     async function getMovies(offset, limit, search) {
         debug(`getMovies with search: ${search}, offset: ${offset}, limit: ${limit}`)
-        const end = limit < MAX_LIMIT ? offset + limit : movies.length
         if (search) {
-            const movies = await searchMovie(search).map(movie => ({id: movie.id, title: movie.title, runtime: 100})) // TODO: Use runtime from API
+            const results = await searchMovie(search)
+            if (!results)
+                throw error.UNKNOWN(results.errorMessage)
+            const movies = await Promise.all(results.map(async movie => ({
+                id: movie.id,
+                title: movie.title,
+                duration: await getMovieDuration(movie.id)
+            })))
+            debug(`getMovies found %O`, movies)
+            const end = calculateEnd(offset, limit, movies.length)
             return movies.slice(offset, end)
+            debug(`No search text`)
+            return []
         }
-        debug(`No search text`)
-        return []
+    }
+
+    async function getMovieDuration(movieId) {
+        const movie = await getMovie(movieId)
+        debug(`getMovieDuration for movieId: ${movieId} duration: ${Number(movie.runtimeMins)}`)
+        return Number(movie.runtimeMins)
     }
 
     // Not used at the moment
@@ -64,14 +79,16 @@ export default function (fetchModule) {
     async function getMovie(movieId) {
         debug(`getMovie with movieId: ${movieId}`)
         const url = `https://imdb-api.com/en/API/Title/${API_KEY}/${movieId}`
-        return await fetchFromImdb(url)
+        const response = await fetchFromImdb(url)
+        debug(`getMovie response: %O`, response)
+        return response
     }
 
-    // TODO: Figure out which fields to return and if we need to fetch more data from the API, i.e. runtime
     async function searchMovie(search_text) {
         debug(`searchMovie with search_text: ${search_text}`)
         const url = `https://imdb-api.com/en/API/SearchMovie/${API_KEY}/${search_text}`
-        return (await fetchFromImdb(url))["results"]
+        const searchResults = await fetchFromImdb(url)
+        return searchResults["results"]
     }
 
     // Fetches the top 250 movies from IMDB API
@@ -79,11 +96,13 @@ export default function (fetchModule) {
         debug("getTopMovies")
         const url = `https://imdb-api.com/en/API/Top250Movies/${API_KEY}`
         let topMovies = []
-
         topMovies = (await fetchFromImdb(url))["items"]
-        topMovies = topMovies.map(movie => { return {id: movie.id, title: movie.title, rank: movie.rank} })
+        topMovies = topMovies.map(movie => {
+            return {id: movie.id, title: movie.title, rank: movie.rank, imdbRating: movie.imDbRating}
+        })
         //debug(`getTopMovies topMovies: %O`, topMovies)
-        const end = limit < MAX_LIMIT ? offset + limit : topMovies.length
+        const end = calculateEnd(offset, limit, topMovies.length)
+        debug(`getTopMovies offset: ${offset} end: ${end}`)
         return topMovies.slice(offset, end)
     }
 
@@ -105,5 +124,9 @@ export default function (fetchModule) {
             throw error.UNKNOWN(errMsg)
         }
         return data
+    }
+
+    function calculateEnd(offset, limit, total) {
+        return limit < MAX_LIMIT ? offset + limit : total
     }
 }
