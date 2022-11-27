@@ -7,6 +7,7 @@ import {testData} from "./testsData.mjs";
 import error from "../errors.mjs";
 import chai from "chai";
 import chaiAsPromised from "chai-as-promised";
+import {MAX_LIMIT} from "../services/cmdb-services-constants.mjs";
 
 
 const should = chai.should()
@@ -57,7 +58,7 @@ describe('cmdb-services-groups tests', function () {
                 .rejectedWith(error.GROUP_ACCESS_DENIED.message)
         })
     })
-    describe('creatGroup test', function () {
+    describe('createGroup test', function () {
         const group = testData.mochUserGroups[0]
         it('successful group creation scenario', async function () {
 
@@ -103,7 +104,7 @@ describe('cmdb-services-groups tests', function () {
     describe('update group tests', function () {
         const newGroup = testData.modifiedUserGroup
         it('should successfully alter the group to equal testGroup', async function () {
-            const groupInfo =  testData.mochUserGroups[0]
+            const groupInfo = testData.mochUserGroups[0]
             let res = await servicesGroups.updateGroup(validTestToken,
                 groupInfo.id, newGroup.name, newGroup.description)
 
@@ -117,12 +118,12 @@ describe('cmdb-services-groups tests', function () {
             chai.assert.equal(res.totalDuration, newGroup.totalDuration, "Total duration should not have been altered")
             chai.assert.equal(res.userId, newGroup.userId, "Group should still belong to same user")
             //Since function works as intended, to reverse changes
-            return await servicesGroups.updateGroup(validTestToken,groupInfo.id,groupInfo.name,groupInfo.description)
+            return await servicesGroups.updateGroup(validTestToken, groupInfo.id, groupInfo.name, groupInfo.description)
 
         })
         it('should throw due to faulty dataBase returning undefined group response', async function () {
             //Database does not return a valid group
-            const servicesWithBadDatabase = groupServices(testData.unresponsiveGroupDataBase,testData)
+            const servicesWithBadDatabase = groupServices(testData.unresponsiveGroupDataBase, testData)
 
             return await servicesWithBadDatabase
                 .updateGroup(
@@ -161,54 +162,54 @@ describe('cmdb-services-groups tests', function () {
         })
 
     })
-    describe('add movie to group test',function () {
+    describe('add movie to group test', function () {
         //Also tests handleGroupMovieActions
         const targetGroup = testData.mochUserGroups[0]
-        it('successfully adding a movie to the group',async function () {
+        it('successfully adding a movie to the group', async function () {
 
-            let res = await servicesGroups.addMovieToGroup(validTestToken,targetGroup.id,testData.newMovieId)
-            chai.assert.equal(res.id,targetGroup.id,"Group ID should remain the same")
-            chai.assert.equal(res.name,targetGroup.name,"Name should remain the same")
-            chai.assert.equal(res.description,targetGroup.description,"Description should remain the same")
+            let res = await servicesGroups.addMovieToGroup(validTestToken, targetGroup.id, testData.newMovieId)
+            chai.assert.equal(res.id, targetGroup.id, "Group ID should remain the same")
+            chai.assert.equal(res.name, targetGroup.name, "Name should remain the same")
+            chai.assert.equal(res.description, targetGroup.description, "Description should remain the same")
             chai.assert.equal(res.movies[res.movies.length - 1],
                 testData.newMovieId,
                 "Desired id was not place in the movies array")
-            chai.assert.isAbove(res.totalDuration,targetGroup.totalDuration - 1,
+            chai.assert.isAbove(res.totalDuration, targetGroup.totalDuration - 1,
                 "Total duration cannot be lower than original")
-            chai.assert.equal(res.userId,targetGroup.userId,"GroupId should not have been altered")
+            chai.assert.equal(res.userId, targetGroup.userId, "GroupId should not have been altered")
         })
 
-        it('should throw due to faulty cmdb dataBase',async function () {
-            const servicesWithBadDatabase = groupServices(testData.unresponsiveGroupDataBase,testData)
+        it('should throw due to faulty cmdb dataBase', async function () {
+            const servicesWithBadDatabase = groupServices(testData.unresponsiveGroupDataBase, testData)
 
-            return await servicesWithBadDatabase.addMovieToGroup(validTestToken,targetGroup.id,testData.newMovieId)
+            return await servicesWithBadDatabase.addMovieToGroup(validTestToken, targetGroup.id, testData.newMovieId)
                 .should.be.rejectedWith(error.UNKNOWN.message)
 
         })
-        it('should throw due to faulty movie dataBase',async function () {
-            const servicesWithBadDatabase = groupServices(cmdbData,testData.unresponsiveMovieDataBase)
+        it('should throw due to faulty movie dataBase', async function () {
+            const servicesWithBadDatabase = groupServices(cmdbData, testData.unresponsiveMovieDataBase)
 
-            await servicesWithBadDatabase.addMovieToGroup(validTestToken,targetGroup.id,testData.newMovieId)
+            await servicesWithBadDatabase.addMovieToGroup(validTestToken, targetGroup.id, testData.newMovieId)
                 .should.be.rejectedWith(error.MOVIE_NOT_FOUND.message)
 
         })
     })
-    describe('remove movie from group test',function () {
+    describe('remove movie from group test', function () {
         const targetGroup = testData.mochUserGroups[0]
         it('successfully removing a movie from the group', async function () {
             const movieToRemove = targetGroup.movies[0]
 
-            const storedMovies = await servicesGroups.getGroup(validTestToken,targetGroup.id)
+            const storedMovies = await servicesGroups.getGroup(validTestToken, targetGroup.id)
             const finalSize = storedMovies.movies.length - 1
 
-            let res = await servicesGroups.removeMovieFromGroup(validTestToken, targetGroup.id, movieToRemove )
+            let res = await servicesGroups.removeMovieFromGroup(validTestToken, targetGroup.id, movieToRemove)
             let decision = res.movies.find(movie => movie === movieToRemove)
 
             chai.assert.equal(res.id, targetGroup.id, "Group ID should remain the same")
             chai.assert.equal(res.name, targetGroup.name, "Name should remain the same")
             chai.assert.equal(res.description, targetGroup.description, "Description should remain the same")
-            chai.assert.isUndefined(decision,"Movie should no longer be in the array")
-            chai.assert.equal(res.movies.length ,finalSize,"Movies should have only one less element")
+            chai.assert.isUndefined(decision, "Movie should no longer be in the array")
+            chai.assert.equal(res.movies.length, finalSize, "Movies should have only one less element")
             /*chai.assert.isBelow(res.totalDuration, targetGroup.totalDuration + 1,
                 "Total duration cannot be higher than original")*/ // TODO: duration management yet to implement
             chai.assert.equal(res.userId, targetGroup.userId, "GroupId should not have been altered")
@@ -218,37 +219,125 @@ describe('cmdb-services-groups tests', function () {
 })
 
 describe('cmdb-services-movies tests', function () {
-    const servicesMovies = movieServices(moviesData)
-    //TODO: movie object to be defined
-    /*describe('get movie test', function () {
+    const servicesMovies = movieServices(testData.movieDatabaseTests)
+    describe('get movie test', function () {
 
         it('should get a movie id', async function () {
-            const movieId = testData.mochUserGroups[0].movies[0]
-            let res = await servicesMovies.getMovie(movieId)
-            chai.assert.equal(res,movieId)
+            const movie = testData.mochUserGroups[0]
+            let res = await servicesMovies.getMovie(movie.id)
+            chai.assert.equal(res,movie,"Services should have located the test movie")
         })
 
-    })*/
-    describe('get top movies tests', function () {
-
-        it('teest',async function(){
-            let res = servicesMovies.getTopMovies()
+        it('should throw due to missing movieId',async function(){
+            await servicesMovies.getMovie().should.be.rejectedWith(error.INVALID_PARAMETER.message)
         })
+
+    })
+    describe('get top movies & handleMovieRequests tests ', function () {
+        const offset = 3
+        const limit = 50
+        it('should return all 250 movies in testDatabase', async function () {
+
+            let res = await servicesMovies.getTopMovies()
+            let movies = await testData.savedMovies()
+            chai.assert.deepEqual(res, movies, "Services has not returned all of the 250 movies")
+
+        })
+
+        it('should handle the desired offsets and limits', async function () {
+
+            let res = await servicesMovies.getTopMovies(offset, limit)
+            chai.assert.equal(res.length, limit, "Services should have respected de requested limit of movies")
+            let movies = await testData.savedMovies()
+            chai.assert.equal(res[0], movies[offset], "Services should have skipped the requested number of movies")
+        })
+        it('should deal with faulty movie dataBase', async function(){
+            const faultyMovieDatabase = movieServices(testData.unresponsiveMovieDataBase)
+            await faultyMovieDatabase.getTopMovies(offset, limit).should.be.rejectedWith(error.UNKNOWN.message)
+        })
+
+        describe('handle movie requests', function () {
+            it('should handle the invalid offsets and limits being NAN', async function () {
+                //Both parameters are not acceptable
+                let offset = "explode"
+                let limit = "fail"
+                await servicesMovies.getTopMovies(offset, limit).should.be.rejectedWith(error.INVALID_PARAMETER.message)
+
+                offset = 0
+                await servicesMovies.getTopMovies(offset, limit).should.be.rejectedWith(error.INVALID_PARAMETER.message)
+
+                offset = "explode"
+                limit = 0
+                await servicesMovies.getTopMovies(offset, limit).should.be.rejectedWith(error.INVALID_PARAMETER.message)
+
+            })
+            it('should handle the invalid offsets and limits being negative number', async function () {
+                //Both parameters are not acceptable
+                let offset = -20
+                let limit = -1
+                await servicesMovies.getTopMovies(offset, limit).should.be.rejectedWith(error.INVALID_PARAMETER.message)
+
+                offset = 0
+                await servicesMovies.getTopMovies(offset, limit).should.be.rejectedWith(error.INVALID_PARAMETER.message)
+
+                offset = -1
+                limit = 0
+                await servicesMovies.getTopMovies(offset, limit).should.be.rejectedWith(error.INVALID_PARAMETER.message)
+
+            })
+            it('should handle the invalid offsets and limits being over the defined limit', async function () {
+                //Both parameters are not acceptable
+                let offset = 500
+                let limit = 300
+                await servicesMovies.getTopMovies(offset, limit).should.be.rejectedWith(error.INVALID_PARAMETER.message)
+
+                offset = 50
+                await servicesMovies.getTopMovies(offset, limit).should.be.rejectedWith(error.INVALID_PARAMETER.message)
+
+                offset = 251
+                limit = 60
+                await servicesMovies.getTopMovies(offset, limit).should.be.rejectedWith(error.INVALID_PARAMETER.message)
+
+            })
+        })
+
+    })
+    describe('get searched movies', function () {
+
+        it('should return a couple of searched movies', async function () {
+
+            let res = await servicesMovies.getMovies(0,MAX_LIMIT,testData.moviesToSearchAndFind[0].description)
+            chai.assert.deepEqual(res,testData.moviesToSearchAndFind,"Services should have located the similar movies")
+        })
+        it('should not find movies', async function () {
+            let res = await servicesMovies.getMovies(0,MAX_LIMIT,testData.moviesToSearchAndFind[0].description)
+            await servicesMovies.getMovies(0,MAX_LIMIT).should.be.rejectedWith(error.INVALID_PARAMETER.message)
+
+        })
+        it('should handle no search element', async function () {
+
+            let res = await servicesMovies.getMovies(0,MAX_LIMIT,{})
+            chai.assert.isEmpty(res,'Since search_text is not a searchable value, array should be empty')
+            //Behavior not provided by services test is quetionable
+
+        })
+
     })
 })
 
+
 describe('cmdb-services-users tests', function () {
     const servicesUsers = userServices(testData)
-    describe('create user test',function () {
+    describe('create user test', function () {
         it(' should successfully create a new user ', async function () {
 
             let res = await servicesUsers.createUser(testData.newUserData.name)
-            chai.assert.containsAllDeepKeys(res,testData.newUserData)
-            chai.assert.equal(res.id,testData.newUserData.id)
-            chai.assert.equal(res.name,testData.newUserData.name)
-            chai.assert.equal(res.token,testData.newUserData.token)
+            chai.assert.containsAllDeepKeys(res, testData.newUserData)
+            chai.assert.equal(res.id, testData.newUserData.id)
+            chai.assert.equal(res.name, testData.newUserData.name)
+            chai.assert.equal(res.token, testData.newUserData.token)
         })
-        it('should throw due to faulty user dataBase', async function(){
+        it('should throw due to faulty user dataBase', async function () {
 
             const faultyUserDatabase = userServices(testData.unresponsiveUserDataBase)
 
