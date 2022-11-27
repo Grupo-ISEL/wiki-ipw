@@ -1,8 +1,10 @@
+//Fabricated data to force test scenarios
+
 export const testData = {
     mochUser:
         {id: 1, name: "Andre", token: "abc"}
     ,
-    mochUserGroups:[
+    mochUserGroups: [
         {
             "id": 1,
             "name": "Action",
@@ -30,6 +32,19 @@ export const testData = {
             "userId": 1
         }
     ],
+    modifiedUserGroup: {
+        "id": 1,
+        "name": "Action Modified",
+        "description": "Action movies Modified",
+        "movies": [
+            "tt1",
+            "tt2",
+            "tt3",
+            "tt4"
+        ],
+        "totalDuration": 671,
+        "userId": 1
+    },
     notUserGroup: {
         id: 2,
         name: "Drama",
@@ -38,16 +53,44 @@ export const testData = {
         totalDuration: 519,
         userId: 2
     },
-    groupNotFoundError : {
+    groupNotFoundError: {
         code: 3,
         message: `Groups not found`
     },
-    invalidToken : "for now proper tokens are not specified",
+    invalidToken: "for now proper tokens are not specified",
     intInjection: 999,
-    faultyGroupDataBase: {
-        getUserByToken:(token) =>{
-            return {id: "valid token"}
+    unresponsiveGroupDataBase: {
+        getGroup: async (groupID) => {
+            return {
+                "id": 1,
+                "name": "Action",
+                "description": "Action movies",
+                "movies": [
+                    "tt1",
+                    "tt2",
+                    "tt3",
+                    "tt4"
+                ],
+                "totalDuration": 671,
+                "userId": 1
+            }
         },
-        createGroup: async () => { return "Bad group creation"}
+        getUserByToken: (token) => {
+            return {id: 1}
+        },
+        createGroup: async () => {
+        },
+        updateGroup: async () => {
+        },
+        deleteGroup : async () => {
+        }
+
+    },
+    rogueGroupDataBase: {
+        getUserByToken: (token) => "not respecting convention"
+        ,
+        createGroup: async () => {
+            return "no respect"
+        }
     }
 }
