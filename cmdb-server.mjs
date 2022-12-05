@@ -9,7 +9,7 @@ import cmdbData from "./data/cmdb-data-mem.mjs";
 import moviesData from "./data/imdb-movies-data.mjs"
 import mockFetch from "./data/imdb-mock-data.mjs"
 import servicesInit from "./services/cmdb-services.mjs"
-import apiInit from "./api/cmdb-api.mjs"
+import apiInit from "./web/api/cmdb-api.mjs"
 
 const swaggerDocument = yamljs.load('./docs/cmdb-api-spec.yaml')
 const PORT = 1337
