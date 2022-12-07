@@ -3,6 +3,9 @@
 
 import express from 'express'
 import cors from 'cors'
+import path from 'path'
+import hbs from 'hbs'
+import url from 'url'
 import swaggerUi from 'swagger-ui-express'
 import yamljs from 'yamljs'
 import cmdbData from "./data/cmdb-data-mem.mjs";
@@ -11,22 +14,32 @@ import mockFetch from "./data/imdb-mock-data.mjs"
 import servicesInit from "./services/cmdb-services.mjs"
 import apiInit from "./web/api/cmdb-api.mjs"
 
+const __dirname = url.fileURLToPath(new URL('.', import.meta.url));
 const swaggerDocument = yamljs.load('./docs/cmdb-api-spec.yaml')
 const PORT = 1337
 
 // mockFetch is optional
-const services = servicesInit(cmdbData, moviesData, mockFetch)
+// const services = servicesInit(cmdbData, moviesData, mockFetch)
+const services = servicesInit(cmdbData, moviesData)
 const api = apiInit(services.groups, services.movies, services.users)
 
 console.log("Start setting up server")
 let app = express()
 
+// View engine setup
+const viewsPath = path.join(__dirname, 'web', 'site', 'views')
+app.set('view engine', 'hbs')
+app.set('views', viewsPath)
+hbs.registerPartials(path.join(viewsPath, 'partials'))
+
 app.use(cors())
 app.use(express.json())
+app.use(express.urlencoded())
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument))
 
 
 app.get('/movies', api.movies.getMovies)
+app.get('/movies/:id', api.movies.getMovie)
 app.get('/movies/top', api.movies.getTopMovies)
 
 app.get('/groups', api.groups.getGroups)
