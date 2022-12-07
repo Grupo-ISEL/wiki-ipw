@@ -7,28 +7,72 @@ const movies = [
     {
         id: "tt1790736",
         title: "The Shawshank Redemption",
+        year: 1994,
         runtimeMins: "142",
+        imdbRating: "9.3",
+        imageUrl: "https://m.media-amazon.com/images/M/MV5BMTMwNjQ5NjQxN15BMl5BanBnXkFtZTgwNjQ2NjUyMzE@._V1_SX300.jpg",
+        directors: "Frank Darabont",
+        writers: "Stephen King (short story \"Rita Hayworth and Shawshank Redemption\"), Frank Darabont (screenplay)",
+        actors: [
+            { name: "Tim Robbins", imageUrl: "https://m.media-amazon.com/images/M/MV5BMTMwNjQ5NjQxN15BMl5BanBnXkFtZTgwNjQ2NjUyMzE@._V1_SX300.jpg" },
+            { name: "Morgan Freeman", imageUrl: "https://m.media-amazon.com/images/M/MV5BMTMwNjQ5NjQxN15BMl5BanBnXkFtZTgwNjQ2NjUyMzE@._V1_SX300.jpg" },
+        ]
     },
     {
         id: "tt5295990",
         title: "The Godfather",
+        year: 1972,
         runtimeMins: "175",
+        imdbRating: "9.2",
+        imageUrl: "https://m.media-amazon.com/images/M/MV5BMTMwNjQ5NjQxN15BMl5BanBnXkFtZTgwNjQ2NjUyMzE@._V1_SX300.jpg",
+        directors: "Francis Ford Coppola",
+        writers: "Mario Puzo (screenplay by), Francis Ford Coppola (screenplay by)",
+        actors: [
+            { name: "Marlon Brando", imageUrl: "https://m.media-amazon.com/images/M/MV5BMTMwNjQ5NjQxN15BMl5BanBnXkFtZTgwNjQ2NjUyMzE@._V1_SX300.jpg" },
+            { name: "Al Pacino", imageUrl: "https://m.media-amazon.com/images/M/MV5BMTMwNjQ5NjQxN15BMl5BanBnXkFtZTgwNjQ2NjUyMzE@._V1_SX300.jpg" },
+        ]
     },
     {
         id: "tt1686778",
         title: "The Godfather: Part II",
+        year: 1974,
         runtimeMins: "202",
+        imdbRating: "9.0",
+        imageUrl: "https://m.media-amazon.com/images/M/MV5BMTMwNjQ5NjQxN15BMl5BanBnXkFtZTgwNjQ2NjUyMzE@._V1_SX300.jpg",
+        directors: "Francis Ford Coppola",
+        writers: "Mario Puzo (screenplay by), Francis Ford Coppola (screenplay by)",
+        actors: [
+            { name: "Al Pacino", imageUrl: "https://m.media-amazon.com/images/M/MV5BMTMwNjQ5NjQxN15BMl5BanBnXkFtZTgwNjQ2NjUyMzE@._V1_SX300.jpg" },
+            { name: "Robert De Niro", imageUrl: "https://m.media-amazon.com/images/M/MV5BMTMwNjQ5NjQxN15BMl5BanBnXkFtZTgwNjQ2NjUyMzE@._V1_SX300.jpg" },
+        ]
     },
     {
         id: "tt12960252",
         title: "The Dark Knight",
+        year: 2008,
         runtimeMins: "152",
+        imdbRating: "9.0",
+        imageUrl: "https://m.media-amazon.com/images/M/MV5BMTMwNjQ5NjQxN15BMl5BanBnXkFtZTgwNjQ2NjUyMzE@._V1_SX300.jpg",
+        directors: "Christopher Nolan",
+        writers: "Jonathan Nolan (screenplay by), Christopher Nolan (screenplay by)",
+        actors: [
+            { name: "Christian Bale", imageUrl: "https://m.media-amazon.com/images/M/MV5BMTMwNjQ5NjQxN15BMl5BanBnXkFtZTgwNjQ2NjUyMzE@._V1_SX300.jpg" },
+            { name: "Heath Ledger", imageUrl: "https://m.media-amazon.com/images/M/MV5BMTMwNjQ5NjQxN15BMl5BanBnXkFtZTgwNjQ2NjUyMzE@._V1_SX300.jpg" },
+        ]
     },
     {
         id: "tt1375666",
         title: "Inception",
         year: "2010",
         runtimeMins: "148",
+        imdbRating: "8.8",
+        imageUrl: "https://m.media-amazon.com/images/M/MV5BMTMwNjQ5NjQxN15BMl5BanBnXkFtZTgwNjQ2NjUyMzE@._V1_SX300.jpg",
+        directors: "Christopher Nolan",
+        writers: "Christopher Nolan",
+        actors: [
+            { name: "Leonardo DiCaprio", imageUrl: "https://m.media-amazon.com/images/M/MV5BMTMwNjQ5NjQxN15BMl5BanBnXkFtZTgwNjQ2NjUyMzE@._V1_SX300.jpg" },
+            { name: "Joseph Gordon-Levitt", imageUrl: "https://m.media-amazon.com/images/M/MV5BMTMwNjQ5NjQxN15BMl5BanBnXkFtZTgwNjQ2NjUyMzE@._V1_SX300.jpg" },
+        ]
     }
 ]
 
