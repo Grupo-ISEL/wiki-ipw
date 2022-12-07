@@ -69,6 +69,36 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/InvalidRequest'
+  /movies/{id}:
+    get:
+      tags:
+        - Movies
+      summary: Get movie by id
+      description: Get movie by id
+      operationId: getMoviesId
+      parameters:
+        - name: id
+          in: path
+          description: Movie title to fetch
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Movie details
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Movie'
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InvalidRequest'
+        '404':
+          description: Movie not found
+          content: { }
   /movies/top:
     get:
       tags:
@@ -213,7 +243,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Forbidden'
-        404:
+        '404':
           description: Group not found
           content: { }
     put:
@@ -265,7 +295,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Forbidden'
-        404:
+        '404':
           description: Group not found
           content: { }
     delete:
@@ -308,7 +338,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Forbidden'
-        404:
+        '404':
           description: Group not found
           content: { }
   /groups/{id}/movies/{movieId}:
@@ -358,7 +388,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Forbidden'
-        404:
+        '404':
           description: Group or Movie not found
           content: { }
     delete:
@@ -407,7 +437,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Forbidden'
-        404:
+        '404':
           description: Group or Movie not found
           content: { }
   /users:
@@ -475,22 +505,71 @@ components:
       required:
       - id
       - title
-      - runtime
+      - year
+      - runtimeMins
+      - imdbRating
+      - imageUrl
+      - directors
+      - writers
+      - actors
       type: object
       properties:
         id:
           type: string
           description: Movie ID
-          example: "tt0111161"
+          example: tt0111161
         title:
           type: string
           description: Movie title
           example: The Shawshank Redemption
-        runtime:
+        year:
+          type: integer
+          description: Movie release year
+          example: 1994
+        imdbRating:
+          type: number
+          description: Movie IMDB rating
+          example: 9.3
+        runtimeMins:
           type: integer
           minimum: 0
           description: Movie runtime
           example: 142
+        imageUrl:
+          type: string
+          description: Movie image URL
+          example: https://image.tmdb.org/t/p/w500/9O7gLzmreU0nGkIB6K3BsJbzvNv.jpg
+        directors:
+          type: string
+          description: Movie director(s)
+          example: Frank Darabont
+        writers:
+          type: string
+          description: Movie writer(s)
+          example: Stephen King
+        actors:
+          type: array
+          description: Movie actors list
+          items:
+            type: object
+            properties:
+              name:
+                type: string
+                description: Actor name
+                example: Tim Robbins
+              imageUrl:
+                type: string
+                description: Actor image URL
+                example: https://image.tmdb.org/t/p/w500/9O7gLzmreU0nGkIB6K3BsJbzvNv.jpg
+            description: Movie actor
+            example:
+                name: Tim Robbins
+                imageUrl: https://image.tmdb.org/t/p/w500/9O7gLzmreU0nGkIB6K3BsJbzvNv.jpg
+          example:
+            - name: Tim Robbins
+              imageUrl: https://image.tmdb.org/t/p/w500/9O7gLzmreU0nGkIB6K3BsJbzvNv.jpg
+            - name: Morgan Freeman
+              imageUrl: https://image.tmdb.org/t/p/w500/9O7gLzmreU0nGkIB6K3BsJbzvNv.jpg
     TopMovie:
       required:
         - id
@@ -511,7 +590,6 @@ components:
           minimum: 1
           description: Movie imdb rank
           example: 10
-
     MovieAddedToGroup:
       required:
         - status
