@@ -1,38 +1,46 @@
-// List all movies
 import debugInit from 'debug';
 import getHTTPError from "./http-errors.mjs";
 
-export default function(moviesServices) {
+export default function (moviesServices) {
 
-    if (!moviesServices) {
+    if (!moviesServices)
         throw new Error("moviesServices is mandatory")
-    }
     const debug = debugInit("cmdb:api:movies")
 
     return {
-        getMovies: handleMovies(getMoviesInternal),
-        getTopMovies: handleMovies(getTopMoviesInternal)
+        getMovie: handleMoviesRequest(getMovie),
+        getMovies: handleMoviesRequest(getMovies),
+        getTopMovies: handleMoviesRequest(getTopMovies)
     }
 
-    async function getMoviesInternal(offset, limit, search) {
-        debug(`Searching movies with title ${search}`)
-        const movies = await moviesServices.getMovies(offset, limit, search)
-        return movies
+    async function getMovie(movieRequest) {
+        debug(`getMovie with id: ${movieRequest.id}`)
+        return await moviesServices.getMovie(movieRequest.id)
+    }
+
+    async function getMovies(movieRequest) {
+        debug(`Searching movies with title ${movieRequest.search}`)
+        return await moviesServices.getMovies(movieRequest.offset, movieRequest.limit, movieRequest.search)
     }
 
     // Get Top Movies
-    async function getTopMoviesInternal(offset, limit) {
+    async function getTopMovies(movieRequest) {
         debug(`Getting top 250 movies`)
-        const movies = await moviesServices.getTopMovies(offset, limit)
-        return movies
+        return await moviesServices.getTopMovies(movieRequest.offset, movieRequest.limit)
     }
 
-
-    function handleMovies(handler) {
+    function handleMoviesRequest(handler) {
         return async function (req, rsp) {
             try {
-                debug(`Handling request for ${req.originalUrl}`)
-                const movies = await handler(req.query.offset, req.query.limit, req.query.search)
+                debug(`Handling movie request for ${req.originalUrl}`)
+                // TODO: Should we use the request to store the movieRequest?
+                req.movieRequest = {
+                    id: req.params.id,
+                    offset: req.query.offset,
+                    limit: req.query.limit,
+                    search: req.query.search
+                }
+                const movies = await handler(req.movieRequest)
                 rsp.json(movies)
             } catch (e) {
                 debug(`Error handling request: %O`, e)

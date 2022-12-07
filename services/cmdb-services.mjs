@@ -14,7 +14,7 @@ export default function servicesInit(cmdbData, moviesDataInit, fetchModule) {
     const moviesData = moviesDataInit(fetch)
     return {
         groups: servicesGroupsInit(cmdbData, moviesData),
-        movies: servicesMoviesInit(moviesData, fetchModule),
+        movies: servicesMoviesInit(moviesData),
         users: servicesUsersInit(cmdbData),
     }
 }

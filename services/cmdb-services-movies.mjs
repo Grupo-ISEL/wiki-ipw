@@ -1,26 +1,23 @@
 import error from "../errors.mjs";
 import debugInit from 'debug';
-import nodeFetch from 'node-fetch'
 import {MAX_LIMIT} from "./cmdb-services-constants.mjs";
 
 
 export default function (moviesData) {
     // Validate arguments
-    if (!moviesData) {
+    if (!moviesData)
         throw new Error("moviesData is mandatory")
-    }
 
     const debug = debugInit("cmdb:services:movies")
-    // Use default node-fetch if not provided
 
     return {
-        getTopMovies: handleMovieRequest(getTopMoviesInternal),
-        getMovies: handleMovieRequest(getMoviesInternal),
+        getTopMovies: handleMovieRequest(getTopMovies),
+        getMovies: handleMovieRequest(getMovies),
         getMovie,
     }
 
     // Get Top Movies
-    async function getTopMoviesInternal(offset = 0, limit = 250) {
+    async function getTopMovies(offset = 0, limit = 250) {
         debug(`getTopMoviesInternal with offset ${offset} and limit ${limit}`)
         const movies = await moviesData.getTopMovies(offset, limit)
         //debug(`Found %O`, movies)
@@ -32,7 +29,7 @@ export default function (moviesData) {
     }
 
     // Get Movies
-    async function getMoviesInternal(offset = 0, limit = MAX_LIMIT, search_text) {
+    async function getMovies(offset = 0, limit = MAX_LIMIT, search_text) {
         debug(`getMoviesInternal with ${offset} limit ${limit} and search: ${search_text}`)
         if (!search_text)
             throw error.INVALID_PARAMETER("search string is required")
@@ -46,7 +43,7 @@ export default function (moviesData) {
         if (!movieId)
             throw error.INVALID_PARAMETER("movieId is required")
 
-        return await moviesData.getMoviebyId(movieId);
+        return await moviesData.getMovie(movieId);
     }
 
     // Handle Movie Request
@@ -54,9 +51,9 @@ export default function (moviesData) {
     // Call the appropriate function
     // Return the movie list
     function handleMovieRequest(action) {
-        return async function (offset = 0, limit = MAX_LIMIT, search_text) {
-            offset = Number(offset)
-            limit = Number(limit)
+        return async function (movieRequest) {
+            const offset = Number(movieRequest.offset)
+            const limit = Number(movieRequest.limit)
             if (isNaN(offset) || isNaN(limit)) {
                 debug(`Invalid offset or limit: ${offset} - ${limit}`)
                 throw error.INVALID_PARAMETER("Offset and limit must be numbers")
@@ -65,11 +62,11 @@ export default function (moviesData) {
                 debug(`Invalid offset or limit: ${offset} - ${limit}`)
                 throw error.INVALID_PARAMETER("Offset and limit must be positive")
             }
-            if ( offset > MAX_LIMIT || limit > MAX_LIMIT) {
+            if ( offset > MAX_LIMIT || limit > MAX_LIMIT)
                 throw error.INVALID_PARAMETER(`Offset and limit must be less than or equal to ${MAX_LIMIT}`)
-            }
-            debug(`Running action: ${action.name} search_text: ${search_text} offset: ${offset} limit: ${limit}`)
-            const movies = await action(offset, limit, search_text)
+
+            debug(`Running action: ${action.name} search_text: ${movieRequest.search} offset: ${offset} limit: ${limit}`)
+            const movies = await action(offset, limit, movieRequest.search)
             return movies
         }
     }

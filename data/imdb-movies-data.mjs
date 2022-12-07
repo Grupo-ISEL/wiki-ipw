@@ -7,15 +7,14 @@ import {MAX_LIMIT} from "../services/cmdb-services-constants.mjs";
 
 export default function (fetchModule) {
 
-    if (!fetchModule) {
+    if (!fetchModule)
         throw new Error("fetchModule is mandatory")
-    }
 
     const debug = debugInit("cmdb:imdb:data:movies")
 
     // TODO: Init module with API key?
-    const API_KEY = "k_1234abcd"
-    //const API_KEY = getApiKey()
+    //const API_KEY = "k_1234abcd"
+    const API_KEY = getApiKey()
 
     // Reads the IMDB API key from an environment variable if it exists
     function getApiKey() {
@@ -30,7 +29,7 @@ export default function (fetchModule) {
 
     return {
         getMovies,
-        getMoviebyId,
+        // getMoviebyId,
         getMovie,
         getTopMovies
     }
@@ -43,24 +42,19 @@ export default function (fetchModule) {
     */
 
     // TODO: Figure out which fields to return and if we need to fetch more data from the API, i.e. runtime
-    // TODO: Handle offset and limit
     async function getMovies(offset, limit, search) {
         debug(`getMovies with search: ${search}, offset: ${offset}, limit: ${limit}`)
         if (search) {
             const results = await searchMovie(search)
             if (!results)
                 throw error.UNKNOWN(results.errorMessage)
-            const movies = await Promise.all(results.map(async movie => ({
-                id: movie.id,
-                title: movie.title,
-                duration: await getMovieDuration(movie.id)
-            })))
+            const movies = await Promise.all(results.map(async movie => await getMovie(movie.id)))
             debug(`getMovies found %O`, movies)
             const end = calculateEnd(offset, limit, movies.length)
             return movies.slice(offset, end)
-            debug(`No search text`)
-            return []
         }
+        debug(`No search text`)
+        return []
     }
 
     async function getMovieDuration(movieId) {
@@ -69,19 +63,37 @@ export default function (fetchModule) {
         return Number(movie.runtimeMins)
     }
 
-    // Not used at the moment
-    async function getMoviebyId(movieId) {
-        debug(`getMoviebyId with movieId: ${movieId}`)
-        return movies.find(movie => movie.id === movieId)
-    }
+    // // Not used at the moment
+    // async function getMoviebyId(movieId) {
+    //     debug(`getMoviebyId with movieId: ${movieId}`)
+    //     return movies.find(movie => movie.id === movieId)
+    // }
 
-    // Not used at the moment
+    // Get Movie by IMDB ID
     async function getMovie(movieId) {
+        if (!movieId)
+            throw error.INVALID_PARAMETER("movieId is mandatory")
         debug(`getMovie with movieId: ${movieId}`)
         const url = `https://imdb-api.com/en/API/Title/${API_KEY}/${movieId}`
         const response = await fetchFromImdb(url)
-        debug(`getMovie response: %O`, response)
-        return response
+        // debug(`getMovie response: %O`, response)
+        const parsedMovie = parseMovie(response)
+        debug(`getMovie parsedMovie: %O`, parsedMovie)
+        return parsedMovie
+    }
+
+    function parseMovie(movie) {
+        return {
+            id: movie.id,
+            title: movie.title,
+            year: Number(movie.year),
+            runtimeMins: Number(movie.runtimeMins),
+            imdbRating: Number(movie.imDbRating),
+            imageUrl: movie.image,
+            directors: movie.directors,
+            writers: movie.writers,
+            actors: movie.actorList.map(actor => ({ name: actor.name, imageUrl: actor.image }) ),
+        }
     }
 
     async function searchMovie(search_text) {
