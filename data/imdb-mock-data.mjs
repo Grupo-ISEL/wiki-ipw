@@ -11,6 +11,7 @@ const movies = [
         runtimeMins: "142",
         imdbRating: "9.3",
         imageUrl: "https://m.media-amazon.com/images/M/MV5BMTMwNjQ5NjQxN15BMl5BanBnXkFtZTgwNjQ2NjUyMzE@._V1_SX300.jpg",
+        description: "Two imprisoned bla bla",
         directors: "Frank Darabont",
         writers: "Stephen King (short story \"Rita Hayworth and Shawshank Redemption\"), Frank Darabont (screenplay)",
         actors: [
@@ -25,6 +26,7 @@ const movies = [
         runtimeMins: "175",
         imdbRating: "9.2",
         imageUrl: "https://m.media-amazon.com/images/M/MV5BMTMwNjQ5NjQxN15BMl5BanBnXkFtZTgwNjQ2NjUyMzE@._V1_SX300.jpg",
+        description: "The aging patriarch of an bla bla",
         directors: "Francis Ford Coppola",
         writers: "Mario Puzo (screenplay by), Francis Ford Coppola (screenplay by)",
         actors: [
@@ -39,6 +41,7 @@ const movies = [
         runtimeMins: "202",
         imdbRating: "9.0",
         imageUrl: "https://m.media-amazon.com/images/M/MV5BMTMwNjQ5NjQxN15BMl5BanBnXkFtZTgwNjQ2NjUyMzE@._V1_SX300.jpg",
+        description: "The early life and bla bla",
         directors: "Francis Ford Coppola",
         writers: "Mario Puzo (screenplay by), Francis Ford Coppola (screenplay by)",
         actors: [
@@ -53,6 +56,7 @@ const movies = [
         runtimeMins: "152",
         imdbRating: "9.0",
         imageUrl: "https://m.media-amazon.com/images/M/MV5BMTMwNjQ5NjQxN15BMl5BanBnXkFtZTgwNjQ2NjUyMzE@._V1_SX300.jpg",
+        description: "When the menace known bla bla",
         directors: "Christopher Nolan",
         writers: "Jonathan Nolan (screenplay by), Christopher Nolan (screenplay by)",
         actors: [
@@ -67,6 +71,7 @@ const movies = [
         runtimeMins: "148",
         imdbRating: "8.8",
         imageUrl: "https://m.media-amazon.com/images/M/MV5BMTMwNjQ5NjQxN15BMl5BanBnXkFtZTgwNjQ2NjUyMzE@._V1_SX300.jpg",
+        description: "A thief who steals bla bla",
         directors: "Christopher Nolan",
         writers: "Christopher Nolan",
         actors: [

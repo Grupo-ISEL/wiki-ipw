@@ -90,6 +90,7 @@ export default function (fetchModule) {
             runtimeMins: Number(movie.runtimeMins),
             imdbRating: Number(movie.imDbRating),
             imageUrl: movie.image,
+            description: movie.plot,
             directors: movie.directors,
             writers: movie.writers,
             actors: movie.actorList.map(actor => ({ name: actor.name, imageUrl: actor.image }) ),
