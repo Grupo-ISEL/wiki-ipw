@@ -4,6 +4,9 @@ import debugInit from 'debug';
 import error from '../errors.mjs'
 import {MAX_LIMIT} from "../services/cmdb-services-constants.mjs";
 
+// MusicVideo type is not valid
+// fetchFromImdb errMsg: Year is empty
+
 
 export default function (fetchModule) {
 
@@ -29,7 +32,6 @@ export default function (fetchModule) {
 
     return {
         getMovies,
-        // getMoviebyId,
         getMovie,
         getTopMovies
     }
@@ -45,13 +47,14 @@ export default function (fetchModule) {
     async function getMovies(offset, limit, search) {
         debug(`getMovies with search: ${search}, offset: ${offset}, limit: ${limit}`)
         if (search) {
-            const results = await searchMovie(search)
-            if (!results)
-                throw error.UNKNOWN(results.errorMessage)
+            const res = await searchMovie(search)
+            if (!res)
+                throw error.UNKNOWN(res.errorMessage)
+            const end = calculateEnd(offset, limit, res.length)
+            const results = res.slice(offset, end)
             const movies = await Promise.all(results.map(async movie => await getMovie(movie.id)))
             debug(`getMovies found %O`, movies)
-            const end = calculateEnd(offset, limit, movies.length)
-            return movies.slice(offset, end)
+            return movies
         }
         debug(`No search text`)
         return []
@@ -86,14 +89,14 @@ export default function (fetchModule) {
         return {
             id: movie.id,
             title: movie.title,
-            year: Number(movie.year),
-            runtimeMins: Number(movie.runtimeMins),
-            imdbRating: Number(movie.imDbRating),
+            year: Number(movie.year) || movie.year,
+            runtimeMins: Number(movie.runtimeMins) || movie.runtimeMins,
+            imdbRating: Number(movie.imDbRating) || movie.imDbRating ,
             imageUrl: movie.image,
             description: movie.plot,
             directors: movie.directors,
             writers: movie.writers,
-            actors: movie.actorList.map(actor => ({ name: actor.name, imageUrl: actor.image }) ),
+            actors: movie.actorList ? movie.actorList.map(actor => ({ name: actor.name, imageUrl: actor.image })) : movie.actorList,
         }
     }
 
@@ -133,7 +136,13 @@ export default function (fetchModule) {
         //debug(`fetchFromImdb data: %o`, data)
         const errMsg = data["errorMessage"]
         if (errMsg) {
-            debug(`fetchFromImdb errMsg: ${errMsg}`)
+            debug(`fetchFromImdb ${url} errMsg: ${errMsg}`)
+            if (errMsg.includes("Year is empty"))
+                return data
+                // throw error.INVALID_PARAMETER(errMsg)
+            if (errMsg.includes("MusicVideo type is not valid"))
+                return data
+                // throw error.NOT_FOUND(errMsg)
             throw error.UNKNOWN(errMsg)
         }
         return data
