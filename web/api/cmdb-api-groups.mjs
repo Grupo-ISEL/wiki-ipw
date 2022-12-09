@@ -3,7 +3,7 @@
 //  - Obtain data from requests. Request data can be obtained from: URI(path, query, fragment), headers, body
 //  - Invoke the corresponding operation on services
 //  - Generate the response
-import getHTTPError from "./http-errors.mjs";
+import getHTTPError from "../http-errors.mjs";
 import debugInit from 'debug';
 
 export default function (cmdbServices) {
@@ -11,7 +11,7 @@ export default function (cmdbServices) {
     if (!cmdbServices) {
         throw new Error("cmdbServices is mandatory")
     }
-    const debug = debugInit("cmdb:api:groups")
+    const debug = debugInit("cmdb:web:api:groups")
 
     const getGroup = handleRequest(getGroupInternal)
     const getGroups = handleRequest(getGroupsInternal)

@@ -1,6 +1,6 @@
 // List Users
 import debugInit from 'debug';
-import getHTTPError from "./http-errors.mjs";
+import getHTTPError from "../http-errors.mjs";
 
 
 export default function (servicesUsers) {
@@ -9,7 +9,7 @@ export default function (servicesUsers) {
         throw new Error("servicesUsers is mandatory")
     }
 
-    const debug = debugInit("cmdb:api:users")
+    const debug = debugInit("cmdb:web:api:users")
 
     return {
         createUser

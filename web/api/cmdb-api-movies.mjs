@@ -1,11 +1,11 @@
 import debugInit from 'debug';
-import getHTTPError from "./http-errors.mjs";
+import getHTTPError from "../http-errors.mjs";
 
 export default function (moviesServices) {
 
     if (!moviesServices)
         throw new Error("moviesServices is mandatory")
-    const debug = debugInit("cmdb:api:movies")
+    const debug = debugInit("cmdb:web:api:movies")
 
     return {
         getMovie: handleMoviesRequest(getMovie),
@@ -19,14 +19,14 @@ export default function (moviesServices) {
     }
 
     async function getMovies(movieRequest) {
-        debug(`Searching movies with title ${movieRequest.search}`)
-        return await moviesServices.getMovies(movieRequest.offset, movieRequest.limit, movieRequest.search)
+        debug(`Searching movies with title ${movieRequest.search} and offset ${movieRequest.offset} and limit ${movieRequest.limit}`)
+        return await moviesServices.getMovies(movieRequest)
     }
 
     // Get Top Movies
     async function getTopMovies(movieRequest) {
         debug(`Getting top 250 movies`)
-        return await moviesServices.getTopMovies(movieRequest.offset, movieRequest.limit)
+        return await moviesServices.getTopMovies(movieRequest)
     }
 
     function handleMoviesRequest(handler) {
