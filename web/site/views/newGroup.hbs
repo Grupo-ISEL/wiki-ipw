@@ -1,0 +1,11 @@
+<h2>Create new group</h2>
+<form action="/site/groups" method="POST">
+    <p>
+        Group title: <input type="text" name="name" value="{{name}}">
+    </p>
+    <p>
+        Group description: <textarea name="description" value="{{description}}"></textarea>
+    </p>
+    <input type="hidden" value="{{id}}" name="groupId">
+    <input type="submit" value="Create Group">
+</form>

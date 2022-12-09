@@ -1,0 +1,12 @@
+<p>
+    <h2>{{name}}</h2>
+    <p>{{description}}</p>
+<p>Total duration: {{totalDuration}}</p>
+<p>movies:</p>
+    <ul>
+        {{#each movies}}
+            <li><a href="movies/{{this}}">{{this}}</a></li>
+        {{/each}}
+    </ul>
+</p>
+<!--    <p><a href="/site/groups/{{id}}/edit">Edit</a></p>-->

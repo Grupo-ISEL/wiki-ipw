@@ -10,9 +10,10 @@ import swaggerUi from 'swagger-ui-express'
 import yamljs from 'yamljs'
 import cmdbData from "./data/cmdb-data-mem.mjs";
 import moviesData from "./data/imdb-movies-data.mjs"
-import mockFetch from "./data/imdb-mock-data.mjs"
+// import mockFetch from "./data/imdb-mock-data.mjs"
 import servicesInit from "./services/cmdb-services.mjs"
 import apiInit from "./web/api/cmdb-api.mjs"
+import siteInit from "./web/site/cmdb-web-site.mjs"
 
 const __dirname = url.fileURLToPath(new URL('.', import.meta.url));
 const swaggerDocument = yamljs.load('./docs/cmdb-api-spec.yaml')
@@ -22,6 +23,7 @@ const PORT = 1337
 // const services = servicesInit(cmdbData, moviesData, mockFetch)
 const services = servicesInit(cmdbData, moviesData)
 const api = apiInit(services.groups, services.movies, services.users)
+const site = siteInit(services.groups, services.movies, services.users)
 
 console.log("Start setting up server")
 let app = express()
@@ -34,10 +36,20 @@ hbs.registerPartials(path.join(viewsPath, 'partials'))
 
 app.use(cors())
 app.use(express.json())
-app.use(express.urlencoded())
+app.use(express.urlencoded({extended: true}))
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument))
 
+// Web site routes
+app.use('/site/public', express.static(`${__dirname}./static-files`, {redirect: false, index: 'index.html'}))
+app.get('/site/groups/new', site.getNewGroupForm)
+app.get('/site/groups/:id', site.getGroup)
+app.get('/site/groups', site.getGroups)
+app.post('/site/groups', site.createGroup)
+//app.post('/site/groups/:id', site.updateGroup)
+app.get('/site/movies/search', site.getSearchMovieForm)
 
+
+// Web API routes
 app.get('/movies', api.movies.getMovies)
 app.get('/movies/:id', api.movies.getMovie)
 app.get('/movies/top', api.movies.getTopMovies)

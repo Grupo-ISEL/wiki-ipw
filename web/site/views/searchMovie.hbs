@@ -1,0 +1,15 @@
+<h2>Search Movie</h2>
+<form action="/movies" method="GET">
+    <p>
+        Movie title: <input type="text" name="search" value="{{name}}">
+    </p>
+    <p>
+        offset: <input type="text" name="offset" value="{{offset}}">
+    </p>
+    <p>
+        limit: <input type="text" name="limit" value="{{limit}}">
+    </p>
+
+<!--    <input type="hidden" value="{{id}}" name="groupId">-->
+    <input type="submit" value="Search Movie">
+</form>
