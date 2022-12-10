@@ -1,0 +1,17 @@
+<div class="container-fluid text-center">
+    <div class="col-3">
+        <h2>{{title}} ({{year}})</h2>
+        <p>id: {{id}}</p>
+        <p>description: {{description}}</p>
+        <p>runtime: {{runtime}} minutes</p>
+        <p>IMDB Rating: {{imdbRating}}</p>
+        <p>Director(s): {{imdbRating}}</p>
+        <p>Writer(s): {{imdbRating}}</p>
+        <p>Actors:</p>
+        {{#each actors}}
+            <div class="row d-flex justify-content-center text-center">
+                {{> actorP}}
+            </div>
+        {{/each}}
+    </div>
+</div>
