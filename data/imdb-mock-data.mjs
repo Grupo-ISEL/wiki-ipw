@@ -74,7 +74,7 @@ const movies = [
         plot: "A thief who steals bla bla",
         directors: "Christopher Nolan",
         writers: "Christopher Nolan",
-        actors: [
+        actorList: [
             { name: "Leonardo DiCaprio", image: "https://m.media-amazon.com/images/M/MV5BMjI0MTg3MzI0M15BMl5BanBnXkFtZTcwMzQyODU2Mw@@._V1_Ratio1.0000_AL_.jpg" },
             { name: "Joseph Gordon-Levitt", image: "https://m.media-amazon.com/images/M/MV5BMTY3NTk0NDI3Ml5BMl5BanBnXkFtZTgwNDA3NjY0MjE@._V1_Ratio1.0000_AL_.jpg" },
         ]

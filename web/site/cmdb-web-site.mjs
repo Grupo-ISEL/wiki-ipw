@@ -31,6 +31,8 @@ export default function (servicesGroups, servicesMovies, servicesUsers) {
         getNewGroupForm: getNewGroupForm,
         createGroup: handleRequest(createGroup),
         getSearchMovieForm: getSearchMovieForm,
+        getTopMovies: handleRequest(getTopMovies),
+        getMovie: handleRequest(getMovie),
     }
 
     async function getGroups(req, rsp) {
@@ -48,7 +50,7 @@ export default function (servicesGroups, servicesMovies, servicesUsers) {
     async function getGroup(req, rsp) {
         const groupId = req.params.id
         const group = await servicesGroups.getGroup(req.token, groupId)
-        return new View('task', group)
+        return new View('group', group)
     }
 
     async function getNewGroupForm(req, rsp) {
@@ -72,12 +74,33 @@ export default function (servicesGroups, servicesMovies, servicesUsers) {
         rsp.render('searchMovie')
     }
 
+    async function getTopMovies(req, rsp) {
+        const movieRequest = {
+            offset: req.query.offset || 0, // TODO: Do this somewhere else
+            limit: req.query.limit || 250, // TODO: Do this somewhere else
+        }
+        const movies = await servicesMovies.getTopMovies(movieRequest)
+        debug(`getTopMovies: %O`, movies)
+        return new View('topMovies', {
+            title: 'Top Movies', movies: movies.map(m => {
+                return ({id: m.id, title: m.title, rank: m.rank, year: m.year, imdbRating: m.imdbRating, image: m.imageUrl})
+            }),
+        })
+    }
+
+    async function getMovie(req, rsp) {
+        const movieId = req.params.id
+        const movie = await servicesMovies.getMovie(movieId)
+        return new View('movie', movie)
+    }
+
     function handleRequest(handler) {
         return async function (req, rsp) {
             req.token = 'abc'
             try {
                 let view = await handler(req, rsp)
                 if (view) {
+                    debug(`Rendering view ${view.name} with data %O`, view.data)
                     rsp.render(view.name, view.data)
                 }
             } catch (e) {
