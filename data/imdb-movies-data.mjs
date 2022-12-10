@@ -113,8 +113,8 @@ export default function (fetchModule) {
         const url = `https://imdb-api.com/en/API/Top250Movies/${API_KEY}`
         let topMovies = []
         topMovies = (await fetchFromImdb(url))["items"]
-        topMovies = topMovies.map(movie => {
-            return {id: movie.id, title: movie.title, rank: movie.rank, imdbRating: movie.imDbRating}
+        topMovies = topMovies.map(m => {
+            return {id: m.id, title: m.title, rank: m.rank, year: m.year, imdbRating: m.imDbRating, imageUrl: m.image}
         })
         //debug(`getTopMovies topMovies: %O`, topMovies)
         const end = calculateEnd(offset, limit, topMovies.length)

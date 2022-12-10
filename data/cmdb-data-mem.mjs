@@ -9,7 +9,7 @@ let groups = [
         id: 1,
         name: "Action",
         description: "Action movies",
-        movies: ["tt1", "tt2", "tt3", "tt4"],
+        movies: ["tt0111161", "tt1375666"],
         totalDuration: 671,
         userId: 1
 
@@ -18,7 +18,7 @@ let groups = [
         id: 2,
         name: "Drama",
         description: "Drama movies",
-        movies: ["tt1", "tt2", "tt3"],
+        movies: ["tt0111161", "tt0068646", "tt0071562"],
         totalDuration: 519,
         userId: 2
     },
@@ -26,7 +26,7 @@ let groups = [
         id: 3,
         name: "Comedy",
         description: "Comedy movies",
-        movies: ["tt1", "tt2"],
+        movies: ["tt1375666", "tt0468569"],
         totalDuration: 317,
         userId: 3
     },
@@ -34,7 +34,7 @@ let groups = [
         id: 4,
         name: "Sci-Fi",
         description: "Sci-Fi movies",
-        movies: ["tt1", "tt2", "tt3", "tt4"],
+        movies: ["tt0071562", "tt0468569"],
         totalDuration: 671,
         userId: 1
     },
@@ -42,7 +42,7 @@ let groups = [
         id: 5,
         name: "Horror",
         description: "Horror movies",
-        movies: ["tt1", "tt4"],
+        movies: ["tt0111161", "tt0468569"],
         totalDuration: 671,
         userId: 2
     }
