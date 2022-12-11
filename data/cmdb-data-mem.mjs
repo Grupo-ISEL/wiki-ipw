@@ -147,11 +147,10 @@ export default function () {
     }
 
     // Create a new user
-    async function createUser(userName) {
-        debug(`Creating user with id '${nextUserId}' name '${userName}'`)
-        userName = userName || "User " + nextUserId
-        const user = {id: nextUserId++, name: userName, token: crypto.randomUUID()}
-        debug(`Created user: '${user.id}' - '${user.name}' - '${user.token}'`)
+    async function createUser() {
+        debug(`Creating user with id '${nextUserId}'`)
+        const user = {id: nextUserId++, token: crypto.randomUUID()}
+        debug(`Created user: '${user.id}' - '${user.token}'`)
         users.push(user)
         return user
     }
