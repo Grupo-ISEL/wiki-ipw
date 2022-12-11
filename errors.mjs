@@ -17,7 +17,7 @@ export default {
     GROUPS_NOT_FOUND: () => {
         return {
             code: 3,
-            message: `Groups not found`
+            message: `No groups found`
         }
     },
     USER_NOT_FOUND: (userId) => {
@@ -35,7 +35,7 @@ export default {
     GROUP_ACCESS_DENIED: (groupId) => {
         return {
             code: 6,
-            message: `Access denied to ${groupId}`
+            message: `Access denied to group with id ${groupId}`
         }
     },
     UNKNOWN: (message) => {
