@@ -1,7 +1,6 @@
-// Module contains all management logic
+// Module contains all management logic for groups
 import error from "../errors.mjs";
 import debugInit from 'debug';
-import nodeFetch from "node-fetch";
 
 export default function (cmdbData, moviesData) {
     // Validate arguments
@@ -14,15 +13,17 @@ export default function (cmdbData, moviesData) {
     const debug = debugInit("cmdb:services:groups")
 
     return {
-        getGroup: handleTokenValidation(getGroupInternal),
-        getGroups: handleTokenValidation(getGroupsInternal),
-        createGroup: handleTokenValidation(createGroupInternal),
-        deleteGroup: handleTokenValidation(deleteGroupInternal),
-        updateGroup: handleTokenValidation(updateGroupInternal),
-        addMovieToGroup: handleTokenValidation(addMovieToGroupInternal),
-        removeMovieFromGroup: handleTokenValidation(removeMovieFromGroupInternal),
+        getGroup: handleTokenValidation(getGroup),
+        getGroups: handleTokenValidation(getGroups),
+        createGroup: handleTokenValidation(createGroup),
+        deleteGroup: handleTokenValidation(deleteGroup),
+        updateGroup: handleTokenValidation(updateGroup),
+        addMovieToGroup: handleTokenValidation(addMovieToGroup),
+        removeMovieFromGroup: handleTokenValidation(removeMovieFromGroup),
     }
 
+    // Handle token validation. Calls the action if token is valid
+    // TODO: Better error handling
     function handleTokenValidation(action) {
         return async function (token, groupId, movieId, name, description) {
             debug(`Handling token validation for action: '${action.name}'`)
@@ -30,79 +31,83 @@ export default function (cmdbData, moviesData) {
             debug(`User: %O`, user)
             if (user) {
                 debug(`Running action: '${action.name}' group: '${groupId}' userId: '${user.id}' movie: '${movieId}'`)
-                return action(user.id, groupId, movieId, name, description)
+                return await action(user, groupId, movieId, name, description)
             }
             throw error.GROUPS_NOT_FOUND()
         }
     }
 
-    async function getGroupsInternal(userId) {
-        debug(`Getting groups for user: '${userId}'`)
-        const groups = await cmdbData.getGroups()
-        if (groups) {
-            const userGroups = groups.filter(group => group.userId === userId)
-            if (!userGroups)
-                throw error.GROUPS_NOT_FOUND()
-            return userGroups
-        }
-        throw error.UNKNOWN()
+    // Return all groups
+    async function getGroups(user) {
+        debug(`Getting groups for user: '${user.id}'`)
+        const groups = await cmdbData.getGroups(user)
+        if (!groups)
+            throw error.GROUPS_NOT_FOUND()
+        return groups
     }
 
-    async function getGroupInternal(userId, groupId) {
-        debug(`Getting group '${groupId}' for user: '${userId}'`)
+    // Get a group by id
+    async function getGroup(user, groupId) {
+        debug(`Getting group '${groupId}' for user: '${user.id}'`)
         groupId = Number(groupId)
         if (isNaN(groupId))
             throw error.INVALID_PARAMETER('groupId must be a number')
+        if (!user.groups.find(g => g === groupId))
+            throw error.GROUP_NOT_FOUND(groupId)
         const group = await cmdbData.getGroup(groupId)
         if (!group)
             throw error.GROUP_NOT_FOUND(groupId)
-
-        if (group.userId !== userId)
-            throw error.GROUP_ACCESS_DENIED(groupId)
-
         return group
     }
 
-    async function createGroupInternal(userId, name, description) {
-        debug(`Creating new group for user: '${userId}' with name: '${name}' description: '${description}'`)
-        const group = await cmdbData.createGroup(userId, name, description)
+    // Create a new group
+    // TODO: Better validation
+    async function createGroup(user, name, description) {
+        debug(`Creating new group for user: '${user.id}' with name: '${name}' description: '${description}'`)
+        const group = await cmdbData.createGroup(user, name, description)
         debug(`Created group: %O`, group)
         if (!group)
             throw error.UNKNOWN()
         return group
     }
 
-    async function deleteGroupInternal(userId, groupId) {
-        debug(`Deleting group '${groupId}' with user: '${userId}'`)
-        const group = await getGroupInternal(userId, groupId)
-        const deletedGroup = await cmdbData.deleteGroup(group.id)
-        if (!deletedGroup)
-            throw error.UNKNOWN()
-        return deletedGroup
+    // Delete a group
+    // TODO: Better error handling
+    async function deleteGroup(user, groupId) {
+        debug(`Deleting group '${groupId}' with user: '${user.id}'`)
+        const group = await getGroup(user, groupId)
+        const deletedGroup = await cmdbData.deleteGroup(user, group.id)
+        // if (!deletedGroup)
+        //     throw error.UNKNOWN()
+        return group
     }
 
-    async function updateGroupInternal(userId, groupId, name, description) {
-        debug(`Updating group '${groupId}' with user: '${userId}' name: '${name}' description: '${description}'`)
-        const group = await getGroupInternal(userId, groupId)
-        const updatedGroup = await cmdbData.updateGroup(group.id, name, description)
+    async function updateGroup(user, groupId, name, description) {
+        debug(`Updating group '${groupId}' with user: '${user.id}' name: '${name}' description: '${description}'`)
+        const group = await getGroup(user, groupId)
+        const updatedGroup = await cmdbData.updateGroup(group, name, description)
         if (!updatedGroup)
             throw error.UNKNOWN()
         return updatedGroup
     }
 
-    async function addMovieToGroupInternal(userId, groupId, movieId) {
-        debug(`Adding Movie '${movieId}' to group '${groupId}' with user: '${userId}'`)
-        return await handleGroupMovieActions(userId, groupId, movieId, cmdbData.addMovieToGroup)
+    // Add movie to group
+    // TODO: IMPLEMENT
+    async function addMovieToGroup(user, groupId, movieId) {
+        debug(`Adding Movie '${movieId}' to group '${groupId}' with user: '${user.id}'`)
+        return await handleGroupMovieActions(user, groupId, movieId, cmdbData.addMovieToGroup)
     }
 
-    async function removeMovieFromGroupInternal(userId, groupId, movieId) {
-        debug(`Removing Movie '${movieId}' from group '${groupId}' with user: '${userId}'`)
-        return await handleGroupMovieActions(userId, groupId, movieId, cmdbData.removeMovieFromGroup)
+    // Remove movie from group
+    // TODO: IMPLEMENT
+    async function removeMovieFromGroup(user, groupId, movieId) {
+        debug(`Removing Movie '${movieId}' from group '${groupId}' with user: '${user.id}'`)
+        return await handleGroupMovieActions(user, groupId, movieId, cmdbData.removeMovieFromGroup)
     }
 
-    async function handleGroupMovieActions(userId, groupId, movieId, action) {
+    async function handleGroupMovieActions(user, groupId, movieId, action) {
         debug(`Handling movie action: '${action.name}' for group: '${groupId}' movie: '${movieId}'`)
-        const group = await getGroupInternal(userId, groupId)
+        const group = await getGroup(user, groupId)
         const movie = await moviesData.getMovie(movieId)
         if (!movie)
             throw error.MOVIE_NOT_FOUND(movieId)

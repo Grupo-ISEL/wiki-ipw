@@ -1,3 +1,4 @@
+// Module contains all management logic for movies
 import error from "../errors.mjs";
 import debugInit from 'debug';
 import {MAX_LIMIT} from "./cmdb-services-constants.mjs";

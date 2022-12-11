@@ -8,7 +8,7 @@ import hbs from 'hbs'
 import url from 'url'
 import swaggerUi from 'swagger-ui-express'
 import yamljs from 'yamljs'
-import cmdbData from "./data/cmdb-data-mem.mjs";
+import cmdbDataMem from "./data/cmdb-data-mem.mjs";
 import cmdbDataElastic from "./data/cmdb-data-elastic.mjs"
 import moviesData from "./data/imdb-movies-data.mjs"
 import mockFetch from "./data/imdb-mock-data.mjs"
@@ -22,7 +22,11 @@ const PORT = 1337
 
 // mockFetch is optional
 // const services = servicesInit(cmdbData, moviesData, mockFetch)
-const services = servicesInit(cmdbDataElastic, moviesData, mockFetch)
+if (!process.env['ELASTIC_URL'] || !process.env['ELASTIC_API_KEY'])
+   throw new Error("ELASTIC_URL and ELASTIC_API_KEY environment variables are mandatory")
+
+const cmdbData = cmdbDataElastic(process.env['ELASTIC_URL'], process.env['ELASTIC_API_KEY'])
+const services = servicesInit(cmdbData, moviesData, mockFetch)
 
 // const services = servicesInit(cmdbData, moviesData)
 const api = apiInit(services.groups, services.movies, services.users)

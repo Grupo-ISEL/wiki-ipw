@@ -3,8 +3,8 @@ import servicesMoviesInit from './cmdb-services-movies.mjs';
 import servicesUsersInit from './cmdb-services-users.mjs';
 import nodeFetch from 'node-fetch'
 
-export default function servicesInit(cmdbDataInit, moviesDataInit, fetchModule) {
-    if (!cmdbDataInit) {
+export default function servicesInit(cmdbData, moviesDataInit, fetchModule) {
+    if (!cmdbData) {
         throw new Error("cmdbData is mandatory")
     }
     if (!moviesDataInit) {
@@ -12,7 +12,6 @@ export default function servicesInit(cmdbDataInit, moviesDataInit, fetchModule) 
     }
     const fetch = fetchModule || nodeFetch
     const moviesData = moviesDataInit(fetch)
-    const cmdbData = cmdbDataInit()
     return {
         groups: servicesGroupsInit(cmdbData, moviesData),
         movies: servicesMoviesInit(moviesData),
