@@ -9,6 +9,7 @@ import url from 'url'
 import swaggerUi from 'swagger-ui-express'
 import yamljs from 'yamljs'
 import cmdbData from "./data/cmdb-data-mem.mjs";
+import cmdbDataElastic from "./data/cmdb-data-elastic.mjs"
 import moviesData from "./data/imdb-movies-data.mjs"
 import mockFetch from "./data/imdb-mock-data.mjs"
 import servicesInit from "./services/cmdb-services.mjs"
@@ -20,7 +21,9 @@ const swaggerDocument = yamljs.load('./docs/cmdb-api-spec.yaml')
 const PORT = 1337
 
 // mockFetch is optional
-const services = servicesInit(cmdbData, moviesData, mockFetch)
+// const services = servicesInit(cmdbData, moviesData, mockFetch)
+const services = servicesInit(cmdbDataElastic, moviesData, mockFetch)
+
 // const services = servicesInit(cmdbData, moviesData)
 const api = apiInit(services.groups, services.movies, services.users)
 const site = siteInit(services.groups, services.movies, services.users)
@@ -52,8 +55,8 @@ app.get('/site/movies/:id', site.getMovie)
 
 // Web API routes
 app.get('/movies', api.movies.getMovies)
-app.get('/movies/:id', api.movies.getMovie)
 app.get('/movies/top', api.movies.getTopMovies)
+app.get('/movies/:id', api.movies.getMovie)
 
 app.get('/groups', api.groups.getGroups)
 app.post('/groups', api.groups.createGroup)

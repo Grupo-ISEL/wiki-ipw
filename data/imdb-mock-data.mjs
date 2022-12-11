@@ -131,7 +131,7 @@ export default async function (url) {
         default:
             //If we have an invalid url, return an error
             debug(`mock invalid url: ${url}`)
-            return {json: () => ({items: [], errorMessage: "Invalid url"})}
+            return {json: () => ({items: [], errorMessage: "Invalid URL"})}
     }
 }
 
