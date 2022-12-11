@@ -1,15 +1,16 @@
+<div class="d-flex justify-content-center">
 <h2>Search Movie</h2>
 <form action="/movies" method="GET">
     <p>
-        Movie title: <input type="text" name="search" value="{{name}}">
+        Movie title: <input class="form-control" type="text" name="search" value="{{name}}">
     </p>
     <p>
-        offset: <input type="text" name="offset" value="{{offset}}">
+        offset: <input class="form-control" type="text" name="offset" value="{{offset}}">
     </p>
     <p>
-        limit: <input type="text" name="limit" value="{{limit}}">
+        limit: <input class="form-control" type="text" name="limit" value="{{limit}}">
     </p>
 
-<!--    <input type="hidden" value="{{id}}" name="groupId">-->
-    <input type="submit" value="Search Movie">
+    <input class="btn btn-primary" type="submit" value="Search Movie">
 </form>
+</div>
