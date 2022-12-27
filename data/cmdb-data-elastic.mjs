@@ -143,13 +143,14 @@ export default function (elasticUrl, elasticApiKey) {
         return group
     }
 
+    // TODO: Add username support
     // Create a new user in ElasticSearch DB
-    async function createUser() {
-        const user = {id: await getNextId('users'), token: crypto.randomUUID(), groups: []}
+    async function createUser(username) {
 
+        const user = {id: await getNextId('users'), username: username, token: crypto.randomUUID(), groups: []}
         const resp = await putDocument('users', user.id, user)
         debug(`Created user in elastic: %O`, resp)
-        debug(`Created user: '${user.id}' - '${user.token}'`)
+        debug(`Created user: '${user.id}' - username: '${user.username}' - '${user.token}'`)
         return user
     }
 

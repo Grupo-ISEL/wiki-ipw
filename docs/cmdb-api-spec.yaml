@@ -676,11 +676,12 @@ components:
           description: Status
           example: New group created
         group:
-          $ref: '#/components/schemas/Group'
+          $ref: '#/components/schemas/NewGroup'
     NewUser:
       required:
       - status
       - userId
+      - username
       - token
       type: object
       properties:
@@ -692,6 +693,10 @@ components:
           type: integer
           description: User ID
           example: 123456789
+        username:
+          type: string
+          description: User name
+          example: andre
         token:
           type: string
           description: User token
@@ -700,14 +705,14 @@ components:
     User:
       required:
       - id
-      - name
+      - username
       type: object
       properties:
         id:
           type: integer
           description: User ID
           example: 123456789
-        name:
+        username:
           type: string
           description: User name
           example: andre

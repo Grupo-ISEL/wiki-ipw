@@ -4,8 +4,6 @@ import error from "../errors.mjs"
 
 
 export default function () {
-
-
     const debug = debugInit("cmdb:data:mem")
 
     let groups = [
@@ -15,7 +13,7 @@ export default function () {
             description: "Action movies",
             movies: ["tt0111161", "tt1375666"],
             totalDuration: 671,
-            userId: 1,
+            // userId: 1,
 
         },
         {
@@ -24,7 +22,7 @@ export default function () {
             description: "Drama movies",
             movies: ["tt0111161", "tt0068646", "tt0071562"],
             totalDuration: 519,
-            userId: 2,
+            // userId: 2,
         },
         {
             id: 3,
@@ -32,7 +30,7 @@ export default function () {
             description: "Comedy movies",
             movies: ["tt1375666", "tt0468569"],
             totalDuration: 317,
-            userId: 3,
+            // userId: 3,
         },
         {
             id: 4,
@@ -40,7 +38,7 @@ export default function () {
             description: "Sci-Fi movies",
             movies: ["tt0071562", "tt0468569"],
             totalDuration: 671,
-            userId: 1,
+            // userId: 1,
         },
         {
             id: 5,
@@ -48,17 +46,16 @@ export default function () {
             description: "Horror movies",
             movies: ["tt0111161", "tt0468569"],
             totalDuration: 671,
-            userId: 2,
+            // userId: 2,
         },
     ]
 
     let users = [
-        {id: 1, name: "Andre", token: "abc"},
-        {id: 2, name: "Monteiro", token: "zxc"},
+        {id: 1, username: "Andre", token: "3280fcf9-eb87-4d44-b05e-12be5c7ba6e1", groups: [1, 4]},
+        {id: 2, username: "Monteiro", token: "3280fcf9-eb87-4d44-b05e-12be5c7ba6e2", groups: [2, 5]},
     ]
     let nextUserId = users.length + 1
     let nextGroupId = groups.length + 1
-
 
     return {
         getGroups,
@@ -72,9 +69,9 @@ export default function () {
         getUserByToken,
     }
 
-    // Return all groups
-    async function getGroups() {
-        return groups
+    // Return all groups that the user has access to
+    async function getGroups(user) {
+        return Promise.all(user.groups.map(async groupId => await getGroup(groupId)))
     }
 
     // Get a group by id
@@ -94,7 +91,7 @@ export default function () {
             description,
             movies: [],
             totalDuration: 0,
-            userId,
+            // userId,
         }
         groups.push(group)
         return group
@@ -147,10 +144,10 @@ export default function () {
     }
 
     // Create a new user
-    async function createUser() {
-        debug(`Creating user with id '${nextUserId}'`)
-        const user = {id: nextUserId++, token: crypto.randomUUID()}
-        debug(`Created user: '${user.id}' - '${user.token}'`)
+    async function createUser(username) {
+        debug(`Creating user with id '${nextUserId} and '${username}'`)
+        const user = {id: nextUserId++, username: username || `user-${nextUserId}`, token: crypto.randomUUID()}
+        debug(`Created user: '${user.id}' - username: '${user.username}' '${user.token}'`)
         users.push(user)
         return user
     }

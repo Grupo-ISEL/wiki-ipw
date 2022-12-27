@@ -1,7 +1,7 @@
 // Module contains all management logic for movies
-import error from "../errors.mjs";
-import debugInit from 'debug';
-import {MAX_LIMIT} from "./cmdb-services-constants.mjs";
+import error from "../errors.mjs"
+import debugInit from 'debug'
+import {MAX_LIMIT} from "./cmdb-services-constants.mjs"
 
 
 export default function (moviesData) {
@@ -67,8 +67,7 @@ export default function (moviesData) {
                 throw error.INVALID_PARAMETER(`Offset and limit must be less than or equal to ${MAX_LIMIT}`)
 
             debug(`Running action: ${action.name} search_text: ${movieRequest.search} offset: ${offset} limit: ${limit}`)
-            const movies = await action(offset, limit, movieRequest.search)
-            return movies
+            return await action(offset, limit, movieRequest.search)
         }
     }
 }

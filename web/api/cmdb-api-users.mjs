@@ -19,11 +19,11 @@ export default function (servicesUsers) {
     async function createUser(req, rsp) {
         try {
             const newUser = await servicesUsers.createUser(req.body.username)
-            debug(`Created user: ${newUser.id} - ${newUser.name} - ${newUser.token}`)
+            debug(`Created user: ${newUser.id} - ${newUser.username} - ${newUser.token}`)
             rsp.status(201).json({
                 status: `New user created`,
                 id: newUser.id,
-                name: newUser.name,
+                username: newUser.username,
                 token: newUser.token
             })
         } catch (e) {

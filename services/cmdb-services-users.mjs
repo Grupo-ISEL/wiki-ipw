@@ -13,9 +13,9 @@ export default function (cmdbData) {
     }
 
     // Create a new user
-    async function createUser() {
-        const user = await cmdbData.createUser()
-        debug(`Created user: ${user.id} - ${user.token}`)
+    async function createUser(username) {
+        const user = await cmdbData.createUser(username)
+        debug(`Created user: ${user.id} -  '${user.username}' - ${user.token}`)
         if (!user)
             throw error.UNKNOWN('Error creating user')
         return user
