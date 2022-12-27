@@ -66,12 +66,6 @@ export default function (fetchModule) {
         return Number(movie.runtimeMins)
     }
 
-    // // Not used at the moment
-    // async function getMoviebyId(movieId) {
-    //     debug(`getMoviebyId with movieId: ${movieId}`)
-    //     return movies.find(movie => movie.id === movieId)
-    // }
-
     // Get Movie by IMDB ID
     async function getMovie(movieId) {
         if (!movieId)
