@@ -4,19 +4,20 @@ import error from '../errors.mjs'
 import fetch from 'node-fetch'
 
 
-export default function (elasticUrl, elasticApiKey) {
+// export default function (elasticUrl, elasticApiKey) {
+export default function (elasticUrl) {
 
     if (!elasticUrl)
         throw new Error('elasticUrl is mandatory')
-    if (!elasticApiKey)
-        throw new Error('elasticApiKey is mandatory')
+    // if (!elasticApiKey)
+    //     throw new Error('elasticApiKey is mandatory')
 
     const debug = debugInit('cmdb:data:elastic')
     const ELASTIC_URL = elasticUrl
     const DEFAULT_HEADERS = {
         headers: {
             'Content-Type': 'application/json',
-            'Authorization': 'ApiKey ' + elasticApiKey,
+            // 'Authorization': 'ApiKey ' + elasticApiKey,
             'Accept': 'application/json',
         },
     }

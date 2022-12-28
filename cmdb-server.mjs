@@ -20,12 +20,13 @@ const __dirname = url.fileURLToPath(new URL('.', import.meta.url));
 const swaggerDocument = yamljs.load('./docs/cmdb-api-spec.yaml')
 const PORT = 1337
 
+if (!process.env['ELASTIC_URL'])
+   throw new Error("ELASTIC_URL environment variables are mandatory")
+
+const cmdbData = cmdbDataElastic(process.env['ELASTIC_URL'])
+// const cmdbData = cmdbDataMem()
 // mockFetch is optional
 // const services = servicesInit(cmdbData, moviesData, mockFetch)
-if (!process.env['ELASTIC_URL'] || !process.env['ELASTIC_API_KEY'])
-   throw new Error("ELASTIC_URL and ELASTIC_API_KEY environment variables are mandatory")
-
-const cmdbData = cmdbDataElastic(process.env['ELASTIC_URL'], process.env['ELASTIC_API_KEY'])
 const services = servicesInit(cmdbData, moviesData, mockFetch)
 
 // const services = servicesInit(cmdbData, moviesData)
