@@ -7,44 +7,36 @@ import getHTTPError from "../http-errors.mjs";
 import debugInit from 'debug';
 
 export default function (cmdbServices) {
+    const debug = debugInit("cmdb:web:api:groups")
 
     if (!cmdbServices) {
         throw new Error("cmdbServices is mandatory")
     }
-    const debug = debugInit("cmdb:web:api:groups")
-
-    const getGroup = handleRequest(getGroupInternal)
-    const getGroups = handleRequest(getGroupsInternal)
-    const createGroup = handleRequest(createGroupInternal)
-    const deleteGroup = handleRequest(deleteGroupInternal)
-    const updateGroup = handleRequest(updateGroupInternal)
-    const addMovieToGroup = handleRequest(addMovieToGroupInternal)
-    const removeMovieFromGroup = handleRequest(removeMovieFromGroupInternal)
 
    return {
-        getGroup,
-        getGroups,
-        createGroup,
-        deleteGroup,
-        updateGroup,
-        addMovieToGroup,
-        removeMovieFromGroup
+       getGroup: handleRequest(getGroup),
+       getGroups: handleRequest(getGroups),
+       createGroup: handleRequest(createGroup),
+       deleteGroup: handleRequest(deleteGroup),
+       updateGroup: handleRequest(updateGroup),
+       addMovieToGroup: handleRequest(addMovieToGroup),
+       removeMovieFromGroup: handleRequest(removeMovieFromGroup)
    }
 
     // Get a group
-    async function getGroupInternal(req, rsp) {
+    async function getGroup(req, rsp) {
         return await cmdbServices.getGroup(req.token, req.params.id)
     }
 
     // Get all groups that belong to the requesting user
-    async function getGroupsInternal(req, rsp) {
+    async function getGroups(req, rsp) {
         const groups = await cmdbServices.getGroups(req.token)
         debug(`Got groups %O`, groups)
         return groups
     }
 
     // Create a new group
-    async function createGroupInternal(req, rsp) {
+    async function createGroup(req, rsp) {
         debug(`Creating group with name '${req.body.name}' and description '${req.body.description}'`)
         const group = await cmdbServices.createGroup(req.token, req.body.name, req.body.description)
         rsp.status(201)
@@ -52,27 +44,27 @@ export default function (cmdbServices) {
     }
 
     // Delete a group
-    async function deleteGroupInternal(req, rsp) {
+    async function deleteGroup(req, rsp) {
         const group = await cmdbServices.deleteGroup(req.token, req.params.id)
         return {status: `Group deleted`, group}
     }
 
     // Update a group
-    async function updateGroupInternal(req, rsp) {
+    async function updateGroup(req, rsp) {
         const group = await cmdbServices.updateGroup(req.token, req.params.id, req.body.name, req.body.description)
         return {status: "Group updated", group}
     }
 
     // Add a movie to a group
-    async function addMovieToGroupInternal(req, rsp) {
+    async function addMovieToGroup(req, rsp) {
         const group = await cmdbServices.addMovieToGroup(req.token, req.params.id, req.params.movieId)
         return {status: "Movie added to group", group}
     }
 
     // Remove a movie from a group
-    async function removeMovieFromGroupInternal(req, rsp) {
+    async function removeMovieFromGroup(req, rsp) {
         const group = await cmdbServices.removeMovieFromGroup(req.token, req.params.id, req.params.movieId)
-        return {status: "Movie removed from group", group}
+        return {status: `Movie ${req.params.movieId} removed from group`, group}
     }
 
     // Handle HTTP request
