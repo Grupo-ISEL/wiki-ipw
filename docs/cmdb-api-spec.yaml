@@ -32,7 +32,7 @@ paths:
       description: Get movies
       operationId: getMovies
       parameters:
-      - name: title
+      - name: search
         in: query
         description: Movie title to search
         required: true
@@ -79,7 +79,7 @@ paths:
       parameters:
         - name: id
           in: path
-          description: Movie title to fetch
+          description: Movie id to fetch
           required: true
           schema:
             type: string
@@ -141,9 +141,9 @@ paths:
     get:
       tags:
       - Groups
-      summary: List all groups
-      description: List all groups
-      operationId: getAllGroups
+      summary: List all groups belonging to the user
+      description: List all groups belonging to the user
+      operationId: getGroups
       security:
       - bearerAuth: [ ]
       responses:
@@ -470,7 +470,7 @@ paths:
       operationId: addUser
       requestBody:
         description: User name
-        required: true
+        required: false
         content:
           application/json:
             schema:
@@ -580,7 +580,7 @@ components:
         id:
           type: string
           description: Movie ID
-          example: "tt0111161"
+          example: tt0111161
         title:
           type: string
           description: Movie title
@@ -588,7 +588,7 @@ components:
         rank:
           type: integer
           minimum: 1
-          description: Movie imdb rank
+          description: Movie IMDB rank
           example: 10
     MovieAddedToGroup:
       required:
@@ -620,7 +620,7 @@ components:
       - name
       - description
       - movies
-      - total-duration
+      - totalDuration
       type: object
       properties:
         id:
@@ -640,23 +640,17 @@ components:
           description: Favorite movies list
           items:
             $ref: '#/components/schemas/Movie'
-        total-duration:
+        totalDuration:
           type: integer
           minimum: 0
-          description: Total duration of favorite movies
+          description: Total duration in minutes of group movies
           example: 142
     NewGroup:
       required:
-      - id
       - name
       - description
       type: object
       properties:
-        id:
-          type: integer
-          description: Group ID
-          minimum: 0
-          example: 1
         name:
           type: string
           description: Group name
@@ -676,7 +670,7 @@ components:
           description: Status
           example: New group created
         group:
-          $ref: '#/components/schemas/NewGroup'
+          $ref: '#/components/schemas/Group'
     NewUser:
       required:
       - status
