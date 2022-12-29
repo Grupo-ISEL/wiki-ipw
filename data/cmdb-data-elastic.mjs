@@ -49,6 +49,8 @@ export default function (elasticUrl) {
     async function getGroup(groupId) {
         debug(`getGroup with groupId: '${groupId}'`)
         const group = await getDocument("groups", groupId)
+        if (!group)
+            throw error.GROUP_NOT_FOUND(groupId)
         debug(`Found group: %O`, group)
         return group
     }
@@ -63,6 +65,7 @@ export default function (elasticUrl) {
             description,
             movies: [],
             totalDuration: 0,
+            // users: [user.id]
         }
         const resp = await putDocument('groups', groupId, group)
         debug(`Created group in elastic: %O`, resp)
