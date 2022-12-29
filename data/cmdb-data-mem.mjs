@@ -13,8 +13,7 @@ export default function () {
             description: "Action movies",
             movies: ["tt0111161", "tt1375666"],
             totalDuration: 671,
-            // userId: 1,
-
+            userId: [1, 2],
         },
         {
             id: 2,
@@ -22,7 +21,7 @@ export default function () {
             description: "Drama movies",
             movies: ["tt0111161", "tt0068646", "tt0071562"],
             totalDuration: 519,
-            // userId: 2,
+            userId: [2],
         },
         {
             id: 3,
@@ -30,7 +29,7 @@ export default function () {
             description: "Comedy movies",
             movies: ["tt1375666", "tt0468569"],
             totalDuration: 317,
-            // userId: 3,
+            userId: [],
         },
         {
             id: 4,
@@ -38,7 +37,7 @@ export default function () {
             description: "Sci-Fi movies",
             movies: ["tt0071562", "tt0468569"],
             totalDuration: 671,
-            // userId: 1,
+            userId: [1],
         },
         {
             id: 5,
@@ -46,13 +45,13 @@ export default function () {
             description: "Horror movies",
             movies: ["tt0111161", "tt0468569"],
             totalDuration: 671,
-            // userId: 2,
+            userId: [2],
         },
     ]
 
     let users = [
         {id: 1, username: "Andre", token: "3280fcf9-eb87-4d44-b05e-12be5c7ba6e1", groups: [1, 4]},
-        {id: 2, username: "Monteiro", token: "3280fcf9-eb87-4d44-b05e-12be5c7ba6e2", groups: [2, 5]},
+        {id: 2, username: "Monteiro", token: "3280fcf9-eb87-4d44-b05e-12be5c7ba6e2", groups: [2, 5, 1]},
     ]
     let nextUserId = users.length + 1
     let nextGroupId = groups.length + 1

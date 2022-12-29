@@ -1,5 +1,4 @@
 // Services Errors
-//
 
 export default {
     INVALID_PARAMETER: argName => {

@@ -92,14 +92,12 @@ export default function (cmdbData, moviesData) {
     }
 
     // Add movie to group
-    // TODO: IMPLEMENT
     async function addMovieToGroup(user, groupId, movieId) {
         debug(`Adding Movie '${movieId}' to group '${groupId}' with user: '${user.id}'`)
         return await handleGroupMovieActions(user, groupId, movieId, cmdbData.addMovieToGroup)
     }
 
     // Remove movie from group
-    // TODO: IMPLEMENT
     async function removeMovieFromGroup(user, groupId, movieId) {
         debug(`Removing Movie '${movieId}' from group '${groupId}' with user: '${user.id}'`)
         return await handleGroupMovieActions(user, groupId, movieId, cmdbData.removeMovieFromGroup)

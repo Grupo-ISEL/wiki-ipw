@@ -20,6 +20,8 @@ const __dirname = url.fileURLToPath(new URL('.', import.meta.url));
 const swaggerDocument = yamljs.load('./docs/cmdb-api-spec.yaml')
 const PORT = 1337
 
+process.env.IMDB_API_KEY = 'k_1234abcd'
+process.env['ELASTIC_URL'] = 'http://localhost:9200'
 if (!process.env['ELASTIC_URL'])
    throw new Error("ELASTIC_URL environment variables are mandatory")
 
@@ -50,13 +52,15 @@ app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument))
 // Web site routes
 app.use('/site/static', express.static(`${__dirname}./web/site/static-files`, {redirect: false, index: 'index.html'}))
 app.get('/site/groups/new', site.getNewGroupForm)
+app.get('/site/groups/:id/edit', site.getEditGroupForm)
 app.get('/site/groups/:id', site.getGroup)
 app.get('/site/groups', site.getGroups)
 app.post('/site/groups', site.createGroup)
-//app.post('/site/groups/:id', site.updateGroup)
+app.post('/site/groups/edit', site.updateGroup)
 app.get('/site/movies/search', site.getSearchMovieForm)
 app.get('/site/movies/top', site.getTopMovies)
 app.get('/site/movies/:id', site.getMovie)
+// app.post('/site/movies', site.getMovies)
 
 // Web API routes
 app.get('/movies', api.movies.getMovies)
@@ -73,8 +77,8 @@ app.delete('/groups/:id/movies/:movieId', api.groups.removeMovieFromGroup)
 
 app.post('/users', api.users.createUser)
 
-app.listen(PORT, () => console.log(`Server listening in http://localhost:${PORT}`))
+let server = app.listen(PORT, () => console.log(`Server listening in http://localhost:${PORT}`))
 
 console.log("End setting up server")
 
-
+export default server

@@ -57,7 +57,7 @@ describe('CMDB - Services Movies Tests', function () {
             expect(result[0].imageUrl, "getTopMovies should return movies with correct imageUrl").to.be.eq('https://m.media-amazon.com/images/M/MV5BMDFkYTc0MGEtZmNhMC00ZDIzLWFmNTEtODM1ZmRlYWMwMWFmXkEyXkFqcGdeQXVyMTMxODk2OTU@._V1_UX128_CR0,3,128,176_AL_.jpg')
         })
 
-        it('with limit and offset should return an array with the correct number of movies', async function () {
+        it('Using limit and offset should return an array with the correct number of movies', async function () {
             expect(await servicesMovies.getTopMovies({offset: 0, limit: 10})).to.be.an('array').and.have.lengthOf(10)
             expect(await servicesMovies.getTopMovies({
                 offset: 245,
@@ -119,23 +119,15 @@ describe('CMDB - Services Movies Tests', function () {
     describe('getMovies/searchMovie', function () {
         let result
         it('valid search string', async function () {
-            result = await servicesMovies.getMovies({search: "shaw", offset: 0, limit: 250})
+            result = await servicesMovies.getMovies({search: "shaw"})
             expect(result).to.be.an('array').and.have.lengthOf(1)
             expect(result[0]).to.have.all.keys('id', 'title', 'year', 'runtimeMins', 'imdbRating', 'imageUrl', 'description', 'directors', 'writers', 'actors')
         })
         it('Invalid search string', async function () {
-            return expect(servicesMovies.getMovies({
-                search: undefined,
-                offset: 0,
-                limit: 250,
-            })).to.be.rejectedWith(error.INVALID_PARAMETER(), "Invalid argument search string is required")
+            return expect(servicesMovies.getMovies({search: undefined})).to.be.rejectedWith(error.INVALID_PARAMETER(), "Invalid argument search string is required")
         })
         it('Empty search string', async function () {
-            return expect(servicesMovies.getMovies({
-                search: "",
-                offset: 0,
-                limit: 250,
-            })).to.be.rejectedWith(error.INVALID_PARAMETER(), "Invalid argument search string is required")
+            return expect(servicesMovies.getMovies({search: "",})).to.be.rejectedWith(error.INVALID_PARAMETER(), "Invalid argument search string is required")
         })
     })
 
@@ -159,7 +151,7 @@ describe('CMDB - Services Movies Tests', function () {
                     name: "Morgan Freeman",
                     imageUrl: "https://m.media-amazon.com/images/M/MV5BMTc0MDMyMzI2OF5BMl5BanBnXkFtZTcwMzM2OTk1MQ@@._V1_Ratio1.0000_AL_.jpg",
                 },
-            ]
+            ],
         }
         let result
         it('valid movie id', async function () {
