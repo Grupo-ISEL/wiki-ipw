@@ -33,6 +33,8 @@ export default function (servicesGroups, servicesMovies, servicesUsers) {
         getSearchMovieForm: getSearchMovieForm,
         getTopMovies: handleRequest(getTopMovies),
         getMovie: handleRequest(getMovie),
+        getEditGroupForm: handleRequest(getEditGroupForm),
+        updateGroup: handleRequest(updateGroup),
     }
 
     async function getGroups(req, rsp) {
@@ -40,11 +42,7 @@ export default function (servicesGroups, servicesMovies, servicesUsers) {
         // debug (`getGroups: ${tasks}`)
         debug(`getGroups: %O`, groups)
 
-        return new View('groups', {
-            title: 'All groups', groups: groups.map(g => {
-                return ({name: g.name, description: g.description, movies: g.movies, duration: g.totalDuration})
-            }),
-        })
+        return new View('groups', {title: 'All groups', groups: groups})
     }
 
     async function getGroup(req, rsp) {
@@ -53,13 +51,26 @@ export default function (servicesGroups, servicesMovies, servicesUsers) {
         return new View('group', group)
     }
 
-    async function getNewGroupForm(req, rsp) {
+    function getNewGroupForm(req, rsp) {
         rsp.render('newGroup')
+    }
+
+    async function getEditGroupForm(req, rsp) {
+        const group = await servicesGroups.getGroup(req.token, req.params.id)
+        debug(`getEditGroupForm: %O`, group)
+        return new View('editGroup', group)
+    }
+
+    async function updateGroup(req, rsp) {
+        const groupId = req.body.groupId
+        const group = await servicesGroups.updateGroup(req.token, groupId, req.body.name, req.body.description)
+        rsp.redirect(`/site/groups/${groupId}`)
     }
 
     async function createGroup(req, rsp) {
         try {
-            let group = await servicesGroups.createGroup(req.token, req.body)
+            debug(`Creating group '${req.body.name}' with description '${req.body.description}'`)
+            let group = await servicesGroups.createGroup(req.token, req.body.name, req.body.description)
             rsp.redirect(`/site/groups/`)
         } catch (e) {
             console.log(e)
@@ -70,7 +81,7 @@ export default function (servicesGroups, servicesMovies, servicesUsers) {
         }
     }
 
-    async function getSearchMovieForm(req, rsp) {
+    function getSearchMovieForm(req, rsp) {
         rsp.render('searchMovie')
     }
 
@@ -80,10 +91,17 @@ export default function (servicesGroups, servicesMovies, servicesUsers) {
             limit: req.query.limit || 250, // TODO: Do this somewhere else
         }
         const movies = await servicesMovies.getTopMovies(movieRequest)
-        debug(`getTopMovies: %O`, movies)
+        // debug(`getTopMovies: %O`, movies)
         return new View('topMovies', {
             title: 'Top Movies', movies: movies.map(m => {
-                return ({id: m.id, title: m.title, rank: m.rank, year: m.year, imdbRating: m.imdbRating, image: m.imageUrl})
+                return ({
+                    id: m.id,
+                    title: m.title,
+                    rank: m.rank,
+                    year: m.year,
+                    imdbRating: m.imdbRating,
+                    image: m.imageUrl,
+                })
             }),
         })
     }
@@ -96,17 +114,17 @@ export default function (servicesGroups, servicesMovies, servicesUsers) {
 
     function handleRequest(handler) {
         return async function (req, rsp) {
-            req.token = 'abc'
+            req.token = '7d458b7b-dccb-4eaf-9d53-29d45cbf3f32'
             try {
                 let view = await handler(req, rsp)
                 if (view) {
-                    debug(`Rendering view ${view.name} with data %O`, view.data)
+                    // debug(`Rendering view ${view.name} with data %O`, view.data)
                     rsp.render(view.name, view.data)
                 }
             } catch (e) {
                 const response = getHTTPError(e)
                 rsp.status(response.status).json({error: response.body})
-                console.log(e)
+                debug(`Error: %O`, e)
             }
         }
     }
