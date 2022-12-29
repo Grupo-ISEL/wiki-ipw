@@ -1,5 +1,6 @@
 import debugInit from 'debug';
 import getHTTPError from "../http-errors.mjs";
+import {MAX_LIMIT} from "../../services/cmdb-services-constants.mjs"
 
 export default function (moviesServices) {
 
@@ -36,8 +37,8 @@ export default function (moviesServices) {
                 // TODO: Should we use the request to store the movieRequest?
                 req.movieRequest = {
                     id: req.params.id,
-                    offset: req.query.offset,
-                    limit: req.query.limit,
+                    offset: req.query.offset || 0,
+                    limit: req.query.limit || MAX_LIMIT,
                     search: req.query.search
                 }
                 const movies = await handler(req.movieRequest)

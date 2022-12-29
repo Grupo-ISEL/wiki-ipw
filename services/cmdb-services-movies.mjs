@@ -19,7 +19,7 @@ export default function (moviesData) {
 
     // Get Top Movies
     async function getTopMovies(offset = 0, limit = 250) {
-        debug(`getTopMoviesInternal with offset ${offset} and limit ${limit}`)
+        debug(`getTopMovieswith offset ${offset} and limit ${limit}`)
         const movies = await moviesData.getTopMovies(offset, limit)
         //debug(`Found %O`, movies)
         if (!movies) {
@@ -31,7 +31,7 @@ export default function (moviesData) {
 
     // Get Movies
     async function getMovies(offset = 0, limit = MAX_LIMIT, search_text) {
-        debug(`getMoviesInternal with ${offset} limit ${limit} and search: ${search_text}`)
+        debug(`getMovies with ${offset} offset limit ${limit} and search: ${search_text}`)
         if (!search_text)
             throw error.INVALID_PARAMETER("search string is required")
 
