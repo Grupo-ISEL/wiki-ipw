@@ -144,13 +144,11 @@ export default function (elasticUrl) {
         return group
     }
 
-    // TODO: Add username support
     // Create a new user in ElasticSearch DB
     async function createUser(username) {
-
         const user = {id: await getNextId('users'), username: username, token: crypto.randomUUID(), groups: []}
-        const resp = await putDocument('users', user.id, user)
-        debug(`Created user in elastic: %O`, resp)
+        const rsp = await putDocument('users', user.id, user)
+        debug(`Created user in elastic: %O`, rsp)
         debug(`Created user: '${user.id}' - username: '${user.username}' - '${user.token}'`)
         return user
     }
@@ -178,7 +176,7 @@ export default function (elasticUrl) {
     // Upload document with PUT to ElasticSearch index
     async function putDocument(index, id, document) {
         debug(`putDocument with index: '${index}' id: '${id}' document: %O`, document)
-        const data = await fetchFromES(`${index}/_doc/${id}`, 'PUT', document)
+        const data = await fetchFromES(`${index}/_doc/${id}?refresh=wait_for`, 'PUT', document)
         // debug(`putDocument response: %O`, data)
         return data
     }
@@ -186,7 +184,7 @@ export default function (elasticUrl) {
     // Upload document with POST to ElasticSearch index
     async function postDocument(index, document) {
         debug(`postDocument on index: '${index}' document: %O`, document)
-        const data = await fetchFromES(`${ELASTIC_URL}/${index}/_doc`, 'POST', document)
+        const data = await fetchFromES(`${ELASTIC_URL}/${index}/_doc?refresh=wait_for`, 'POST', document)
         debug(`postDocument response: %O`, data)
         return data
     }
@@ -194,7 +192,7 @@ export default function (elasticUrl) {
     //Update document with POST to ElasticSearch index
     async function updateDocument(index, id, document) {
         debug(`updateDocument on index: '${index}' id: '${id}' document: %O`, document)
-        const data = await fetchFromES(`${index}/_update/${id}?_source`, 'POST', document)
+        const data = await fetchFromES(`${index}/_update/${id}?_source&refresh=wait_for`, 'POST', document)
         debug(`updatedocument response: %O`, data)
         return data
     }
@@ -217,7 +215,6 @@ export default function (elasticUrl) {
         return data['docs'].map(doc => doc['_source'])
     }
 
-
     // Search documents with POST and query in ElasticSearch
     async function searchDocument(index, query) {
         debug(`searchDocument on index: '${index}' query: %O`, query)
@@ -228,7 +225,7 @@ export default function (elasticUrl) {
 
     async function deleteDocument(index, id) {
         debug(`deleteDocument on index: '${index}' id: '${id}'`)
-        const data = await fetchFromES(`${index}/_doc/${id}`, 'DELETE')
+        const data = await fetchFromES(`${index}/_doc/${id}?refresh=wait_for`, 'DELETE')
         if (data['result'] === 'deleted') {
             debug(`Document '${id}' deleted`)
             return true
@@ -245,7 +242,8 @@ export default function (elasticUrl) {
             ...(body) && {body: JSON.stringify(body)},
         })
         if (response.status !== 200 && response.status !== 201)
-            throw new Error(`Error fetching from ElasticSearch '${url_path}' method ${method} body ${body} status code '${response.status}'`)
+            throw error.UNKNOWN(`ElasticSearch '${ELASTIC_URL}/${url_path}' method '${method}' returned status code: ${response.status}`)
+            // throw new Error(`Error fetching from ElasticSearch   body ${body} status code '${response.status}'`)
         return await response.json()
     }
 }
