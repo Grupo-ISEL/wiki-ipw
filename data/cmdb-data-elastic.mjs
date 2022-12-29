@@ -4,20 +4,16 @@ import error from '../errors.mjs'
 import fetch from 'node-fetch'
 
 
-// export default function (elasticUrl, elasticApiKey) {
 export default function (elasticUrl) {
 
     if (!elasticUrl)
         throw new Error('elasticUrl is mandatory')
-    // if (!elasticApiKey)
-    //     throw new Error('elasticApiKey is mandatory')
 
     const debug = debugInit('cmdb:data:elastic')
     const ELASTIC_URL = elasticUrl
     const DEFAULT_HEADERS = {
         headers: {
             'Content-Type': 'application/json',
-            // 'Authorization': 'ApiKey ' + elasticApiKey,
             'Accept': 'application/json',
         },
     }
@@ -202,8 +198,6 @@ export default function (elasticUrl) {
     async function getDocument(index, id) {
         debug(`getDocument on index: '${index}' id: '${id}'`)
         const data = await fetchFromES(`${index}/_doc/${id}`, 'GET')
-        // if (response.status === 404)
-        //     return undefined
         // debug(`getDocument response: %O`, data)
         return data['_source']
     }
@@ -244,7 +238,6 @@ export default function (elasticUrl) {
         })
         if (response.status !== 200 && response.status !== 201)
             throw error.UNKNOWN(`ElasticSearch '${ELASTIC_URL}/${url_path}' method '${method}' returned status code: ${response.status}`)
-            // throw new Error(`Error fetching from ElasticSearch   body ${body} status code '${response.status}'`)
         return await response.json()
     }
 }
