@@ -73,7 +73,9 @@ export default function (fetchModule) {
         debug(`getMovie with movieId: ${movieId}`)
         const url = `https://imdb-api.com/en/API/Title/${API_KEY}/${movieId}`
         const response = await fetchFromImdb(url)
-        // debug(`getMovie response: %O`, response)
+         debug(`getMovie response: %O`, response)
+        if (!response)
+            throw error.MOVIE_NOT_FOUND(`${movieId}`)
         const parsedMovie = parseMovie(response)
         debug(`getMovie parsedMovie: %O`, parsedMovie)
         return parsedMovie
@@ -133,10 +135,14 @@ export default function (fetchModule) {
             debug(`fetchFromImdb ${url} errMsg: ${errMsg}`)
             if (errMsg.includes("Year is empty"))
                 return data
-                // throw error.INVALID_PARAMETER(errMsg)
             if (errMsg.includes("MusicVideo type is not valid"))
                 return data
-                // throw error.NOT_FOUND(errMsg)
+            if (errMsg.includes("Server busy")) {
+                debug(`fetchFromImdb errMsg: ${errMsg}`)
+                return data
+            }
+            if (errMsg.includes("Invalid Id"))
+                return undefined
             throw error.UNKNOWN(errMsg)
         }
         return data

@@ -123,10 +123,21 @@ export default async function (url) {
             debug(`results: %O`, results)
             return {json: () => ({searchType: "Title", expression: text, results: results, errorMessage: ""})}
         case IMDB_API.MOVIE:
-            const movie = movies.find(movie => movie.id === text) || {}
+            const movie = movies.find(movie => movie.id === text) || {
+                id: text,
+                title: null,
+                year: null,
+                runtimeMins: null,
+                imDbRating: null,
+                image: null,
+                plot: null,
+                directors: null,
+                writers: null,
+                actorList: null
+            }
             debug(`mock getMovie: %O`, movie)
             return {
-                json: () => ({...movie, errorMessage: ""})
+                json: () => ({...movie, errorMessage: movie.title ? "" : "Invalid Id"})
             }
         default:
             //If we have an invalid url, return an error
