@@ -4,6 +4,7 @@
 //  - Invoke the corresponding operation on services
 //  - Generate the response
 import getHTTPError from "../http-errors.mjs";
+import error  from "../../errors.mjs"
 import debugInit from 'debug';
 
 export default function (cmdbServices) {
@@ -38,6 +39,10 @@ export default function (cmdbServices) {
     // Create a new group
     async function createGroup(req, rsp) {
         debug(`Creating group with name '${req.body.name}' and description '${req.body.description}'`)
+        if (!req.body.name)
+            throw error.INVALID_PARAMETER('group name is mandatory')
+        if (!req.body.description)
+            throw error.INVALID_PARAMETER('group description is mandatory')
         const group = await cmdbServices.createGroup(req.token, req.body.name, req.body.description)
         rsp.status(201)
         return {status: "Group created", group}
@@ -51,18 +56,30 @@ export default function (cmdbServices) {
 
     // Update a group
     async function updateGroup(req, rsp) {
+        if (!req.body.name)
+            throw error.INVALID_PARAMETER('group name is mandatory')
+        if (!req.body.description)
+            throw error.INVALID_PARAMETER('group description is mandatory')
         const group = await cmdbServices.updateGroup(req.token, req.params.id, req.body.name, req.body.description)
         return {status: "Group updated", group}
     }
 
     // Add a movie to a group
     async function addMovieToGroup(req, rsp) {
+        if (!req.params.id)
+            throw error.INVALID_PARAMETER('groupId is mandatory')
+        if (!req.params.movieId)
+            throw error.INVALID_PARAMETER('movieId is mandatory')
         const group = await cmdbServices.addMovieToGroup(req.token, req.params.id, req.params.movieId)
         return {status: "Movie added to group", group}
     }
 
     // Remove a movie from a group
     async function removeMovieFromGroup(req, rsp) {
+       if (!req.params.id)
+            throw error.INVALID_PARAMETER('groupId is mandatory')
+        if (!req.params.movieId)
+            throw error.INVALID_PARAMETER('movieId is mandatory')
         const group = await cmdbServices.removeMovieFromGroup(req.token, req.params.id, req.params.movieId)
         return {status: `Movie ${req.params.movieId} removed from group`, group}
     }
