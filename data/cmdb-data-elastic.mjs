@@ -120,31 +120,29 @@ export default function (elasticUrl) {
     }
 
     // Add a movie to a group
-    // TODO: IMPLEMENT
     async function addMovieToGroup(groupId, movie) {
-        debug(`Adding Movie '${movie.id}' to group '${groupId}' with duration '${movie.duration}'`)
+        debug(`Adding Movie '${movie.id}' to group '${groupId}' with duration '${movie.runtimeMins}'`)
         const group = await getGroup(groupId)
-        if (group) {
-            group.movies.push(movie.id)
-            group.totalDuration += movie.duration
-        }
-        return group
+
+        group.movies.push(movie.id)
+        group.totalDuration += movie.runtimeMins
+        const rsp = await updateDocument('groups', groupId, {doc: group})
+        return rsp['get']['_source']
     }
 
     // Remove a movie from a group
-    // TODO: IMPLEMENT
     async function removeMovieFromGroup(groupId, movie) {
         debug(`Removing movie '${movie.id}' from group '${groupId}'`)
         const group = await getGroup(groupId)
-        if (group) {
-            const movie = group.movies.find(movie => movie === movie.id)
-            if (!movie) {
-                throw error.MOVIE_NOT_FOUND(`Movie '${movie.id}' not found in group '${groupId}'`)
-            }
-            group.movies = group.movies.filter(movie => movie !== movie.id)
-            group.totalDuration -= movie.duration
-        }
-        return group
+
+        const moviesLength = group.movies.length
+        group.movies = group.movies.filter(m => m !== movie.id)
+        if (moviesLength === group.movies.length)
+            throw error.MOVIE_NOT_FOUND(`Movie '${movie.id}' not found in group '${groupId}'`)
+        group.totalDuration -= movie.runtimeMins
+        const rsp = await updateDocument('groups', groupId, {doc: group})
+
+        return rsp['get']['_source']
     }
 
     // Create a new user in ElasticSearch DB
