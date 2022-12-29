@@ -1,11 +1,12 @@
 <div class="col-3">
     <h2>{{name}}</h2>
     <p>{{description}}</p>
-<p>Total duration: {{duration}}</p>
-<p>movies:</p>
-    <ul>
-        {{#each movies}}
-            <li><a href="movies/{{this}}">{{this}}</a></li>
-        {{/each}}
-    </ul>
+<!--    <p>id: {{id}}</p>-->
+    <p>Total duration: {{totalDuration}}</p>
+    <p>movies:</p>
+        <ul>
+            {{#each movies}}
+                <li><a href="movies/{{this}}">{{this}}</a></li>
+            {{/each}}
+        </ul>
 </div>
