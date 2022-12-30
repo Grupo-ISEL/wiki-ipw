@@ -129,6 +129,15 @@ describe('CMDB - Integration Tests', function () {
                 .expect(401, done)
         })
 
+        it('non-existent user', function (done) {
+            request(app)
+                .get('/groups')
+                .set('Accept', 'application/json')
+                .set('Authorization', 'Bearer invalid-token')
+                .expect('Content-Type', /json/)
+                .expect(403, done)
+        })
+
         it('user authenticated, no groups', function (done) {
             request(app)
                 .get('/groups')
@@ -139,7 +148,7 @@ describe('CMDB - Integration Tests', function () {
         })
     })
 
-    // Get group by ID
+// Get group by ID
     describe('GET /groups/1', function () {
         it('no authentication', function (done) {
             request(app)
@@ -147,6 +156,14 @@ describe('CMDB - Integration Tests', function () {
                 .set('Accept', 'application/json')
                 .expect('Content-Type', /json/)
                 .expect(401, done)
+        })
+        it('non-existent user', function (done) {
+            request(app)
+                .get('/groups/1')
+                .set('Accept', 'application/json')
+                .set('Authorization', 'Bearer invalid-token')
+                .expect('Content-Type', /json/)
+                .expect(403, done)
         })
         it('user authenticated, non-existent group', function (done) {
             request(app)
@@ -158,7 +175,7 @@ describe('CMDB - Integration Tests', function () {
         })
     })
 
-    // Create group
+// Create group
     let group
     describe('POST /groups', function () {
         it('no authentication', function (done) {
@@ -167,6 +184,15 @@ describe('CMDB - Integration Tests', function () {
                 .set('Accept', 'application/json')
                 .expect('Content-Type', /json/)
                 .expect(401, done)
+        })
+        it('non-existent user', function (done) {
+            request(app)
+                .post('/groups')
+                .set('Accept', 'application/json')
+                .set('Authorization', 'Bearer invalid-token')
+                .send({name: 'test', description: 'test'})
+                .expect('Content-Type', /json/)
+                .expect(403, done)
         })
         it('user authenticated, group creation, empty body', function (done) {
             request(app)
@@ -211,7 +237,7 @@ describe('CMDB - Integration Tests', function () {
         })
     })
 
-    // Update group
+// Update group
     describe('PUT /groups/:id', function () {
         it('no authentication', function (done) {
             request(app)
@@ -219,6 +245,15 @@ describe('CMDB - Integration Tests', function () {
                 .set('Accept', 'application/json')
                 .expect('Content-Type', /json/)
                 .expect(401, done)
+        })
+        it('non-existent user', function (done) {
+            request(app)
+                .put(`/groups/${group.id}`)
+                .set('Accept', 'application/json')
+                .set('Authorization', 'Bearer invalid-token')
+                .send({name: 'New Name', description: 'New Description'})
+                .expect('Content-Type', /json/)
+                .expect(403, done)
         })
         it('user authenticated, group update, empty body', function (done) {
             request(app)
@@ -249,12 +284,12 @@ describe('CMDB - Integration Tests', function () {
                 .expect('Content-Type', /json/)
                 .expect(200, {
                     status: 'Group updated',
-                    group: group
+                    group: group,
                 }, done)
         })
     })
 
-    // Add movie to group
+// Add movie to group
     const movieId = 'tt0111161'
     describe('PUT /groups/:id/movies/:id', function () {
         it('no authentication', function (done) {
@@ -263,6 +298,14 @@ describe('CMDB - Integration Tests', function () {
                 .set('Accept', 'application/json')
                 .expect('Content-Type', /json/)
                 .expect(401, done)
+        })
+        it('non-existent user', function (done) {
+            request(app)
+                .put('/groups/0/movies/1')
+                .set('Accept', 'application/json')
+                .set('Authorization', 'Bearer invalid-token')
+                .expect('Content-Type', /json/)
+                .expect(403, done)
         })
         it('user authenticated, non-existent group', function (done) {
             request(app)
@@ -294,7 +337,7 @@ describe('CMDB - Integration Tests', function () {
         })
     })
 
-    // Add movie to group
+// Add movie to group
     describe('DELETE /groups/:id/movies/:id', function () {
         it('no authentication', function (done) {
             request(app)
@@ -302,6 +345,14 @@ describe('CMDB - Integration Tests', function () {
                 .set('Accept', 'application/json')
                 .expect('Content-Type', /json/)
                 .expect(401, done)
+        })
+        it('non-existent user', function (done) {
+            request(app)
+                .delete('/groups/0/movies/1')
+                .set('Accept', 'application/json')
+                .set('Authorization', 'Bearer invalid-token')
+                .expect('Content-Type', /json/)
+                .expect(403, done)
         })
         it('user authenticated, non-existent group', function (done) {
             request(app)
@@ -331,13 +382,13 @@ describe('CMDB - Integration Tests', function () {
                     group: {
                         ...group,
                         movies: [],
-                        totalDuration: 0
-                    }
+                        totalDuration: 0,
+                    },
                 }, done)
         })
     })
 
-    // Delete group by ID
+// Delete group by ID
     describe('DELETE /groups/:id', function () {
         it('no authentication', function (done) {
             request(app)
@@ -345,6 +396,15 @@ describe('CMDB - Integration Tests', function () {
                 .set('Accept', 'application/json')
                 .expect('Content-Type', /json/)
                 .expect(401, done)
+        })
+
+        it('non-existent user', function (done) {
+            request(app)
+                .delete('/groups/0')
+                .set('Accept', 'application/json')
+                .set('Authorization', 'Bearer invalid-token')
+                .expect('Content-Type', /json/)
+                .expect(403, done)
         })
 
         it('user authenticated, non-existent group', function (done) {
