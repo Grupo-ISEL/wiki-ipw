@@ -29,11 +29,10 @@ export default function (cmdbData, moviesData) {
             debug(`Handling token validation for action: '${action.name}'`)
             const user = await cmdbData.getUserByToken(token)
             debug(`User: %O`, user)
-            if (user) {
-                debug(`Running action: '${action.name}' group: '${groupId}' userId: '${user.id}' movie: '${movieId}'`)
-                return await action(user, groupId, movieId, name, description)
-            }
-            throw error.GROUPS_NOT_FOUND()
+            if(!user)
+                throw error.ACCESS_DENIED()
+           debug(`Running action: '${action.name}' group: '${groupId}' userId: '${user.id}' movie: '${movieId}'`)
+           return await action(user, groupId, movieId, name, description)
         }
     }
 
