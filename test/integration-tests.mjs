@@ -6,6 +6,7 @@ let expect = chai.expect
 
 
 describe('CMDB - Integration Tests', function () {
+    // Shutdown server after all tests
     after(function (done) {
         app.close(done)
     })
