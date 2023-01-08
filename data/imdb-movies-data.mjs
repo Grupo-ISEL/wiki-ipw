@@ -1,8 +1,8 @@
 // Module movies data
 // access to the Internet Movies Database API.
-import debugInit from 'debug';
+import debugInit from 'debug'
 import error from '../errors.mjs'
-import {MAX_LIMIT} from "../services/cmdb-services-constants.mjs";
+import {MAX_LIMIT} from "../services/cmdb-services-constants.mjs"
 
 // MusicVideo type is not valid
 // fetchFromImdb errMsg: Year is empty
@@ -33,7 +33,7 @@ export default function (fetchModule) {
     return {
         getMovies,
         getMovie,
-        getTopMovies
+        getTopMovies,
     }
 
     /*
@@ -42,22 +42,27 @@ export default function (fetchModule) {
      https://imdb-api.com/en/API/SearchMovie/API_KEY/leon the professional
      https://imdb-api.com/en/API/SearchMovie/API_KEY/the patriot 2000
     */
-
-    // TODO: Figure out which fields to return and if we need to fetch more data from the API, i.e. runtime
     async function getMovies(offset, limit, search) {
+        const NO_PICTURE = "https://imdb-api.com/images/original/nopicture.jpg"
+
         debug(`getMovies with search: ${search}, offset: ${offset}, limit: ${limit}`)
-        if (search) {
-            const res = await searchMovie(search)
-            if (!res)
-                throw error.UNKNOWN(res.errorMessage)
-            const end = calculateEnd(offset, limit, res.length)
-            const results = res.slice(offset, end)
-            const movies = await Promise.all(results.map(async movie => await getMovie(movie.id)))
-            debug(`getMovies found %O`, movies)
-            return movies
+        if (!search) {
+            debug(`No search text`)
+            return []
         }
-        debug(`No search text`)
-        return []
+        const res = await searchMovie(search)
+        if (!res)
+            throw error.UNKNOWN(res.errorMessage)
+        const end = calculateEnd(offset, limit, res.length)
+        const results = res.slice(offset, end)
+        const movies = results.map(movie => ({
+            id: movie.id,
+            title: movie.title,
+            description: movie.description,
+            imageUrl: movie.image || NO_PICTURE,
+        }))
+        debug(`getMovies found %O`, movies)
+        return movies
     }
 
     async function getMovieDuration(movieId) {
@@ -73,7 +78,7 @@ export default function (fetchModule) {
         debug(`getMovie with movieId: ${movieId}`)
         const url = `https://imdb-api.com/en/API/Title/${API_KEY}/${movieId}`
         const response = await fetchFromImdb(url)
-         debug(`getMovie response: %O`, response)
+        debug(`getMovie response: %O`, response)
         if (!response)
             throw error.MOVIE_NOT_FOUND(`${movieId}`)
         const parsedMovie = parseMovie(response)
@@ -87,12 +92,15 @@ export default function (fetchModule) {
             title: movie.title,
             year: Number(movie.year) || movie.year,
             runtimeMins: Number(movie.runtimeMins) || movie.runtimeMins,
-            imdbRating: Number(movie.imDbRating) || movie.imDbRating ,
+            imdbRating: Number(movie.imDbRating) || movie.imDbRating,
             imageUrl: movie.image,
             description: movie.plot,
             directors: movie.directors,
             writers: movie.writers,
-            actors: movie.actorList ? movie.actorList.map(actor => ({ name: actor.name, imageUrl: actor.image })) : movie.actorList,
+            actors: movie.actorList ? movie.actorList.map(actor => ({
+                name: actor.name,
+                imageUrl: actor.image,
+            })) : movie.actorList,
         }
     }
 

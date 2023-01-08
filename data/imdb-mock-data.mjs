@@ -119,9 +119,9 @@ export default async function (url) {
             }
             return {json: () => JSON.parse(top250)}
         case IMDB_API.SEARCH:
-            const results = movies.filter(movie => movie.title.toLowerCase().includes(text.toLowerCase())) || []
-            debug(`results: %O`, results)
-            return {json: () => ({searchType: "Title", expression: text, results: results, errorMessage: ""})}
+            const search = JSON.parse(await readFile(SEARCH_MOVIES, "utf8"))["results"]
+            const results = search.filter(movie => movie.title.toLowerCase().includes(text.toLowerCase()))
+            return {json: () => ({searchType: "Movie", expression: text, results: results, errorMessage: ""})}
         case IMDB_API.MOVIE:
             const movie = movies.find(movie => movie.id === text) || {
                 id: text,
