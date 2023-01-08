@@ -10,50 +10,50 @@ info:
     url: https://www.apache.org/licenses/LICENSE-2.0.html
   version: 1.0.0
 servers:
-- url: http://localhost:1337
-  description: Local server
+  - url: http://localhost:1337
+    description: Local server
 
 
 tags:
-- name: Movies
-  description: Movies operations
-- name: Groups
-  description: Groups operations
-- name: Users
-  description: Users operations
+  - name: Movies
+    description: Movies operations
+  - name: Groups
+    description: Groups operations
+  - name: Users
+    description: Users operations
 
 
 paths:
   /movies:
     get:
       tags:
-      - Movies
+        - Movies
       summary: Get movies
       description: Get movies
       operationId: getMovies
       parameters:
-      - name: search
-        in: query
-        description: Movie title to search
-        required: true
-        schema:
-          type: string
-      - name: limit
-        in: query
-        description: Number of returned movie (max 250)
-        required: false
-        schema:
-          minimum: 0
-          maximum: 250
-          type: integer
-      - name: offset
-        in: query
-        description: Offset to return movies
-        required: false
-        schema:
-          minimum: 0
-          maximum: 250
-          type: integer
+        - name: search
+          in: query
+          description: Movie title to search
+          required: true
+          schema:
+            type: string
+        - name: limit
+          in: query
+          description: Number of returned movie (max 250)
+          required: false
+          schema:
+            minimum: 0
+            maximum: 250
+            type: integer
+        - name: offset
+          in: query
+          description: Offset to return movies
+          required: false
+          schema:
+            minimum: 0
+            maximum: 250
+            type: integer
       responses:
         '200':
           description: Search results matching criteria
@@ -62,7 +62,7 @@ paths:
               schema:
                 type: array
                 items:
-                  $ref: '#/components/schemas/Movie'
+                  $ref: '#/components/schemas/SearchedMovie'
         '400':
           description: Bad request
           content:
@@ -102,26 +102,26 @@ paths:
   /movies/top:
     get:
       tags:
-      - Movies
+        - Movies
       summary: Get top movies
       description: Get top movies
       operationId: getTopMovies
       parameters:
-      - name: limit
-        in: query
-        description: Number of returned movies (max 250)
-        required: false
-        schema:
-          minimum: 0
-          maximum: 250
-          type: integer
-      - name: offset
-        in: query
-        description: Offset to return movies
-        required: false
-        schema:
-          minimum: 0
-          type: integer
+        - name: limit
+          in: query
+          description: Number of returned movies (max 250)
+          required: false
+          schema:
+            minimum: 0
+            maximum: 250
+            type: integer
+        - name: offset
+          in: query
+          description: Offset to return movies
+          required: false
+          schema:
+            minimum: 0
+            type: integer
       responses:
         '200':
           description: Get top movies
@@ -140,12 +140,12 @@ paths:
   /groups:
     get:
       tags:
-      - Groups
+        - Groups
       summary: List all groups belonging to the user
       description: List all groups belonging to the user
       operationId: getGroups
       security:
-      - bearerAuth: [ ]
+        - bearerAuth: [ ]
       responses:
         '200':
           description: All groups
@@ -169,19 +169,19 @@ paths:
                 $ref: '#/components/schemas/NotAuthorized'
     post:
       tags:
-      - Groups
-      summary:  Create group
+        - Groups
+      summary: Create group
       description: Create group
       operationId: createGroup
       security:
-      - bearerAuth: [ ]
+        - bearerAuth: [ ]
       requestBody:
         description: Group to create
         required: true
         content:
           application/json:
-           schema:
-             $ref: '#/components/schemas/NewGroup'
+            schema:
+              $ref: '#/components/schemas/NewGroup'
       responses:
         '200':
           description: Group created
@@ -205,19 +205,19 @@ paths:
   /groups/{id}:
     get:
       tags:
-      - Groups
+        - Groups
       summary: Get group by ID
       description: Get group by ID
       operationId: getGroup
       security:
-      - bearerAuth: [ ]
+        - bearerAuth: [ ]
       parameters:
-      - name: id
-        in: path
-        description: Group ID
-        required: true
-        schema:
-          type: integer
+        - name: id
+          in: path
+          description: Group ID
+          required: true
+          schema:
+            type: integer
       responses:
         '200':
           description: OK
@@ -248,19 +248,19 @@ paths:
           content: { }
     put:
       tags:
-      - Groups
+        - Groups
       summary: Edit group
       description: Edit group
       operationId: editGroup
       security:
-      - bearerAuth: [ ]
+        - bearerAuth: [ ]
       parameters:
-      - name: id
-        in: path
-        description: Group ID
-        required: true
-        schema:
-          type: integer
+        - name: id
+          in: path
+          description: Group ID
+          required: true
+          schema:
+            type: integer
       requestBody:
         description: Group details to edit
         required: false
@@ -305,14 +305,14 @@ paths:
       description: Delete group by ID
       operationId: deleteGroup
       security:
-      - bearerAuth: [ ]
+        - bearerAuth: [ ]
       parameters:
-      - name: id
-        in: path
-        description: Group ID
-        required: true
-        schema:
-          type: integer
+        - name: id
+          in: path
+          description: Group ID
+          required: true
+          schema:
+            type: integer
       responses:
         '200':
           description: OK
@@ -344,25 +344,25 @@ paths:
   /groups/{id}/movies/{movieId}:
     put:
       tags:
-      - Groups
+        - Groups
       summary: Add movie to group
       description: Add movie to group
       operationId: addMovieToGroup
       security:
-      - bearerAuth: [ ]
+        - bearerAuth: [ ]
       parameters:
-      - name: id
-        in: path
-        description: Group ID
-        required: true
-        schema:
-          type: string
-      - name: movieId
-        in: path
-        description: Movie ID
-        required: true
-        schema:
-          type: string
+        - name: id
+          in: path
+          description: Group ID
+          required: true
+          schema:
+            type: string
+        - name: movieId
+          in: path
+          description: Movie ID
+          required: true
+          schema:
+            type: string
       responses:
         '200':
           description: OK
@@ -393,25 +393,25 @@ paths:
           content: { }
     delete:
       tags:
-      - Groups
+        - Groups
       summary: Remove movie from group
       description: Remove movie from group
       operationId: delMovieFromGroup
       security:
-      - bearerAuth: [ ]
+        - bearerAuth: [ ]
       parameters:
-      - name: id
-        in: path
-        description: Group ID
-        required: true
-        schema:
-          type: integer
-      - name: movieId
-        in: path
-        description: Movie ID
-        required: true
-        schema:
-          type: string
+        - name: id
+          in: path
+          description: Group ID
+          required: true
+          schema:
+            type: integer
+        - name: movieId
+          in: path
+          description: Movie ID
+          required: true
+          schema:
+            type: string
       responses:
         '200':
           description: OK
@@ -475,7 +475,7 @@ paths:
           application/json:
             schema:
               required:
-              - username
+                - username
               type: object
               properties:
                 username:
@@ -503,15 +503,15 @@ components:
   schemas:
     Movie:
       required:
-      - id
-      - title
-      - year
-      - runtimeMins
-      - imdbRating
-      - imageUrl
-      - directors
-      - writers
-      - actors
+        - id
+        - title
+        - year
+        - runtimeMins
+        - imdbRating
+        - imageUrl
+        - directors
+        - writers
+        - actors
       type: object
       properties:
         id:
@@ -563,13 +563,37 @@ components:
                 example: https://image.tmdb.org/t/p/w500/9O7gLzmreU0nGkIB6K3BsJbzvNv.jpg
             description: Movie actor
             example:
-                name: Tim Robbins
-                imageUrl: https://image.tmdb.org/t/p/w500/9O7gLzmreU0nGkIB6K3BsJbzvNv.jpg
+              name: Tim Robbins
+              imageUrl: https://image.tmdb.org/t/p/w500/9O7gLzmreU0nGkIB6K3BsJbzvNv.jpg
           example:
             - name: Tim Robbins
               imageUrl: https://image.tmdb.org/t/p/w500/9O7gLzmreU0nGkIB6K3BsJbzvNv.jpg
             - name: Morgan Freeman
               imageUrl: https://image.tmdb.org/t/p/w500/9O7gLzmreU0nGkIB6K3BsJbzvNv.jpg
+    SearchedMovie:
+      required:
+        - id
+        - title
+        - description
+        - imageUrl
+      type: object
+      properties:
+        id:
+          type: string
+          description: Movie ID
+          example: tt0111161
+        title:
+          type: string
+          description: Movie title
+          example: The Shawshank Redemption
+        description:
+          type: string
+          description: Group description
+          example: My favorite movies
+        imageUrl:
+          type: string
+          description: Movie image URL
+          example: https://image.tmdb.org/t/p/w500/9O7gLzmreU0nGkIB6K3BsJbzvNv.jpg
     TopMovie:
       required:
         - id
@@ -616,11 +640,11 @@ components:
           $ref: '#/components/schemas/Group'
     Group:
       required:
-      - id
-      - name
-      - description
-      - movies
-      - totalDuration
+        - id
+        - name
+        - description
+        - movies
+        - totalDuration
       type: object
       properties:
         id:
@@ -628,9 +652,9 @@ components:
           description: Group ID
           example: 1
         name:
-         type: string
-         description: Group name
-         example: My group
+          type: string
+          description: Group name
+          example: My group
         description:
           type: string
           description: Group description
@@ -647,8 +671,8 @@ components:
           example: 142
     NewGroup:
       required:
-      - name
-      - description
+        - name
+        - description
       type: object
       properties:
         name:
@@ -661,8 +685,8 @@ components:
           example: My favorite movies
     NewGroupCreated:
       required:
-      - status
-      - group
+        - status
+        - group
       type: object
       properties:
         status:
@@ -673,10 +697,10 @@ components:
           $ref: '#/components/schemas/Group'
     NewUser:
       required:
-      - status
-      - userId
-      - username
-      - token
+        - status
+        - userId
+        - username
+        - token
       type: object
       properties:
         status:
@@ -698,8 +722,8 @@ components:
           example: a3d50b64-e401-4c57-a698-809fa2b85af2
     User:
       required:
-      - id
-      - username
+        - id
+        - username
       type: object
       properties:
         id:
