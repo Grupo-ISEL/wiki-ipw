@@ -8,7 +8,7 @@ import {MAX_LIMIT} from "../services/cmdb-services-constants.mjs"
 // fetchFromImdb errMsg: Year is empty
 
 
-export default function (fetchModule) {
+export default function (fetchModule, apiKey) {
 
     if (!fetchModule)
         throw new Error("fetchModule is mandatory")
@@ -17,6 +17,8 @@ export default function (fetchModule) {
 
     // TODO: Init module with API key?
     //const API_KEY = "k_1234abcd"
+    // const API_KEY = k_0v6pmbzj
+    // const API_KEY = apiKey
     const API_KEY = getApiKey()
 
     // Reads the IMDB API key from an environment variable if it exists
@@ -62,7 +64,7 @@ export default function (fetchModule) {
             imageUrl: movie.image || NO_PICTURE,
         }))
         debug(`getMovies found %O`, movies)
-        return movies
+        return {movies: movies}
     }
 
     async function getMovieDuration(movieId) {
