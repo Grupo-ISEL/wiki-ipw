@@ -60,7 +60,9 @@ app.post('/site/groups/edit', site.updateGroup)
 app.get('/site/movies/search', site.getSearchMovieForm)
 app.get('/site/movies/top', site.getTopMovies)
 app.get('/site/movies/:id', site.getMovie)
-// app.post('/site/movies', site.getMovies)
+app.get('/site/movies', site.getMovies)
+app.get('/site/login', site.getLoginForm)
+// app.get('/site/signup', site.getSignUpForm)
 
 // Web API routes
 app.get('/movies', api.movies.getMovies)

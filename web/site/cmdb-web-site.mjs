@@ -33,7 +33,9 @@ export default function (servicesGroups, servicesMovies, servicesUsers) {
         getSearchMovieForm: getSearchMovieForm,
         getTopMovies: handleRequest(getTopMovies),
         getMovie: handleRequest(getMovie),
+        getMovies: handleRequest(getMovies),
         getEditGroupForm: handleRequest(getEditGroupForm),
+        getLoginForm: getLoginForm,
         updateGroup: handleRequest(updateGroup),
     }
 
@@ -53,6 +55,10 @@ export default function (servicesGroups, servicesMovies, servicesUsers) {
 
     function getNewGroupForm(req, rsp) {
         rsp.render('newGroup')
+    }
+
+    function getLoginForm(req, rsp) {
+        rsp.render('login')
     }
 
     async function getEditGroupForm(req, rsp) {
@@ -112,6 +118,18 @@ export default function (servicesGroups, servicesMovies, servicesUsers) {
         return new View('movie', movie)
     }
 
+    async function getMovies(req, rsp) {
+        const movieRequest = {
+            offset: req.query.offset || 0, // TODO: Do this somewhere else
+            limit: req.query.limit || 250, // TODO: Do this somewhere else
+            search: req.query.search,
+        }
+        const movies = await servicesMovies.getMovies(movieRequest)
+        // debug (`getMovies: ${tasks}`)
+        debug(`getMovies: %O`, movies)
+        return new View('searchResults', movies)
+        }
+
     function handleRequest(handler) {
         return async function (req, rsp) {
             req.token = '7d458b7b-dccb-4eaf-9d53-29d45cbf3f32'
@@ -122,8 +140,9 @@ export default function (servicesGroups, servicesMovies, servicesUsers) {
                     rsp.render(view.name, view.data)
                 }
             } catch (e) {
-                const response = getHTTPError(e)
-                rsp.status(response.status).json({error: response.body})
+                const response = getHTTPError(e, "Internal Server Error")
+                rsp.status(response.status)
+                rsp.render('error', response)
                 debug(`Error: %O`, e)
             }
         }
