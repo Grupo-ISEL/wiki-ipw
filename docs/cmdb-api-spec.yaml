@@ -60,9 +60,7 @@ paths:
           content:
             application/json:
               schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/SearchedMovie'
+                  $ref: '#/components/schemas/SearchResults'
         '400':
           description: Bad request
           content:
@@ -570,30 +568,38 @@ components:
               imageUrl: https://image.tmdb.org/t/p/w500/9O7gLzmreU0nGkIB6K3BsJbzvNv.jpg
             - name: Morgan Freeman
               imageUrl: https://image.tmdb.org/t/p/w500/9O7gLzmreU0nGkIB6K3BsJbzvNv.jpg
-    SearchedMovie:
-      required:
-        - id
-        - title
-        - description
-        - imageUrl
+    SearchResults:
       type: object
+      required:
+        - movies
       properties:
-        id:
-          type: string
-          description: Movie ID
-          example: tt0111161
-        title:
-          type: string
-          description: Movie title
-          example: The Shawshank Redemption
-        description:
-          type: string
-          description: Group description
-          example: My favorite movies
-        imageUrl:
-          type: string
-          description: Movie image URL
-          example: https://image.tmdb.org/t/p/w500/9O7gLzmreU0nGkIB6K3BsJbzvNv.jpg
+        movies:
+          type: array
+          description: movie list search results
+          items:
+            type: object
+            required:
+              - id
+              - title
+              - description
+              - imageUrl
+            properties:
+              id:
+                type: string
+                description: Movie ID
+                example: tt0111161
+              title:
+                type: string
+                description: Movie title
+                example: The Shawshank Redemption
+              description:
+                type: string
+                description: Group description
+                example: My favorite movies
+              imageUrl:
+                type: string
+                description: Movie image URL
+                example: https://image.tmdb.org/t/p/w500/9O7gLzmreU0nGkIB6K3BsJbzvNv.jpg
     TopMovie:
       required:
         - id
