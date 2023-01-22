@@ -47,6 +47,7 @@ hbs.registerPartials(path.join(viewsPath, 'partials'))
 app.use(cors())
 app.use(express.json())
 app.use(express.urlencoded({extended: false}))
+app.use(morgan('dev'))
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument))
 
 // Web site routes
@@ -65,19 +66,21 @@ app.get('/site/login', site.getLoginForm)
 // app.get('/site/signup', site.getSignUpForm)
 
 // Web API routes
-app.get('/movies', api.movies.getMovies)
-app.get('/movies/top', api.movies.getTopMovies)
-app.get('/movies/:id', api.movies.getMovie)
+app.get('/api/movies', api.movies.getMovies)
+app.get('/api/movies/top', api.movies.getTopMovies)
+app.get('/api/movies/:id', api.movies.getMovie)
 
-app.get('/groups', api.groups.getGroups)
-app.post('/groups', api.groups.createGroup)
-app.get('/groups/:id', api.groups.getGroup)
-app.put('/groups/:id', api.groups.updateGroup)
-app.delete('/groups/:id', api.groups.deleteGroup)
-app.put('/groups/:id/movies/:movieId', api.groups.addMovieToGroup)
-app.delete('/groups/:id/movies/:movieId', api.groups.removeMovieFromGroup)
+// Groups
+app.get('/api/groups', api.groups.getGroups)
+app.post('/api/groups', api.groups.createGroup)
+app.get('/api/groups/:id', api.groups.getGroup)
+app.put('/api/groups/:id', api.groups.updateGroup)
+app.delete('/api/groups/:id', api.groups.deleteGroup)
+app.put('/api/groups/:id/movies/:movieId', api.groups.addMovieToGroup)
+app.delete('/api/groups/:id/movies/:movieId', api.groups.removeMovieFromGroup)
 
-app.post('/users', api.users.createUser)
+// Users
+app.post('/api/users', api.users.createUser)
 
 let server = app.listen(PORT, () => console.log(`Server listening in http://localhost:${PORT}`))
 

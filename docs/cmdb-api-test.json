@@ -15,14 +15,15 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{host}}:{{port}}/groups/{{id}}",
+							"raw": "{{host}}:{{port}}/api/groups/1",
 							"host": [
 								"{{host}}"
 							],
 							"port": "{{port}}",
 							"path": [
+								"api",
 								"groups",
-								"{{id}}"
+								"1"
 							]
 						}
 					},
@@ -37,12 +38,13 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{host}}:{{port}}/groups",
+							"raw": "{{host}}:{{port}}/api/groups",
 							"host": [
 								"{{host}}"
 							],
 							"port": "{{port}}",
 							"path": [
+								"api",
 								"groups"
 							]
 						}
@@ -56,7 +58,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"name\": \"Group 1\",\n    \"description\": \"Group 1 description\"\n}",
+							"raw": "{\n    \"name\": \"dede\",\n    \"description\": \"dede\"\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -64,12 +66,13 @@
 							}
 						},
 						"url": {
-							"raw": "{{host}}:{{port}}/groups",
+							"raw": "{{host}}:{{port}}/api/groups",
 							"host": [
 								"{{host}}"
 							],
 							"port": "{{port}}",
 							"path": [
+								"api",
 								"groups"
 							]
 						}
@@ -83,7 +86,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"name\": \"Group Xpto\",\n    \"description\": \"Group Xpto edited\"\n}",
+							"raw": "{\n    \"name\": \"Group EDITED\",\n    \"description\": \"Group EDITED\"\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -91,14 +94,15 @@
 							}
 						},
 						"url": {
-							"raw": "{{host}}:{{port}}/groups/{{id}}",
+							"raw": "{{host}}:{{port}}/api/groups/2",
 							"host": [
 								"{{host}}"
 							],
 							"port": "{{port}}",
 							"path": [
+								"api",
 								"groups",
-								"{{id}}"
+								"2"
 							]
 						}
 					},
@@ -110,14 +114,15 @@
 						"method": "DELETE",
 						"header": [],
 						"url": {
-							"raw": "{{host}}:{{port}}/groups/{{id}}",
+							"raw": "{{host}}:{{port}}/api/groups/12",
 							"host": [
 								"{{host}}"
 							],
 							"port": "{{port}}",
 							"path": [
+								"api",
 								"groups",
-								"{{id}}"
+								"12"
 							]
 						}
 					},
@@ -129,16 +134,17 @@
 						"method": "PUT",
 						"header": [],
 						"url": {
-							"raw": "{{host}}:{{port}}/groups/{{id}}/movies/{{movieId}}",
+							"raw": "{{host}}:{{port}}/api/groups/3/movies/tt0071562",
 							"host": [
 								"{{host}}"
 							],
 							"port": "{{port}}",
 							"path": [
+								"api",
 								"groups",
-								"{{id}}",
+								"3",
 								"movies",
-								"{{movieId}}"
+								"tt0071562"
 							]
 						}
 					},
@@ -150,16 +156,17 @@
 						"method": "DELETE",
 						"header": [],
 						"url": {
-							"raw": "{{host}}:{{port}}/groups/{{id}}/movies/{{movieId}}",
+							"raw": "{{host}}:{{port}}/api/groups/3/movies/tt0071562",
 							"host": [
 								"{{host}}"
 							],
 							"port": "{{port}}",
 							"path": [
+								"api",
 								"groups",
-								"{{id}}",
+								"3",
 								"movies",
-								"{{movieId}}"
+								"tt0071562"
 							]
 						}
 					},
@@ -171,7 +178,7 @@
 				"bearer": [
 					{
 						"key": "token",
-						"value": "abc",
+						"value": "c0c50b0f-2ee0-4276-a21e-b72005f045cf",
 						"type": "string"
 					}
 				]
@@ -206,29 +213,28 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{host}}:{{port}}/movies",
+							"raw": "{{host}}:{{port}}/api/movies?offset=0&search=inception",
 							"host": [
 								"{{host}}"
 							],
 							"port": "{{port}}",
 							"path": [
+								"api",
 								"movies"
 							],
 							"query": [
 								{
-									"key": "search",
-									"value": null,
-									"disabled": true
-								},
-								{
 									"key": "offset",
-									"value": null,
-									"disabled": true
+									"value": "0"
 								},
 								{
 									"key": "limit",
-									"value": null,
+									"value": "2",
 									"disabled": true
+								},
+								{
+									"key": "search",
+									"value": "inception"
 								}
 							]
 						}
@@ -252,26 +258,46 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{host}}:{{port}}/movies/top",
+							"raw": "{{host}}:{{port}}/api/movies/top",
 							"host": [
 								"{{host}}"
 							],
 							"port": "{{port}}",
 							"path": [
+								"api",
 								"movies",
 								"top"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Movie",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var jsonObject = xml2Json(responseBody);"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{host}}:{{port}}/api/movies/1234",
+							"host": [
+								"{{host}}"
 							],
-							"query": [
-								{
-									"key": "offset",
-									"value": "",
-									"disabled": true
-								},
-								{
-									"key": "limit",
-									"value": null,
-									"disabled": true
-								}
+							"port": "{{port}}",
+							"path": [
+								"api",
+								"movies",
+								"1234"
 							]
 						}
 					},
@@ -286,7 +312,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "",
+					"raw": "{\n    \"username\": \"teste\"\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -294,12 +320,13 @@
 					}
 				},
 				"url": {
-					"raw": "{{host}}:{{port}}/users",
+					"raw": "{{host}}:{{port}}/api/users",
 					"host": [
 						"{{host}}"
 					],
 					"port": "{{port}}",
 					"path": [
+						"api",
 						"users"
 					]
 				}

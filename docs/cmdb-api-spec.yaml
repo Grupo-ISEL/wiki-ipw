@@ -24,7 +24,7 @@ tags:
 
 
 paths:
-  /movies:
+  /api/movies:
     get:
       tags:
         - Movies
@@ -67,7 +67,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/InvalidRequest'
-  /movies/{id}:
+  /api/movies/{id}:
     get:
       tags:
         - Movies
@@ -97,7 +97,7 @@ paths:
         '404':
           description: Movie not found
           content: { }
-  /movies/top:
+  /api/movies/top:
     get:
       tags:
         - Movies
@@ -135,7 +135,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/InvalidRequest'
-  /groups:
+  /api/groups:
     get:
       tags:
         - Groups
@@ -200,7 +200,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/NotAuthorized'
 
-  /groups/{id}:
+  /api/groups/{id}:
     get:
       tags:
         - Groups
@@ -339,7 +339,7 @@ paths:
         '404':
           description: Group not found
           content: { }
-  /groups/{id}/movies/{movieId}:
+  /api/roups/{id}/movies/{movieId}:
     put:
       tags:
         - Groups
@@ -438,7 +438,7 @@ paths:
         '404':
           description: Group or Movie not found
           content: { }
-  /users:
+  /api/users:
     get:
       tags:
         - Users
