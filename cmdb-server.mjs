@@ -15,6 +15,10 @@ import mockFetch from "./data/imdb-mock-data.mjs"
 import servicesInit from "./services/cmdb-services.mjs"
 import apiInit from "./web/api/cmdb-api.mjs"
 import siteInit from "./web/site/cmdb-web-site.mjs"
+import morgan from 'morgan'
+import passport from 'passport'
+import expressSession from 'express-session'
+
 
 const __dirname = url.fileURLToPath(new URL('.', import.meta.url));
 const swaggerDocument = yamljs.load('./docs/cmdb-api-spec.yaml')
@@ -51,18 +55,18 @@ app.use(morgan('dev'))
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument))
 
 // Web site routes
-app.use('/site/static', express.static(`${__dirname}./web/site/static-files`, {redirect: false, index: 'index.html'}))
-app.get('/site/groups/new', site.getNewGroupForm)
-app.get('/site/groups/:id/edit', site.getEditGroupForm)
-app.get('/site/groups/:id', site.getGroup)
-app.get('/site/groups', site.getGroups)
-app.post('/site/groups', site.createGroup)
-app.post('/site/groups/edit', site.updateGroup)
-app.get('/site/movies/search', site.getSearchMovieForm)
-app.get('/site/movies/top', site.getTopMovies)
-app.get('/site/movies/:id', site.getMovie)
-app.get('/site/movies', site.getMovies)
-app.get('/site/login', site.getLoginForm)
+app.use('/static', express.static(`${__dirname}./web/site/static-files`, {redirect: false, index: 'index.html'}))
+app.get('/groups/new', site.getNewGroupForm)
+app.get('/groups/:id/edit', site.getEditGroupForm)
+app.get('/groups/:id', site.getGroup)
+app.get('/groups', site.getGroups)
+app.post('/groups', site.createGroup)
+app.post('/groups/edit', site.updateGroup)
+app.get('/movies/search', site.getSearchMovieForm)
+app.get('/movies/top', site.getTopMovies)
+app.get('/movies/:id', site.getMovie)
+app.get('/movies', site.getMovies)
+app.get('/login', site.getLoginForm)
 // app.get('/site/signup', site.getSignUpForm)
 
 // Web API routes

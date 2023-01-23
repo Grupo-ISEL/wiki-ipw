@@ -70,14 +70,14 @@ export default function (servicesGroups, servicesMovies, servicesUsers) {
     async function updateGroup(req, rsp) {
         const groupId = req.body.groupId
         const group = await servicesGroups.updateGroup(req.token, groupId, req.body.name, req.body.description)
-        rsp.redirect(`/site/groups/${groupId}`)
+        rsp.redirect(`/groups/${groupId}`)
     }
 
     async function createGroup(req, rsp) {
         try {
             debug(`Creating group '${req.body.name}' with description '${req.body.description}'`)
             let group = await servicesGroups.createGroup(req.token, req.body.name, req.body.description)
-            rsp.redirect(`/site/groups/`)
+            rsp.redirect(`/groups/`)
         } catch (e) {
             console.log(e)
             if (e.code === 1) {
