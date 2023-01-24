@@ -1,7 +1,10 @@
 <div class="col-3">
-    <h2>{{name}}</h2>
+    <h2><a href="/groups/{{id}}/edit">{{name}}</a></h2>
     <p>{{description}}</p>
-<!--    <p>id: {{id}}</p>-->
+    <form action="/groups/delete" method="POST">
+        <input type="hidden" value="{{id}}" name="groupId">
+        <input class="btn btn-danger btn-sm " type="submit" value="Delete">
+    </form>
     <p>Total duration: {{totalDuration}}</p>
     <p>movies:</p>
         <ul>

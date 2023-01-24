@@ -1,7 +1,12 @@
 <div class="row justify-content-center">
+    {{#if groups }}
+    <div class="col-3">
+       {{>addToGroupP}}
+    </div>
+    {{/if}}
     <div class="col-6 justify-content-center">
         <h2>{{title}} ({{year}})</h2>
-<!--        <p>id: {{id}}</p>-->
+        <!--        <p>id: {{id}}</p>-->
         <p>description: {{description}}</p>
         <p>runtime: {{runtimeMins}} minutes</p>
         <p>IMDB Rating: {{imdbRating}}</p>
