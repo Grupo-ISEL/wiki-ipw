@@ -28,15 +28,19 @@ export default function (servicesGroups, servicesMovies, servicesUsers) {
     return {
         getGroup: handleRequest(getGroup),
         getGroups: handleRequest(getGroups),
-        getNewGroupForm: getNewGroupForm,
         createGroup: handleRequest(createGroup),
-        getSearchMovieForm: getSearchMovieForm,
         getTopMovies: handleRequest(getTopMovies),
         getMovie: handleRequest(getMovie),
         getMovies: handleRequest(getMovies),
         getEditGroupForm: handleRequest(getEditGroupForm),
-        getLoginForm: getLoginForm,
         updateGroup: handleRequest(updateGroup),
+        getLoginForm: getLoginForm,
+        getSearchMovieForm: getSearchMovieForm,
+        getSignUpForm: getSignUpForm,
+        getNewGroupForm: getNewGroupForm,
+        deleteGroup: handleRequest(deleteGroup),
+        addMovieToGroup: handleRequest(addMovieToGroup),
+        removeMovieFromGroup: handleRequest(removeMovieFromGroup)
     }
 
     async function getGroups(req, rsp) {
@@ -61,10 +65,38 @@ export default function (servicesGroups, servicesMovies, servicesUsers) {
         rsp.render('login')
     }
 
+    function getSignUpForm(req, rsp) {
+        rsp.render('signup')
+    }
+
+    function getSearchMovieForm(req, rsp) {
+        rsp.render('searchMovie')
+    }
+
     async function getEditGroupForm(req, rsp) {
         const group = await servicesGroups.getGroup(req.token, req.params.id)
         debug(`getEditGroupForm: %O`, group)
         return new View('editGroup', group)
+    }
+
+    async function deleteGroup(req, rsp) {
+        const groupId = req.body.groupId
+        const group = await servicesGroups.deleteGroup(req.token, groupId)
+        rsp.redirect('/groups')
+    }
+
+    async function addMovieToGroup(req, rsp) {
+        const groupId = req.body.groupId
+        const movieId = req.body.movieId
+        const group = await servicesGroups.addMovieToGroup(req.token, groupId, movieId)
+        rsp.redirect(`/groups/${groupId}`)
+    }
+
+    async function removeMovieFromGroup(req, rsp) {
+        const groupId = req.body.groupId
+        const movieId = req.body.movieId
+        const group = await servicesGroups.removeMovieFromGroup(req.token, groupId, movieId)
+        rsp.redirect(`/groups/${groupId}`)
     }
 
     async function updateGroup(req, rsp) {
@@ -85,10 +117,6 @@ export default function (servicesGroups, servicesMovies, servicesUsers) {
             }
             throw e
         }
-    }
-
-    function getSearchMovieForm(req, rsp) {
-        rsp.render('searchMovie')
     }
 
     async function getTopMovies(req, rsp) {

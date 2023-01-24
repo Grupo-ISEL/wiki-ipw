@@ -80,7 +80,7 @@ export default function (fetchModule, apiKey) {
         debug(`getMovie with movieId: ${movieId}`)
         const url = `https://imdb-api.com/en/API/Title/${API_KEY}/${movieId}`
         const response = await fetchFromImdb(url)
-        debug(`getMovie response: %O`, response)
+        // debug(`getMovie response: %O`, response)
         if (!response)
             throw error.MOVIE_NOT_FOUND(`${movieId}`)
         const parsedMovie = parseMovie(response)
