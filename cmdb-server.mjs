@@ -24,7 +24,8 @@ const __dirname = url.fileURLToPath(new URL('.', import.meta.url));
 const swaggerDocument = yamljs.load('./docs/cmdb-api-spec.yaml')
 const PORT = 1337
 
-process.env.IMDB_API_KEY = 'k_1234abcd'
+// process.env.IMDB_API_KEY = 'k_1234abcd'
+process.env.IMDB_API_KEY = 'k_0v6pmbzj'
 process.env['ELASTIC_URL'] = 'http://localhost:9200'
 if (!process.env['ELASTIC_URL'])
    throw new Error("ELASTIC_URL environment variables are mandatory")
@@ -32,8 +33,8 @@ if (!process.env['ELASTIC_URL'])
 const cmdbData = cmdbDataElastic(process.env['ELASTIC_URL'])
 // const cmdbData = cmdbDataMem()
 // mockFetch is optional
+const services = servicesInit(cmdbData, moviesData)
 // const services = servicesInit(cmdbData, moviesData, mockFetch)
-const services = servicesInit(cmdbData, moviesData, mockFetch)
 
 // const services = servicesInit(cmdbData, moviesData)
 const api = apiInit(services.groups, services.movies, services.users)
@@ -49,10 +50,28 @@ app.set('views', viewsPath)
 hbs.registerPartials(path.join(viewsPath, 'partials'))
 
 app.use(cors())
+
+app.use(expressSession(
+    {
+       secret: "d3cb156b-d7fc-4fbd-8dd2-c2a607ad04fa",
+       resave: false,
+       saveUninitialized: false
+       //store: new FileStore()
+    }
+))
+
 app.use(express.json())
 app.use(express.urlencoded({extended: false}))
 app.use(morgan('dev'))
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument))
+
+
+// Passport initialization
+app.use(passport.session())
+app.use(passport.initialize())
+
+passport.serializeUser((user, done) => done(null, user))
+passport.deserializeUser((user, done) => done(null, user))
 
 // Web site routes
 app.use('/static', express.static(`${__dirname}./web/site/static-files`, {redirect: false, index: 'index.html'}))
@@ -62,12 +81,15 @@ app.get('/groups/:id', site.getGroup)
 app.get('/groups', site.getGroups)
 app.post('/groups', site.createGroup)
 app.post('/groups/edit', site.updateGroup)
+app.post('/groups/delete', site.deleteGroup)
+app.post('/groups/addMovie', site.addMovieToGroup)
+app.post('/groups/removeMovie', site.removeMovieFromGroup)
 app.get('/movies/search', site.getSearchMovieForm)
 app.get('/movies/top', site.getTopMovies)
 app.get('/movies/:id', site.getMovie)
 app.get('/movies', site.getMovies)
 app.get('/login', site.getLoginForm)
-// app.get('/site/signup', site.getSignUpForm)
+app.get('/signup', site.getSignUpForm)
 
 // Web API routes
 app.get('/api/movies', api.movies.getMovies)

@@ -1,15 +1,17 @@
-<div class="col-3">
-    <h2><a href="/groups/{{id}}/edit">{{name}}</a></h2>
-    <p>{{description}}</p>
-    <form action="/groups/delete" method="POST">
-        <input type="hidden" value="{{id}}" name="groupId">
-        <input class="btn btn-danger btn-sm " type="submit" value="Delete">
-    </form>
-    <p>Total duration: {{totalDuration}}</p>
-    <p>movies:</p>
-        <ul>
-            {{#each movies}}
-                <li><a href="movies/{{this}}">{{this}}</a></li>
-            {{/each}}
-        </ul>
+<div class="col-6">
+    {{#with group}}
+        <h1><a href="/groups/{{id}}/edit">{{name}}</a></h1>
+        <p>{{description}}</p>
+        <p>Total duration: {{totalDuration}}</p>
+        <form action="/groups/delete" method="POST">
+            <input type="hidden" value="{{id}}" name="groupId">
+            <input class="btn btn-danger btn-sm " type="submit" value="Delete">
+        </form>
+    {{/with}}
+    <h2>Movies</h2>
+    <ul>
+        {{#each movies}}
+            <li><a href="/movies/{{id}}">{{title}}</a></li>
+        {{/each}}
+    </ul>
 </div>

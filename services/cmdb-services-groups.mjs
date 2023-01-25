@@ -1,6 +1,6 @@
 // Module contains all management logic for groups
-import error from "../errors.mjs";
-import debugInit from 'debug';
+import error from "../errors.mjs"
+import debugInit from 'debug'
 
 export default function (cmdbData, moviesData) {
     // Validate arguments
@@ -29,10 +29,10 @@ export default function (cmdbData, moviesData) {
             debug(`Handling token validation for action: '${action.name}'`)
             const user = await cmdbData.getUserByToken(token)
             debug(`User: %O`, user)
-            if(!user)
+            if (!user)
                 throw error.ACCESS_DENIED()
-           debug(`Running action: '${action.name}' group: '${groupId}' userId: '${user.id}' movie: '${movieId}'`)
-           return await action(user, groupId, movieId, name, description)
+            debug(`Running action: '${action.name}' group: '${groupId}' userId: '${user.id}' movie: '${movieId}'`)
+            return await action(user, groupId, movieId, name, description)
         }
     }
 
@@ -42,6 +42,14 @@ export default function (cmdbData, moviesData) {
         const groups = await cmdbData.getGroups(user)
         if (!groups)
             throw error.GROUPS_NOT_FOUND()
+        // Get movie details for each group
+        // debug(`Found groups: %O`, groups)
+        // TODO: NOT WORKING -> NEED TO RETURN MOVIES DETAILS
+        for (const group of groups) {
+            group.movies = await Promise.all(group.movies.map(async id => await moviesData.getMovie(id)))
+        }
+
+        debug(`Found new_groups: %O`, groups)
         return groups
     }
 
@@ -56,6 +64,10 @@ export default function (cmdbData, moviesData) {
         const group = await cmdbData.getGroup(groupId)
         if (!group)
             throw error.GROUP_NOT_FOUND(groupId)
+        // TODO: NOT WORKING -> NEED TO RETURN MOVIES DETAILS
+        //const movies = await moviesData.getMovie(group.movies)
+        //group.movies = movies
+        // debug(`Found group movies: %O`, movies)
         return group
     }
 

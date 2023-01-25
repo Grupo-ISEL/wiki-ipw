@@ -40,11 +40,11 @@ export default function (servicesGroups, servicesMovies, servicesUsers) {
         getNewGroupForm: getNewGroupForm,
         deleteGroup: handleRequest(deleteGroup),
         addMovieToGroup: handleRequest(addMovieToGroup),
-        removeMovieFromGroup: handleRequest(removeMovieFromGroup)
+        removeMovieFromGroup: handleRequest(removeMovieFromGroup),
     }
 
     async function getGroups(req, rsp) {
-        const groups = await servicesGroups.getGroups(req.token, req.query.q, req.query.skip, req.query.limit)
+        const groups = await servicesGroups.getGroups(req.token)
         // debug (`getGroups: ${tasks}`)
         debug(`getGroups: %O`, groups)
 
@@ -52,9 +52,9 @@ export default function (servicesGroups, servicesMovies, servicesUsers) {
     }
 
     async function getGroup(req, rsp) {
-        const groupId = req.params.id
-        const group = await servicesGroups.getGroup(req.token, groupId)
-        return new View('group', group)
+        const group = await servicesGroups.getGroup(req.token, req.params.id)
+        const movies = await Promise.all(group.movies.map(async id => await servicesMovies.getMovie(id)))
+        return new View('group', {group, movies})
     }
 
     function getNewGroupForm(req, rsp) {
@@ -125,9 +125,10 @@ export default function (servicesGroups, servicesMovies, servicesUsers) {
             limit: req.query.limit || 250, // TODO: Do this somewhere else
         }
         const movies = await servicesMovies.getTopMovies(movieRequest)
+        const groups = await servicesGroups.getGroups(req.token)
         // debug(`getTopMovies: %O`, movies)
         return new View('topMovies', {
-            title: 'Top Movies', movies: movies.map(m => {
+            title: 'Top Movies', groups: groups, movies: movies.map(m => {
                 return ({
                     id: m.id,
                     title: m.title,
@@ -141,9 +142,11 @@ export default function (servicesGroups, servicesMovies, servicesUsers) {
     }
 
     async function getMovie(req, rsp) {
-        const movieId = req.params.id
-        const movie = await servicesMovies.getMovie(movieId)
-        return new View('movie', movie)
+        const movie = await servicesMovies.getMovie(req.params.id)
+        const groups = await servicesGroups.getGroups(req.token)
+        debug(`getMovie getMovie: %O`, movie)
+        debug(`getMovie getGroups: %O`, groups)
+        return new View('movie', {groups, movie})
     }
 
     async function getMovies(req, rsp) {
@@ -153,7 +156,7 @@ export default function (servicesGroups, servicesMovies, servicesUsers) {
             search: req.query.search,
         }
         const movies = await servicesMovies.getMovies(movieRequest)
-        // debug (`getMovies: ${tasks}`)
+        // const groups = await servicesGroups.getGroups(req.token)
         debug(`getMovies: %O`, movies)
         return new View('searchResults', movies)
         }

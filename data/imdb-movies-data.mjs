@@ -84,7 +84,9 @@ export default function (fetchModule, apiKey) {
         if (!response)
             throw error.MOVIE_NOT_FOUND(`${movieId}`)
         const parsedMovie = parseMovie(response)
-        debug(`getMovie parsedMovie: %O`, parsedMovie)
+        // print debug parsedmovie id and title
+        debug(`getMovie parsedMovie: ${parsedMovie.id} ${parsedMovie.title}`)
+
         return parsedMovie
     }
 

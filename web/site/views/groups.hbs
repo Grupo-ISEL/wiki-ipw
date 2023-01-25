@@ -2,7 +2,7 @@
     <h2>{{title}}</h2>
     <div class="row justify-content-center text-center">
         {{#each groups}}
-            {{> groupP}}
+            {{> groupP group=this}}
             <hr>
         {{/each}}
     </div>

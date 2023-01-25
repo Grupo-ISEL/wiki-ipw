@@ -35,7 +35,16 @@ export default function (moviesData) {
         if (!search_text)
             throw error.INVALID_PARAMETER("search string is required")
 
-        return await moviesData.getMovies(offset, limit, search_text)
+        const movies = await moviesData.getMovies(offset, limit, search_text)
+
+        // No movies being found is actually ok
+
+        // if (!movies) {
+        //     debug(`No movies found with search ${search_text} offset ${offset} limit ${limit}`)
+        //     throw error.MOVIE_NOT_FOUND(movieId)
+        // }
+
+        return movies
     }
 
     // Get Movie by ID
@@ -44,7 +53,12 @@ export default function (moviesData) {
         if (!movieId)
             throw error.INVALID_PARAMETER("movieId is required")
 
-        return await moviesData.getMovie(movieId);
+        const movie = await moviesData.getMovie(movieId)
+        if (!movie) {
+            debug(`No movie found with id ${movieId}`)
+            throw error.MOVIE_NOT_FOUND(movieId)
+        }
+        return movie
     }
 
     // Handle Movie Request

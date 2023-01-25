@@ -1,11 +1,13 @@
 
 <form action="/groups/addMovie" method="POST">
-    <label for="cars">Group:</label>
-    <select name="group" id="group">
+    <p>Test: {{movieId}}</p>
+    <label for="group">Group:</label>
+    <select name="groupId" id="group">
         {{#each groups}}
             <option value="{{id}}">{{name}}</option>
         {{/each}}
     </select>
     <br><br>
+    <input type="hidden" value="{{movieId}}" name="movieId">
     <input type="submit" value="Add">
 </form>
