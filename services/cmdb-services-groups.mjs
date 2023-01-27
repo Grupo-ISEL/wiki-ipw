@@ -42,12 +42,10 @@ export default function (cmdbData, moviesData) {
         const groups = await cmdbData.getGroups(user)
         if (!groups)
             throw error.GROUPS_NOT_FOUND()
-        // Get movie details for each group
-        // debug(`Found groups: %O`, groups)
         // TODO: NOT WORKING -> NEED TO RETURN MOVIES DETAILS
-        for (const group of groups) {
-            group.movies = await Promise.all(group.movies.map(async id => await moviesData.getMovie(id)))
-        }
+        // for (const group of groups) {
+        //     group.movies = await Promise.all(group.movies.map(async id => await moviesData.getMovie(id)))
+        // }
 
         debug(`Found new_groups: %O`, groups)
         return groups

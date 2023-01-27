@@ -67,11 +67,11 @@ export default function (fetchModule, apiKey) {
         return {movies: movies}
     }
 
-    async function getMovieDuration(movieId) {
-        const movie = await getMovie(movieId)
-        debug(`getMovieDuration for movieId: ${movieId} duration: ${Number(movie.runtimeMins)}`)
-        return Number(movie.runtimeMins)
-    }
+    // async function getMovieDuration(movieId) {
+    //     const movie = await getMovie(movieId)
+    //     debug(`getMovieDuration for movieId: ${movieId} duration: ${Number(movie.runtimeMins)}`)
+    //     return Number(movie.runtimeMins)
+    // }
 
     // Get Movie by IMDB ID
     async function getMovie(movieId) {
@@ -82,7 +82,8 @@ export default function (fetchModule, apiKey) {
         const response = await fetchFromImdb(url)
         // debug(`getMovie response: %O`, response)
         if (!response)
-            throw error.MOVIE_NOT_FOUND(`${movieId}`)
+            return null
+            // throw error.MOVIE_NOT_FOUND(`${movieId}`)
         const parsedMovie = parseMovie(response)
         // print debug parsedmovie id and title
         debug(`getMovie parsedMovie: ${parsedMovie.id} ${parsedMovie.title}`)
@@ -154,7 +155,7 @@ export default function (fetchModule, apiKey) {
                 return data
             }
             if (errMsg.includes("Invalid Id"))
-                return undefined
+                return null
             throw error.UNKNOWN(errMsg)
         }
         return data
