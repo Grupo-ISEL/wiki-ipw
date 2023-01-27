@@ -28,6 +28,7 @@ export default function (elasticUrl) {
         removeMovieFromGroup,
         createUser,
         getUserByToken,
+        getUserByUsername
     }
 
     // Return all groups
@@ -142,8 +143,8 @@ export default function (elasticUrl) {
     }
 
     // Create a new user in ElasticSearch DB
-    async function createUser(username) {
-        const user = {id: await getNextId('users'), username: username, token: crypto.randomUUID(), groups: []}
+    async function createUser(username, email, password) {
+        const user = {id: await getNextId('users'), username: username, email: email, password: password, token: crypto.randomUUID(), groups: []}
         const rsp = await putDocument('users', user.id, user)
         debug(`Created user in elastic: %O`, rsp)
         debug(`Created user: '${user.id}' - username: '${user.username}' - '${user.token}'`)
@@ -156,6 +157,19 @@ export default function (elasticUrl) {
         const q = {query: {match: {token: token}}}
         const rsp = await searchDocument('users', q)
         debug(`search Rsp: %O`, rsp)
+        if (rsp['total']['value'] === 1) {
+            const user = rsp['hits'][0]['_source']
+            debug(`Found user in elastic: %O`, user)
+            return user
+        }
+    }
+
+    // Get user by username from ElasticSearch DB
+    async function getUserByUsername(username) {
+        debug(`getUserByUsername with username: '${username}'`)
+        const q = {query: {match: {username: username}}}
+        const rsp = await searchDocument('users', q)
+        // debug(`search Rsp: %O`, rsp)
         if (rsp['total']['value'] === 1) {
             const user = rsp['hits'][0]['_source']
             debug(`Found user in elastic: %O`, user)

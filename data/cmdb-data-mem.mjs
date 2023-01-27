@@ -50,8 +50,8 @@ export default function () {
     ]
 
     let users = [
-        {id: 1, username: "Andre", token: "3280fcf9-eb87-4d44-b05e-12be5c7ba6e1", groups: [1, 4]},
-        {id: 2, username: "Monteiro", token: "3280fcf9-eb87-4d44-b05e-12be5c7ba6e2", groups: [2, 5, 1]},
+        {id: 1, username: "Andre", email: "andre@dune.com", password: "123qwe", token: "3280fcf9-eb87-4d44-b05e-12be5c7ba6e1", groups: [1, 4]},
+        {id: 2, username: "Monteiro", email: "monteiro@dune.com", password: "123qwe", token: "3280fcf9-eb87-4d44-b05e-12be5c7ba6e2", groups: [2, 5, 1]},
     ]
     let nextUserId = users.length + 1
     let nextGroupId = groups.length + 1
@@ -66,6 +66,7 @@ export default function () {
         removeMovieFromGroup,
         createUser,
         getUserByToken,
+        getUserByUsername
     }
 
     // Return all groups that the user has access to
@@ -155,5 +156,10 @@ export default function () {
     async function getUserByToken(token) {
         debug(`getUserByToken with token: '${token}'`)
         return users.find(user => user.token === token)
+    }
+    // Get user by username
+    async function getUserByUsername(username) {
+        debug(`getUserByUsername with username: '${username}'`)
+        return users.find(user => user.username === username)
     }
 }
