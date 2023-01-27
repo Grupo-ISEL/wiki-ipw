@@ -261,7 +261,7 @@ paths:
             type: integer
       requestBody:
         description: Group details to edit
-        required: false
+        required: true
         content:
           application/json:
             schema:
@@ -339,7 +339,7 @@ paths:
         '404':
           description: Group not found
           content: { }
-  /api/roups/{id}/movies/{movieId}:
+  /api/groups/{id}/movies/{movieId}:
     put:
       tags:
         - Groups
@@ -467,26 +467,19 @@ paths:
       description: Adds a user to the system
       operationId: addUser
       requestBody:
-        description: User name
-        required: false
+        description: New User
+        required: true
         content:
           application/json:
             schema:
-              required:
-                - username
-              type: object
-              properties:
-                username:
-                  type: string
-                  description: username
-                  example: andre
+              $ref: '#/components/schemas/NewUser'
       responses:
         '201':
           description: User created
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/NewUser'
+                $ref: '#/components/schemas/NewUserCreated'
         '400':
           description: Bad request
           content:
@@ -702,6 +695,30 @@ components:
         group:
           $ref: '#/components/schemas/Group'
     NewUser:
+      required:
+        - username
+        - email
+        - password
+        - passwordConfirm
+      type: object
+      properties:
+        username:
+          type: string
+          description: User name
+          example: andre
+        email:
+          type: string
+          description: email
+          example: example@email.com
+        password:
+          type: string
+          description: password
+          example: password
+        passwordConfirm:
+          type: string
+          description: passwordConfirm
+          example: password
+    NewUserCreated:
       required:
         - status
         - userId
