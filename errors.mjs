@@ -42,5 +42,23 @@ export default {
             code: 7,
             message: message || `Unknown error`
         }
+    },
+    PASSWORDS_NOT_MATCH: () => {
+        return {
+            code: 8,
+            message: `Passwords do not match`
+        }
+    },
+    INVALID_CREDENTIALS: () => {
+        return {
+            code: 9,
+            message: `Invalid credentials`
+        }
+    },
+    USERNAME_ALREADY_EXISTS: username => {
+        return {
+            code: 10,
+            message: `Username '${username}' already exists`
+        }
     }
 }
