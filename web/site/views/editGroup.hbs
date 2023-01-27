@@ -1,6 +1,7 @@
 <div class="container justify-content-evenly">
     <div class="row justify-content-center">
         <div class="col-8 justify-content-center">
+            {{#with group}}
             <h2>{{title}}</h2>
             <h2>Edit group</h2>
             <form action="/groups/edit" method="POST">
@@ -9,6 +10,21 @@
                 <input type="hidden" value="{{id}}" name="groupId">
                 <input class="btn btn-primary" type="submit" value="Save Group">
             </form>
+            {{/with}}
         </div>
+    </div>
+    <div class="row justify-content-center">
+        <h2>Movies</h2>
+        <ul>
+            {{#each movies}}
+                <li>{{title}}
+                    <form action="/groups/removeMovie" method="POST">
+                        <input type="hidden" value="{{../id}}" name="groupId">
+                        <input type="hidden" value="{{id}}" name="movieId">
+                        <input class="btn btn-danger btn-sm " type="submit" value="Remove">
+                    </form>
+                </li>
+            {{/each}}
+        </ul>
     </div>
 </div>
