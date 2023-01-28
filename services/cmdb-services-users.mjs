@@ -39,7 +39,8 @@ export default function (cmdbData) {
         const user = await cmdbData.getUserByUsername(username)
         if (!user || user.password !== password) {
            debug(`Error validating credentials username:'${username}' password:'${password}'`)
-           throw error.INVALID_CREDENTIALS()
+            return null
+           // throw error.INVALID_CREDENTIALS()
         }
         return user
     }

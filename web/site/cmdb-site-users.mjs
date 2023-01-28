@@ -66,13 +66,12 @@ export default function (services) {
     async function login(req, rsp) {
         debug(`Validating credentials for user ${req.body.username}`)
         const user = await services.validateCredentials(req.body.username, req.body.password)
-        if (user) {
+        if (user)
             return req.login(user, (err) => {
                 req.session.movies = {}
                 req.session.groups = []
                 rsp.redirect('/groups')
             })
-        }
         rsp.render('loginForm', {username: req.body.username, message: "Invalid credentials"})
     }
 
