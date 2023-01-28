@@ -16,16 +16,14 @@ import servicesInit from "./services/cmdb-services.mjs"
 import apiInit from "./web/api/cmdb-api.mjs"
 import siteInit from "./web/site/cmdb-web-site.mjs"
 import morgan from 'morgan'
-import passport from 'passport'
-import expressSession from 'express-session'
 
 
 const __dirname = url.fileURLToPath(new URL('.', import.meta.url));
 const swaggerDocument = yamljs.load('./docs/cmdb-api-spec.yaml')
 const PORT = 1337
 
-process.env.IMDB_API_KEY = 'k_1234abcd'
-// process.env.IMDB_API_KEY = 'k_0v6pmbzj'
+// process.env.IMDB_API_KEY = 'k_1234abcd'
+process.env.IMDB_API_KEY = 'k_0v6pmbzj'
 process.env['ELASTIC_URL'] = 'http://localhost:9200'
 if (!process.env['ELASTIC_URL'])
    throw new Error("ELASTIC_URL environment variables are mandatory")
@@ -33,10 +31,9 @@ if (!process.env['ELASTIC_URL'])
 const cmdbData = cmdbDataElastic(process.env['ELASTIC_URL'])
 // const cmdbData = cmdbDataMem()
 // mockFetch is optional
-// const services = servicesInit(cmdbData, moviesData)
-const services = servicesInit(cmdbData, moviesData, mockFetch)
 
-// const services = servicesInit(cmdbData, moviesData)
+const services = servicesInit(cmdbData, moviesData)
+// const services = servicesInit(cmdbData, moviesData, mockFetch)
 const api = apiInit(services.groups, services.movies, services.users)
 const site = siteInit(services.groups, services.movies, services.users)
 
@@ -66,21 +63,9 @@ app.use('/movies/', site.movies)
 app.use('/groups/', site.groups)
 
 // Web API routes
-app.get('/api/movies', api.movies.getMovies)
-app.get('/api/movies/top', api.movies.getTopMovies)
-app.get('/api/movies/:id', api.movies.getMovie)
-
-// Groups
-app.get('/api/groups', api.groups.getGroups)
-app.post('/api/groups', api.groups.createGroup)
-app.get('/api/groups/:id', api.groups.getGroup)
-app.put('/api/groups/:id', api.groups.updateGroup)
-app.delete('/api/groups/:id', api.groups.deleteGroup)
-app.put('/api/groups/:id/movies/:movieId', api.groups.addMovieToGroup)
-app.delete('/api/groups/:id/movies/:movieId', api.groups.removeMovieFromGroup)
-
-// Users
-app.post('/api/users', api.users.createUser)
+app.use('/api/movies/', api.movies)
+app.use('/api/groups/', api.groups)
+app.use('/api/users/', api.users)
 
 let server = app.listen(PORT, () => console.log(`Server listening in http://localhost:${PORT}`))
 

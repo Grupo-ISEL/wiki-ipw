@@ -37,13 +37,6 @@ export default function (moviesData) {
 
         const movies = await moviesData.getMovies(offset, limit, search_text)
 
-        // No movies being found is actually ok
-
-        // if (!movies) {
-        //     debug(`No movies found with search ${search_text} offset ${offset} limit ${limit}`)
-        //     throw error.MOVIE_NOT_FOUND(movieId)
-        // }
-
         return movies
     }
 

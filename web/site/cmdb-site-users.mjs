@@ -4,26 +4,18 @@
 //  - Invoke the corresponding operation on services
 //  - Generate the response in HTML format
 
-
 import getHTTPError from "../http-errors.mjs"
 import debugInit from 'debug'
 import express from 'express'
 import passport from 'passport'
 import expressSession from 'express-session'
 
-
-const debug = debugInit("cmdb:site:users")
-
-function View(name, data) {
-    this.name = name
-    this.data = data
-}
-
 export default function (services) {
 
     if (!services)
         throw new Error("servicesUsers is mandatory")
 
+    const debug = debugInit("cmdb:site:users")
     const router = express.Router()
 
     router.use(expressSession(

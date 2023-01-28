@@ -1,18 +1,22 @@
 import debugInit from 'debug';
 import getHTTPError from "../http-errors.mjs";
 import {MAX_LIMIT} from "../../services/cmdb-services-constants.mjs"
+import express from 'express'
 
 export default function (moviesServices) {
 
     if (!moviesServices)
         throw new Error("moviesServices is mandatory")
+
     const debug = debugInit("cmdb:web:api:movies")
 
-    return {
-        getMovie: handleMoviesRequest(getMovie),
-        getMovies: handleMoviesRequest(getMovies),
-        getTopMovies: handleMoviesRequest(getTopMovies)
-    }
+    const router = express.Router()
+
+    router.get('/', handleMoviesRequest(getMovies))
+    router.get('/top', handleMoviesRequest(getTopMovies))
+    router.get('/:id', handleMoviesRequest(getMovie))
+
+    return router
 
     async function getMovie(movieRequest) {
         debug(`getMovie with id: ${movieRequest.id}`)
