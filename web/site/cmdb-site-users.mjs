@@ -30,9 +30,8 @@ export default function (services) {
         {
             secret: "d3cb156b-d7fc-4fbd-8dd2-c2a607ad04fa",
             resave: false,
-            saveUninitialized: false
-            //store: new FileStore()
-        }
+            saveUninitialized: false,
+        },
     ))
 
     // Passport initialization
@@ -48,12 +47,12 @@ export default function (services) {
     router.post('/login', login)
     router.post('/logout', logout)
     router.post('/signup', signup)
-    
+
     return router
 
     function verifyAuthenticated(req, rsp, next) {
         debug(`Verifying if user is authenticated`)
-        if(req.user) {
+        if (req.user) {
             debug(`User is authenticated`)
             return next()
         }
@@ -67,8 +66,12 @@ export default function (services) {
     async function login(req, rsp) {
         debug(`Validating credentials for user ${req.body.username}`)
         const user = await services.validateCredentials(req.body.username, req.body.password)
-        if(user) {
-            return req.login(user, (err) => rsp.redirect('/groups'))
+        if (user) {
+            return req.login(user, (err) => {
+                req.session.movies = {}
+                req.session.groups = []
+                rsp.redirect('/groups')
+            })
         }
         rsp.render('loginForm', {username: req.body.username, message: "Invalid credentials"})
     }
@@ -94,7 +97,7 @@ export default function (services) {
             rsp.render('signupForm', {
                 username: req.body.username,
                 email: req.body.email,
-                message: error.message
+                message: error.message,
             })
         }
     }

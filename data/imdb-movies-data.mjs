@@ -7,7 +7,6 @@ import {MAX_LIMIT} from "../services/cmdb-services-constants.mjs"
 // MusicVideo type is not valid
 // fetchFromImdb errMsg: Year is empty
 
-
 export default function (fetchModule, apiKey) {
 
     if (!fetchModule)
@@ -67,12 +66,6 @@ export default function (fetchModule, apiKey) {
         return {movies: movies}
     }
 
-    // async function getMovieDuration(movieId) {
-    //     const movie = await getMovie(movieId)
-    //     debug(`getMovieDuration for movieId: ${movieId} duration: ${Number(movie.runtimeMins)}`)
-    //     return Number(movie.runtimeMins)
-    // }
-
     // Get Movie by IMDB ID
     async function getMovie(movieId) {
         if (!movieId)
@@ -83,9 +76,7 @@ export default function (fetchModule, apiKey) {
         // debug(`getMovie response: %O`, response)
         if (!response)
             return null
-            // throw error.MOVIE_NOT_FOUND(`${movieId}`)
         const parsedMovie = parseMovie(response)
-        // print debug parsedmovie id and title
         debug(`getMovie parsedMovie: ${parsedMovie.id} ${parsedMovie.title}`)
 
         return parsedMovie
@@ -120,8 +111,7 @@ export default function (fetchModule, apiKey) {
     async function getTopMovies(offset, limit) {
         debug("getTopMovies")
         const url = `https://imdb-api.com/en/API/Top250Movies/${API_KEY}`
-        let topMovies = []
-        topMovies = (await fetchFromImdb(url))["items"]
+        let topMovies = (await fetchFromImdb(url))["items"]
         topMovies = topMovies.map(m => {
             return {id: m.id, title: m.title, rank: m.rank, year: m.year, imdbRating: m.imDbRating, imageUrl: m.image}
         })

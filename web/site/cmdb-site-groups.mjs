@@ -42,43 +42,46 @@ export default function (servicesGroups, servicesMovies) {
         rsp.render('newGroup')
     }
 
-    async function getEditGroupForm(req, rsp) {
 
-        const group = await servicesGroups.getGroup(req.user.token, req.params.id)
-        const movies = await Promise.all(group.movies.map(async id => await servicesMovies.getMovie(id)))
-        debug(`getEditGroupForm: %O`, group)
-        return new View('editGroup', {group, movies})
+    async function getUpdatedGroup(req) {
+        let group = await servicesGroups.getGroup(req.user.token, req.params.id)
+        group = await updateGroupMovies(group, req.session.movies)
+        req.session.groups = req.session.groups.map(sessionGroup => sessionGroup.id === group.id ? group : sessionGroup);
+        return group
+    }
+
+    async function updateGroupMovies(group, moviesSession) {
+        // Only fetch movies that are not already in the session property movies
+        const moviesToFetch = group.movies.filter(movieId => !moviesSession[movieId]);
+        // Add movies to session property movies
+        for (let movie of moviesToFetch) {
+            moviesSession[movie] = await servicesMovies.getMovie(movie);
+        }
+        // Update the group with the movie details
+        group.movies = group.movies.map(movieId => moviesSession[movieId]);
+        return group;
     }
 
     async function getGroups(req, rsp) {
         const groups = await servicesGroups.getGroups(req.user.token)
-        // debug(`getGroups: %O`, groups)
 
-        groups.forEach( g => { g.updated = g.updated || false})
-        req.session.groups = groups
-        debug (`getGroups: %O`, groups)
-        return new View('groups', {title: 'All groups', groups: groups})
+        req.session.groups = await Promise.all(groups.map(group => updateGroupMovies(group, req.session.movies)))
+        return new View('groups', {title: 'All groups', groups: req.session.groups})
     }
 
     async function getGroup(req, rsp) {
-        const group = await servicesGroups.getGroup(req.user.token, req.params.id)
-        debug (`getGroup group: %O`, group)
+        const group = await getUpdatedGroup(req)
+        debug(`getGroup: req.session.groups: %O`, req.session.groups)
 
-        const idx= req.session.groups.findIndex(g => g.id === group.id)
-        if (req.session.groups[idx]) {
-            if (!req.session.groups[idx].updated) {
-                debug(`Updating group ${group.id} movies`)
-                req.session.groups[idx].updated = true
-                req.session.groups[idx].movies = await Promise.all(group.movies.map(async id => await servicesMovies.getMovie(id)))
-            } else {
-                debug(`Group ${group.id} movies already updated`)
-            }
-            return new View('group', {group: req.session.groups[idx], movies: req.session.groups[idx].movies})
-        }
-        debug(`Group ${group.id} not found in session`)
-        debug (`getGroup movies: %O`, group.movies)
-        return new View('group', {group: group, movies: group.movies})
+        return new View('group', {title: 'Group', group: group, movies: group.movies})
     }
+
+    async function getEditGroupForm(req, rsp) {
+        const group = await getUpdatedGroup(req)
+        debug(`getEditGroupForm: %O`, group)
+        return new View('editGroup', {group: group, movies: group.movies})
+    }
+
 
     async function deleteGroup(req, rsp) {
         const groupId = req.body.groupId

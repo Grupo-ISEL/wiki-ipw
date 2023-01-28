@@ -39,7 +39,8 @@ export default function (servicesGroups, servicesMovies) {
     }
 
     async function getMovie(req, rsp) {
-        const movie = await servicesMovies.getMovie(req.params.id)
+        const movie = !req.session.movies[req.params.id] ? await servicesMovies.getMovie(req.params.id) : req.session.movies[req.params.id]
+        req.session.movies[req.params.id] = movie
         const groups = req.session.groups
         debug(`getMovie getMovie: %O`, movie)
         debug(`getMovie getGroups: %O`, groups)
@@ -94,19 +95,5 @@ export default function (servicesGroups, servicesMovies) {
                 debug(`Error: %O`, e)
             }
         }
-    }
-
-    async function addMovieToGroup(req, rsp) {
-        const groupId = req.body.groupId
-        const movieId = req.body.movieId
-        const group = await servicesGroups.addMovieToGroup(req.token, groupId, movieId)
-        rsp.redirect(`/groups/${groupId}`)
-    }
-
-    async function removeMovieFromGroup(req, rsp) {
-        const groupId = req.body.groupId
-        const movieId = req.body.movieId
-        const group = await servicesGroups.removeMovieFromGroup(req.token, groupId, movieId)
-        rsp.redirect(`/groups/${groupId}`)
     }
 }
