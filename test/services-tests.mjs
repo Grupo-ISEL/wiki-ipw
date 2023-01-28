@@ -21,8 +21,8 @@ describe('CMDB - Services Users Tests', function () {
     const servicesUsers = servicesUsersInit(cmdbData)
     describe('createUser', function () {
         it('createUser', async function () {
-            const result = await servicesUsers.createUser("andre")
-            expect(result, "createUser should return user with all properties").to.have.all.keys('id', 'username', 'token')
+            const result = await servicesUsers.createUser("andre", "andre@example.com", "1234", "1234")
+            expect(result, "createUser should return user with all properties").to.have.all.keys('id', 'username','token')
             expect(result.username, "createUser should return user with correct username").to.be.eql("andre")
             expect(result.token, "createUser should return user with correct token").to.be.a('string')
             expect(result.id, "createUser should return user with correct id").to.be.a('Number')
