@@ -1,10 +1,24 @@
 <h2>User Signup</h2>
-<form action="/signup" method="POST">
-    <p>Username: <input type="text" name="username" value="{{username}}"></p>
-    <p>Email: <input type="text" name="email" value="{{email}}"></p>
-    <p>Password: <input type="password" name="password"></p>
-    <p>Confirm Password: <input type="password" name="passwordConfirm"></p>
-    <input type="submit" value="Signup">
+<div class="form-group">
+    <form class="p-3" action="/signup" method="POST">
+        <div class="input-group">
+            <span class="input-group-text">Username</span>
+            <input type="text" name="username" class="form-control" value="{{username}}" placeholder="User">
+        </div>
+        <div class="input-group">
+            <span class="input-group-text">Email</span>
+            <input type="text" name="email" class="form-control" value="{{email}}" placeholder="User@domain.com">
+        </div>
+        <div class="input-group">
+            <span class="input-group-text">Password</span>
+            <input type="password" name="password" class="form-control" placeholder="Password">
+            <span class="input-group-text">Confirm</span>
+            <input type="password" name="passwordConfirm" class="form-control" placeholder="Confirm Password">
+        </div>
+        <div class="input-group">
+            <button type="submit" class="btn btn-primary mb-2">Signup</button>
+        </div>
+    </form>
     {{#if message}}
         <div class="alert alert-danger alert-dismissible show" role="alert">
             {{message}}
@@ -13,4 +27,4 @@
             </button>
         </div>
     {{/if}}
-</form>
+</div>
