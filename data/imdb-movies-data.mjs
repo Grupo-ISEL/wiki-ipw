@@ -63,7 +63,7 @@ export default function (fetchModule, apiKey) {
             imageUrl: movie.image || NO_PICTURE,
         }))
         debug(`getMovies found %O`, movies)
-        return {movies: movies}
+        return movies
     }
 
     // Get Movie by IMDB ID

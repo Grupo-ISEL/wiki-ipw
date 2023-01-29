@@ -53,8 +53,7 @@ app.use(express.urlencoded({extended: false}))
 app.use(morgan('dev'))
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument))
 
-// Web site routes
-app.use('/static', express.static(`${__dirname}./web/site/static-files`, {redirect: false, index: 'index.html'}))
+app.use(express.static(`${__dirname}./web/site/resources`, {redirect: false, index: 'index.html'}))
 
 // Web Site routes
 app.get('/', site.getHome)

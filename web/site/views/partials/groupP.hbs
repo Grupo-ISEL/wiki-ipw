@@ -4,7 +4,6 @@
         <p>{{description}}</p>
         <p>Total duration: {{totalDuration}}</p>
 
-    {{/with}}
     <div class="btn-group" role="group" aria-label="Basic example">
         <a href="/groups/{{id}}/edit">
             <button class="btn btn-primary btn-sm">Edit</button>
@@ -13,7 +12,9 @@
             <input type="hidden" value="{{id}}" name="groupId">
             <input class="btn btn-danger btn-sm " type="submit" value="Delete">
         </form>
+        <input class="btn btn-outline-danger btn-sm" type="button" id="bDelete" value="Delete (API)">
     </div>
+    {{/with}}
     <h2>Movies</h2>
     <ul>
         {{#each movies}}
