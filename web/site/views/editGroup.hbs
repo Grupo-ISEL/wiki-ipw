@@ -5,12 +5,19 @@
             <h2>{{title}}</h2>
             <h2>Edit group</h2>
             <form action="/groups/edit" method="POST">
-                <p>Group title: <input class="form-control" type="text" name="name" value="{{name}}"></p>
-                <p>Group description: <textarea class="form-control" name="description">{{description}}</textarea></p>
+                <p>Group title: <input class="form-control" type="text" name="name" id="name" value="{{name}}"></p>
+                <p>Group description: <textarea class="form-control" name="description" id="description">{{description}}</textarea></p>
                 <input type="hidden" value="{{id}}" name="groupId">
                 <input class="btn btn-primary" type="submit" value="Save Group">
             </form>
             {{/with}}
+                <input class="btn btn-secondary" type="button" id="bSave" value="Save Group (API)">
+                <script type="application/ecmascript" src="/js/group.js">
+                </script>
+
+                <script type="application/ecmascript">
+                    registerUpdate('{{token}}')
+                </script>
         </div>
     </div>
     <div class="row justify-content-center">
@@ -22,7 +29,7 @@
                         <input type="hidden" value="{{../group.id}}" name="groupId">
                         <input type="hidden" value="{{id}}" name="movieId">
 <!--                        <input class="btn btn-danger btn-sm rounded-0" type="submit" data-toggle="tooltip" data-placement="top" title="Delete"><i class="fa fa-trash"></i></inputbutton>-->
-                        <input class="btn btn-danger btn-sm " type="submit" value="Remove">
+                        <input class="btn btn-danger btn-sm" type="submit" value="Remove">
                     </form>
                 </li>
             {{/each}}

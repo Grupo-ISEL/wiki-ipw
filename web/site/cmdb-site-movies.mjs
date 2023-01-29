@@ -8,6 +8,7 @@
 import getHTTPError from "../http-errors.mjs"
 import debugInit from 'debug'
 import express from 'express'
+import {MAX_LIMIT, MIN_OFFSET} from "../../services/cmdb-services-constants.mjs"
 
 
 const debug = debugInit("cmdb:site:movies")
@@ -39,36 +40,30 @@ export default function (servicesGroups, servicesMovies) {
     }
 
     async function getMovie(req, rsp) {
-        const movie = !req.session.movies[req.params.id] ? await servicesMovies.getMovie(req.params.id) : req.session.movies[req.params.id]
-        req.session.movies[req.params.id] = movie
+
+        const movie = req.session.movies && req.params.id in req.session.movies ? req.session.movies[req.params.id] : await servicesMovies.getMovie(req.params.id)
         const groups = req.session.groups
+
         debug(`getMovie getMovie: %O`, movie)
         debug(`getMovie getGroups: %O`, groups)
         return new View('movie', {groups, movie})
     }
 
     async function getMovies(req, rsp) {
-        const movieRequest = {
-            offset: req.query.offset || 0, // TODO: Do this somewhere else
-            limit: req.query.limit || 250, // TODO: Do this somewhere else
-            search: req.query.search,
-        }
-        const movies = await servicesMovies.getMovies(movieRequest)
-        // const groups = req.session.groups
+        const movies = await servicesMovies.getMovies(req.movieRequest)
+        if (!movies)
+            return
         debug(`getMovies: %O`, movies)
         return new View('searchResults', movies)
     }
 
     async function getTopMovies(req, rsp) {
-        const movieRequest = {
-            offset: req.query.offset || 0, // TODO: Do this somewhere else
-            limit: req.query.limit || 250, // TODO: Do this somewhere else
-        }
-        const movies = await servicesMovies.getTopMovies(movieRequest)
-        const groups = req.session.groups
+        const movies = await servicesMovies.getTopMovies(req.movieRequest)
+        if (!movies)
+            return
         // debug(`getTopMovies: %O`, movies)
         return new View('topMovies', {
-            title: 'Top Movies', groups: groups, movies: movies.map(m => {
+            title: 'Top Movies', groups: req.session.groups, movies: movies.map(m => {
                 return ({
                     id: m.id,
                     title: m.title,
@@ -84,6 +79,11 @@ export default function (servicesGroups, servicesMovies) {
     function handleRequest(handler) {
         return async function (req, rsp) {
             try {
+                req.movieRequest = {
+                    offset: req.query.offset || MIN_OFFSET,
+                    limit: req.query.limit || MAX_LIMIT,
+                    search: req.query.search,
+                }
                 const view = await handler(req, rsp)
                 if (view)
                     rsp.render(view.name, view.data)

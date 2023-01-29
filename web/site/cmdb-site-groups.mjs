@@ -35,11 +35,15 @@ export default function (servicesGroups, servicesMovies) {
     router.post('/delete', handleRequest(deleteGroup))
     router.post('/addMovie', handleRequest(addMovieToGroup))
     router.post('/removeMovie', handleRequest(removeMovieFromGroup))
+    // router.put('/:id', handleRequest(updateGroup))
+    // router.delete('/:id', handleRequest(deleteGroup))
+    // router.put('/:id/movies/:movieId', handleRequest(addMovieToGroup))
+    // router.delete('/:id/movies/:movieId', handleRequest(removeMovieFromGroup))
 
     return router
 
     function getNewGroupForm(req, rsp) {
-        rsp.render('newGroup')
+        rsp.render('newGroup', {title: 'New group'})
     }
 
 
@@ -66,22 +70,21 @@ export default function (servicesGroups, servicesMovies) {
         const groups = await servicesGroups.getGroups(req.user.token)
 
         req.session.groups = await Promise.all(groups.map(group => updateGroupMovies(group, req.session.movies)))
-        return new View('groups', {title: 'All groups', groups: req.session.groups})
+        return new View('groups', {title: 'All groups', token: req.user.token, groups: req.session.groups})
     }
 
     async function getGroup(req, rsp) {
         const group = await getUpdatedGroup(req)
         debug(`getGroup: req.session.groups: %O`, req.session.groups)
 
-        return new View('group', {title: 'Group', group: group, movies: group.movies})
+        return new View('group', {title: 'Group', token: req.user.token, group: group, movies: group.movies})
     }
 
     async function getEditGroupForm(req, rsp) {
         const group = await getUpdatedGroup(req)
         debug(`getEditGroupForm: %O`, group)
-        return new View('editGroup', {group: group, movies: group.movies})
+        return new View('editGroup', {token: req.user.token, group: group, movies: group.movies})
     }
-
 
     async function deleteGroup(req, rsp) {
         const groupId = req.body.groupId
@@ -127,10 +130,8 @@ export default function (servicesGroups, servicesMovies) {
         return async function (req, rsp) {
             try {
                 const view = await handler(req, rsp)
-                if (view) {
-                    // debug(`Rendering view ${view.name} with data %O`, view.data)
+                if (view)
                     rsp.render(view.name, view.data)
-                }
             } catch (e) {
                 const httpError = getHTTPError(e.code, e.message || e)
                 debug(`Error: %O`, httpError)
