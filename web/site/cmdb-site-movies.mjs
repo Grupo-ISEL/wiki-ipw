@@ -47,16 +47,14 @@ export default function (servicesGroups, servicesMovies) {
         debug(`getMovie USER: %O`, req.user)
         debug(`getMovie getMovie: %O`, movie)
         debug(`getMovie getGroups: %O`, groups)
-        return new View('movie', {groups, movie, token: req.user})
+        return new View('movie', {groups, movie, token: req.user ? req.user.token : req.user})
     }
 
     async function getMovies(req, rsp) {
         const movies = await servicesMovies.getMovies(req.movieRequest)
-      /*  if (!movies)
-            return*/
         debug(`getMovies: %O`, movies)
         debug(`getMovies USER: %O`, req.user)
-        return new View('searchResults', {title: 'Search Results', token: req.user, movies: movies})
+        return new View('searchResults', {title: 'Search Results', token: req.user ? req.user.token : req.user, movies: movies})
     }
 
     async function getTopMovies(req, rsp) {
@@ -65,7 +63,7 @@ export default function (servicesGroups, servicesMovies) {
             return
         // debug(`getTopMovies: %O`, movies)
         return new View('topMovies', {
-            title: 'Top Movies', token: req.user, groups: req.session.groups, movies: movies.map(m => {
+            title: 'Top Movies', token: req.user ? req.user.token : req.user, groups: req.session.groups, movies: movies.map(m => {
                 return ({
                     id: m.id,
                     title: m.title,
