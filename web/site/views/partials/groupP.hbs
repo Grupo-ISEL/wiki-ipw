@@ -4,21 +4,27 @@
         <p>{{description}}</p>
         <p>Total duration: {{totalDuration}}</p>
 
-    <div class="btn-group" role="group" aria-label="Basic example">
+    <div class="btn-group" role="group">
         <a href="/groups/{{id}}/edit">
-            <button class="btn btn-primary btn-sm">Edit</button>
+            <button class="btn btn-primary btn-sm mb-2">Edit</button>
         </a>
         <form action="/groups/delete" method="POST">
             <input type="hidden" value="{{id}}" name="groupId">
-            <input class="btn btn-danger btn-sm " type="submit" value="Delete">
+            <input class="btn btn-danger btn-sm mb-2" type="submit" value="Delete">
         </form>
-        <input class="btn btn-outline-danger btn-sm" type="button" id="bDelete" value="Delete (API)">
+        <input class="btn btn-outline-danger btn-sm mb-2" type="button" id="bDelete" value="Delete (API)">
     </div>
     {{/with}}
     <h2>Movies</h2>
-    <ul>
+    <ul class="list-group">
         {{#each movies}}
-            <li><a href="/movies/{{id}}">{{title}}</a></li>
+            <li class="list-group-item list-group-item-action"><a href="/movies/{{id}}">{{title}}</a></li>
         {{/each}}
     </ul>
+    <script type="application/ecmascript" src="/js/group.js">
+    </script>
+
+    <script type="application/ecmascript">
+        registerDelete('{{token}}')
+    </script>
 </div>

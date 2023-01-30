@@ -2,34 +2,44 @@
     <div class="row justify-content-center">
         <div class="col-8 justify-content-center">
             {{#with group}}
-            <h2>{{title}}</h2>
-            <h2>Edit group</h2>
-            <form action="/groups/edit" method="POST">
-                <p>Group title: <input class="form-control" type="text" name="name" id="name" value="{{name}}"></p>
-                <p>Group description: <textarea class="form-control" name="description" id="description">{{description}}</textarea></p>
-                <input type="hidden" value="{{id}}" name="groupId">
-                <input class="btn btn-primary" type="submit" value="Save Group">
-            </form>
+                <h2>{{title}}</h2>
+                <h2>Edit group</h2>
+                <form action="/groups/edit" method="POST">
+                    <p>Group title: <input class="form-control" type="text" name="name" id="name" value="{{name}}"></p>
+                    <p>Group description: <textarea class="form-control" name="description"
+                                                    id="description">{{description}}</textarea></p>
+                    <input type="hidden" value="{{id}}" name="groupId">
+                    <div class="btn-group mb-2" role="group">
+                        <input class="btn btn-primary mb-2" type="submit" value="Save Group">
+                        <input class="btn btn-secondary mb-2" type="button" id="bSave" value="Save Group (API)">
+                    </div>
+                </form>
             {{/with}}
-                <input class="btn btn-secondary" type="button" id="bSave" value="Save Group (API)">
-                <script type="application/ecmascript" src="/js/group.js">
-                </script>
+            <script type="application/ecmascript" src="/js/group.js">
+            </script>
 
-                <script type="application/ecmascript">
-                    registerUpdate('{{token}}')
-                </script>
+            <script type="application/ecmascript">
+                registerUpdate('{{token}}')
+            </script>
         </div>
     </div>
     <div class="row justify-content-center">
         <h2>Movies</h2>
-        <ul>
+        <ul class="list-group">
             {{#each movies}}
-                <li>{{title}}
-                    <form action="/groups/removeMovie" method="POST">
-                        <input type="hidden" value="{{../group.id}}" name="groupId">
-                        <input type="hidden" value="{{id}}" name="movieId">
-                        <input class="btn btn-danger btn-sm" type="submit" value="Remove">
-                    </form>
+                <li class="list-group-item list-group-item-action">{{title}}
+                    <div class="btn-group mb-2" role="group">
+                        <form action="/groups/removeMovie" method="POST">
+                            <input type="hidden" value="{{../group.id}}" name="groupId">
+                            <input type="hidden" value="{{id}}" name="movieId">
+                            <input class="btn btn-danger btn-sm mb-2" type="submit" value="Remove">
+                        </form>
+                        <input class="btn btn-outline-danger btn-sm mb-2" type="button" id="bRemoveMovie"
+                               value="Remove (API)">
+                    </div>
+                    <script type="application/ecmascript">
+                        registerRemoveMovie('{{token}}')
+                    </script>
                 </li>
             {{/each}}
         </ul>

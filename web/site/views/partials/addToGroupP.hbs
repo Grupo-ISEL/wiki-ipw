@@ -1,4 +1,3 @@
-
 <form action="/groups/addMovie" method="POST">
     <label for="groupId">Group:</label>
     <select name="groupId" id="groupId">
@@ -9,5 +8,11 @@
     <br><br>
     <input type="hidden" value="{{movieId}}" id="movieId" name="movieId">
     <input class="btn btn-primary" type="submit" value="Add Movie">
-    <input class="btn btn-secondary" type="button" id="bSave" value="Add Movie (API)">
+    <input class="btn btn-secondary" type="button" id="bAddMovie" value="Add Movie (API)">
 </form>
+<script type="application/ecmascript" src="/js/group.js">
+</script>
+
+<script type="application/ecmascript">
+    registerAddMovie('{{token}}')
+</script>
