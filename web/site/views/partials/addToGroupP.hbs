@@ -1,11 +1,10 @@
 <form action="/groups/addMovie" method="POST">
     <label for="groupId">Group:</label>
-    <select name="groupId" id="groupId">
+    <select class="form-select mb-3" name="groupId" id="groupId">
         {{#each groups}}
             <option value="{{id}}">{{name}}</option>
         {{/each}}
     </select>
-    <br><br>
     <input type="hidden" value="{{movieId}}" id="movieId" name="movieId">
     <input class="btn btn-primary" type="submit" value="Add Movie">
     <input class="btn btn-secondary" type="button" id="bAddMovie" value="Add Movie (API)">
