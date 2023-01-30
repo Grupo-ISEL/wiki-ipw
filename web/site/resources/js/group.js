@@ -4,9 +4,9 @@ function registerDelete(tokenClient) {
   console.log("button:", button);
 
   async function handleClick() {
-    alert("click");
+    alert("click delete");
     const groupId = window.location.pathname.split("/").pop();
-    console.log(groupId);
+    console.log(`groupId: ${groupId}`);
 
     const uriDelete = `/api/groups/${groupId}`;
     const options = {
@@ -31,6 +31,7 @@ function registerUpdate(tokenClient) {
   console.log("button:", button);
 
   async function handleClick() {
+    alert("click save");
     const groupId = window.location.pathname.split("/").at(-2);
     console.log(groupId);
     const name = document.querySelector("#name").value;
@@ -63,10 +64,11 @@ function registerAddMovie(tokenClient) {
   console.log("button:", button);
 
   async function handleClick() {
-    alert("click");
-    const groupId = window.location.pathname.split("/").pop();
+    alert("click add movie");
+    const movieId = window.location.pathname.split("/").pop();
+    const groupId = document.querySelector("#groupId").value;
+    console.log(movieId);
     console.log(groupId);
-
     const uriAddMovie = `/api/groups/${groupId}/movies/${movieId}`;
     const options = {
       method: "PUT",
@@ -88,7 +90,7 @@ function registerRemoveMovie(tokenClient) {
   console.log("button:", button);
 
   async function handleClick() {
-    alert("click");
+    alert("click remove movie");
     const groupId = window.location.pathname.split("/").pop();
     console.log(groupId);
 
