@@ -53,7 +53,7 @@ function registerUpdate(tokenClient) {
     const rsp = await fetch(uriUpdate, options);
     if (rsp.ok) {
       alert(`Group with id ${groupId} updated`);
-      window.location = "/groups";
+      window.location = `/groups/${groupId}`;
     }
   }
 }
@@ -74,6 +74,7 @@ function registerAddMovie(tokenClient) {
       method: "PUT",
       headers: {
         Authorization: `Bearer ${tokenClient}`,
+        "Content-Type": "application/json",
       },
     };
     const rsp = await fetch(uriAddMovie, options);
@@ -91,8 +92,11 @@ function registerRemoveMovie(tokenClient) {
 
   async function handleClick() {
     alert("click remove movie");
-    const groupId = window.location.pathname.split("/").pop();
+    const groupId = window.location.pathname.split("/").at(-2);
+    const movieId = document.querySelector("#movieId").value;
+
     console.log(groupId);
+    console.log(movieId);
 
     const uriRemoveMovie = `/api/groups/${groupId}/movies/${movieId}`;
     const options = {
@@ -105,7 +109,7 @@ function registerRemoveMovie(tokenClient) {
     const rsp = await fetch(uriRemoveMovie, options);
     if (rsp.ok) {
       alert(`Movie with id ${movieId} removed from group with id ${groupId}`);
-      window.location = "/groups";
+      window.location = `/groups/${groupId}`;
     }
   }
 }

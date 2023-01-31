@@ -1,21 +1,31 @@
 <h2>User Signup</h2>
 <div class="form-group">
     <form class="p-3" action="/signup" method="POST">
-        <div class="input-group mb-3">
-            <span class="input-group-text">Username</span>
-            <input type="text" name="username" class="form-control" value="{{username}}" placeholder="User">
+        <div class="input-group mb-3 justify-content-center">
+            <span class="input-group-text col-1">Username</span>
+            <div class="col-sm-3">
+                <input type="text" name="username" class="form-control" value="{{username}}" placeholder="User">
+            </div>
         </div>
-        <div class="input-group mb-3">
-            <span class="input-group-text">Email</span>
-            <input type="text" name="email" class="form-control" value="{{email}}" placeholder="User@domain.com">
+        <div class="input-group mb-3 justify-content-center">
+            <span class="input-group-text col-1">Email</span>
+            <div class="col-sm-3">
+                <input type="text" name="email" class="form-control" value="{{email}}" placeholder="User@domain.com">
+            </div>
         </div>
-        <div class="input-group mb-3">
-            <span class="input-group-text">Password</span>
-            <input type="password" name="password" class="form-control" placeholder="Password">
-            <span class="input-group-text">Confirm</span>
-            <input type="password" name="passwordConfirm" class="form-control" placeholder="Confirm Password">
+        <div class="input-group mb-3 justify-content-center">
+            <span class="input-group-text col-1">Password</span>
+            <div class="col-sm-3">
+                <input type="password" name="password" class="form-control" placeholder="Password">
+            </div>
         </div>
-        <div class="input-group">
+        <div class="input-group mb-3 justify-content-center">
+            <span class="input-group-text col-1">Confirm</span>
+            <div class="col-sm-3">
+                <input type="password" name="passwordConfirm" class="form-control" placeholder="Confirm Password">
+            </div>
+        </div>
+        <div class="input-group mb-3 justify-content-center">
             <button type="submit" class="btn btn-primary mb-2">Signup</button>
         </div>
     </form>

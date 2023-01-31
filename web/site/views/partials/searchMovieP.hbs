@@ -1,7 +1,21 @@
-<div class="col-2">
-    <img src="{{imageUrl}}" alt="poster" class="img-fluid">
-</div>
-<div class="col-7">
-    <h2 class="text-lg-center"><a href="/movies/{{id}}">{{title}}</a></h2>
-    <p>{{description}}</p>
+<!--<div class="col-2">-->
+<!--    <img src="{{imageUrl}}" alt="poster" class="img-fluid">-->
+<!--</div>-->
+<!--<div class="col-7">-->
+<!--    <h2 class="text-lg-center"><a href="/movies/{{id}}">{{title}}</a></h2>-->
+<!--    <p>{{description}}</p>-->
+<!--</div>-->
+
+<div class="card mb-3" style="max-width: 540px;">
+    <div class="row no-gutters">
+        <div class="col-md-4">
+            <img src="{{imageUrl}}" class="card-img" alt="poster">
+        </div>
+        <div class="col-md-8">
+            <div class="card-body">
+                <h5 class="card-title"><a href="/movies/{{id}}" class="card-link">{{title}}</a></h5>
+                <p class="card-text">{{description}}</p>
+            </div>
+        </div>
+    </div>
 </div>

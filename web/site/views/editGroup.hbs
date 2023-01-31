@@ -15,33 +15,34 @@
                     </div>
                 </form>
             {{/with}}
-            <script type="application/ecmascript" src="/js/group.js">
-            </script>
-
-            <script type="application/ecmascript">
-                registerUpdate('{{token}}')
-            </script>
         </div>
     </div>
     <div class="row justify-content-center">
         <h2>Movies</h2>
-        <ul class="list-group">
+        <ul class="list-group col-sm-4 justify-content-center">
             {{#each movies}}
-                <li class="list-group-item list-group-item-action">{{title}}
-                    <div class="btn-group mb-2" role="group">
+                <li class="list-group-item list-group-item-action list-group-item-dark">
+                    <p class="">{{title}}</p>
+                    <div class="btn-group mb-2 mr-3" role="group">
                         <form action="/groups/removeMovie" method="POST">
                             <input type="hidden" value="{{../group.id}}" name="groupId">
-                            <input type="hidden" value="{{id}}" name="movieId">
-                            <input class="btn btn-danger btn-sm mb-2" type="submit" value="Remove">
+                            <input type="hidden" value="{{id}}" name="movieId" id="movieId">
+                            <input class="btn btn-danger btn-sm mt-2 mb-2 mr-2" type="submit" value="Remove">
                         </form>
-                        <input class="btn btn-outline-danger btn-sm mb-2" type="button" id="bRemoveMovie"
+                    </div>
+                    <div class="btn-group mb-2" role="group">
+                        <input class="btn btn-outline-danger btn-sm mt-2 mb-2" type="button" id="bRemoveMovie"
                                value="Remove (API)">
                     </div>
-                    <script type="application/ecmascript">
-                        registerRemoveMovie('{{token}}')
-                    </script>
+
                 </li>
             {{/each}}
+            <script type="application/ecmascript" src="/js/group.js">
+            </script>
+            <script type="application/ecmascript">
+                registerUpdate('{{token}}')
+                registerRemoveMovie('{{token}}')
+            </script>
         </ul>
     </div>
 </div>

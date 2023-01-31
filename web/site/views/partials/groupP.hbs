@@ -1,30 +1,29 @@
-<div class="col-6">
+<div class="col-6 justify-content-center">
     {{#with group}}
         <h1><a href="/groups/{{id}}">{{name}}</a></h1>
         <p>{{description}}</p>
         <p>Total duration: {{totalDuration}}</p>
 
-    <div class="btn-group" role="group">
-        <a href="/groups/{{id}}/edit">
-            <button class="btn btn-primary btn-sm mb-2">Edit</button>
-        </a>
-        <form action="/groups/delete" method="POST">
-            <input type="hidden" value="{{id}}" name="groupId">
-            <input class="btn btn-danger btn-sm mb-2" type="submit" value="Delete">
-        </form>
-        <input class="btn btn-outline-danger btn-sm mb-2" type="button" id="bDelete" value="Delete (API)">
-    </div>
+        <div class="btn-group" role="group">
+            <a href="/groups/{{id}}/edit">
+                <button class="btn btn-primary btn-sm mb-2">Edit</button>
+            </a>
+            <form action="/groups/delete" method="POST">
+                <input type="hidden" value="{{id}}" name="groupId">
+                <input class="btn btn-danger btn-sm mb-2" type="submit" value="Delete">
+            </form>
+            <input class="btn btn-outline-danger btn-sm mb-2" type="button" id="bDelete" value="Delete (API)">
+        </div>
     {{/with}}
-    <h2>Movies</h2>
-    <ul class="list-group">
-        {{#each movies}}
-            <li class="list-group-item list-group-item-action"><a href="/movies/{{id}}">{{title}}</a></li>
-        {{/each}}
-    </ul>
-    <script type="application/ecmascript" src="/js/group.js">
-    </script>
+    <div class="row justify-content-center">
+        <h2>Movies</h2>
+        <ul class="list-group col-sm-4 justify-content-center">
+            {{#each movies}}
+                <a class="list-group-item list-group-item-action list-group-item-dark" href="/movies/{{id}}">{{title}}</a>
+            {{/each}}
+        </ul>
+    </div>
+    <script type="application/ecmascript" src="/js/group.js"></script>
 
-    <script type="application/ecmascript">
-        registerDelete('{{token}}')
-    </script>
+    <script type="application/ecmascript"> registerDelete('{{token}}')</script>
 </div>
