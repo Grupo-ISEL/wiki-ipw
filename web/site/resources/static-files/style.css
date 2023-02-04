@@ -1,0 +1,19 @@
+.input-group > .input-group-prepend {
+    flex: 0 0 8%;
+}
+
+.input-group .input-group-text {
+    width: 100%;
+}
+
+/* Remove the navbar default margin-bottom and rounded borders */
+.navbar {
+    margin-bottom: 0;
+    border-radius: 0;
+}
+
+/* Add a gray background color and some padding to the footer */
+footer {
+    /*background-color: #f2f2f2;*/
+    padding: 100px;
+}

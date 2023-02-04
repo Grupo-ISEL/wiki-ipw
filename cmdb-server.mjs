@@ -66,6 +66,9 @@ app.use('/api/movies/', api.movies)
 app.use('/api/groups/', api.groups)
 app.use('/api/users/', api.users)
 
+// catch 404
+app.use(site.getNotFound)
+
 let server = app.listen(PORT, () => console.log(`Server listening in http://localhost:${PORT}`))
 
 console.log("End setting up server")
