@@ -9,7 +9,7 @@
                     <p>Group description: <textarea class="form-control" name="description"
                                                     id="description">{{description}}</textarea></p>
                     <input type="hidden" value="{{id}}" name="groupId">
-                    <div class="btn-group mb-2" role="group">
+                    <div class="btn-group mb-2 mr-3" role="group">
                         <input class="btn btn-primary mb-2" type="submit" value="Save Group">
                         <input class="btn btn-secondary mb-2" type="button" id="bSave" value="Save Group (API)">
                     </div>
@@ -21,28 +21,28 @@
         <h2>Movies</h2>
         <ul class="list-group col-sm-4 justify-content-center">
             {{#each movies}}
-                <li class="list-group-item list-group-item-action list-group-item-dark">
-                    <p class="">{{title}}</p>
-                    <div class="btn-group mb-2 mr-3" role="group">
-                        <form action="/groups/removeMovie" method="POST">
-                            <input type="hidden" value="{{../group.id}}" name="groupId">
-                            <input type="hidden" value="{{id}}" name="movieId" id="movieId">
-                            <input class="btn btn-danger btn-sm mt-2 mb-2 mr-2" type="submit" value="Remove">
-                        </form>
-                    </div>
-                    <div class="btn-group mb-2" role="group">
-                        <input class="btn btn-outline-danger btn-sm mt-2 mb-2" type="button" id="bRemoveMovie"
-                               value="Remove (API)">
-                    </div>
-
-                </li>
+            <li class="list-group-item list-group-item-action list-group-item-dark">
+                <p class="">{{title}}</p>
+                <div class="btn-group mb-2 mr-3" role="group">
+                    <form action="/groups/removeMovie" method="POST">
+                        <input type="hidden" value="{{../group.id}}" name="groupId">
+                        <input type="hidden" value="{{id}}" name="movieId" id="movieId">
+                        <input class="btn btn-danger btn-sm mt-2 mb-2 mr-2" type="submit" value="Remove">
+                    </form>
+                </div>
+                <div class="btn-group mb-2 remove-movie-api">
+                    <button type="button" class="btn btn-outline-danger btn-sm mt-2 mb-2" id="{{id}}">
+                        <i class="fas fa-trash">API</i>
+                    </button>
+                </div>
             {{/each}}
-            <script type="application/ecmascript" src="/js/group.js">
-            </script>
-            <script type="application/ecmascript">
-                registerUpdate('{{token}}')
-                registerRemoveMovie('{{token}}')
-            </script>
+        </li>
         </ul>
+        <script type="application/ecmascript" src="/js/group.js">
+        </script>
+        <script type="application/ecmascript">
+            registerUpdate('{{token}}')
+            registerRemoveMovie('{{token}}')
+        </script>
     </div>
 </div>

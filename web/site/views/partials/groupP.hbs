@@ -1,25 +1,31 @@
-<div class="col-6 justify-content-center">
+<div class="col-8 justify-content-center">
     {{#with group}}
         <h1><a href="/groups/{{id}}">{{name}}</a></h1>
         <p>{{description}}</p>
         <p>Total duration: {{totalDuration}}</p>
 
-        <div class="btn-group" role="group">
+        <div class="btn-group me-1" role="group">
             <a href="/groups/{{id}}/edit">
-                <button class="btn btn-primary btn-sm mb-2">Edit</button>
+                <button class="btn btn-primary btn-sm me-1"><i class="fas fa-pencil-alt"></i> Edit</button>
             </a>
             <form action="/groups/delete" method="POST">
                 <input type="hidden" value="{{id}}" name="groupId">
-                <input class="btn btn-danger btn-sm mb-2" type="submit" value="Delete">
+                <button class="btn btn-danger btn-sm me-1" type="submit"><i class="fas fa-trash"></i>
+                </button>
             </form>
-            <input class="btn btn-outline-danger btn-sm mb-2" type="button" id="bDelete" value="Delete (API)">
+            <button class="btn btn-outline-danger btn-sm me-1" type="button" id="bDelete">
+                <i class="fas fa-trash"> API</i>
+            </button>
         </div>
     {{/with}}
     <div class="row justify-content-center">
         <h2>Movies</h2>
         <ul class="list-group col-sm-4 justify-content-center">
             {{#each movies}}
-                <a class="list-group-item list-group-item-action list-group-item-dark" href="/movies/{{id}}">{{title}}</a>
+                <a class="list-group-item list-group-item-action list-group-item-dark"
+                   href="/movies/{{id}}">{{title}}</a>
+            {{else}}
+                <p>No movies in this group</p>
             {{/each}}
         </ul>
     </div>
