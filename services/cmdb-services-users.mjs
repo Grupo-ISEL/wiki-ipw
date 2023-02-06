@@ -10,20 +10,16 @@ export default function (cmdbData) {
 
     return {
         createUser,
+        signUp,
         validateCredentials
     }
 
     // Create a new user
-    async function createUser(username, email, password, passwordConfirm) {
+    async function createUser(username, email, password) {
         // Check if user already exists
         if (await cmdbData.getUserByUsername(username)) {
             debug(`User already exists: '${username}'`)
             throw error.USERNAME_ALREADY_EXISTS(username)
-        }
-
-        if (password !== passwordConfirm) {
-            debug(`Passwords do not match: '${password}' != '${passwordConfirm}'`)
-            throw error.PASSWORDS_NOT_MATCH()
         }
 
         debug(`Creating user username:'${username}' email:'${email}' password:'${password}'`)
@@ -32,6 +28,15 @@ export default function (cmdbData) {
         if (!user)
             throw error.UNKNOWN('Error creating user')
         return user
+    }
+
+    async function signUp(username, email, password, passwordConfirm) {
+        if (password !== passwordConfirm) {
+            debug(`Passwords do not match: '${password}' != '${passwordConfirm}'`)
+            throw error.PASSWORDS_NOT_MATCH()
+        }
+
+        return createUser(username, email, password)
     }
 
     // Verify if user credentials are valid

@@ -78,7 +78,7 @@ export default function (services) {
     async function signup(req, rsp) {
         try {
             debug(`Creating user '${req.body.username}' email '${req.body.email}'  password '${req.body.password}' confirmation '${req.body.passwordConfirm}'`)
-            const user = await services.createUser(req.body.username, req.body.email, req.body.password, req.body.passwordConfirm)
+            const user = await services.signUp(req.body.username, req.body.email, req.body.password, req.body.passwordConfirm)
             debug(`User '${req.body.username}' created`)
             return login(req, rsp)
         } catch (e) {

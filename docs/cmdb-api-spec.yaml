@@ -439,27 +439,6 @@ paths:
           description: Group or Movie not found
           content: { }
   /api/users:
-    get:
-      tags:
-        - Users
-      summary: Get users
-      description: Get all users
-      operationId: getUsers
-      responses:
-        '200':
-          description: Users list
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/User'
-        '400':
-          description: Bad request
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/InvalidRequest'
     post:
       tags:
         - Users
@@ -542,25 +521,7 @@ components:
           type: array
           description: Movie actors list
           items:
-            type: object
-            properties:
-              name:
-                type: string
-                description: Actor name
-                example: Tim Robbins
-              imageUrl:
-                type: string
-                description: Actor image URL
-                example: https://image.tmdb.org/t/p/w500/9O7gLzmreU0nGkIB6K3BsJbzvNv.jpg
-            description: Movie actor
-            example:
-              name: Tim Robbins
-              imageUrl: https://image.tmdb.org/t/p/w500/9O7gLzmreU0nGkIB6K3BsJbzvNv.jpg
-          example:
-            - name: Tim Robbins
-              imageUrl: https://image.tmdb.org/t/p/w500/9O7gLzmreU0nGkIB6K3BsJbzvNv.jpg
-            - name: Morgan Freeman
-              imageUrl: https://image.tmdb.org/t/p/w500/9O7gLzmreU0nGkIB6K3BsJbzvNv.jpg
+            $ref: '#/components/schemas/Actor'
     SearchResults:
       type: object
       required:
@@ -723,6 +684,7 @@ components:
         - status
         - userId
         - username
+        - email
         - token
       type: object
       properties:
@@ -738,11 +700,29 @@ components:
           type: string
           description: User name
           example: andre
+        email:
+          type: string
+          description: E-mail address
+          example: andre@example.com
         token:
           type: string
           description: User token
           format: uuid
           example: a3d50b64-e401-4c57-a698-809fa2b85af2
+    Actor:
+      required:
+        - name
+        - imageUrl
+      type: object
+      properties:
+        name:
+          type: string
+          description: Actor name
+          example: Tim Robbins
+        imageUrl:
+          type: string
+          description: Actor image URL
+          example: https://image.tmdb.org/t/p/w500/9O7gLzmreU0nGkIB6K3BsJbzvNv.jpg
     User:
       required:
         - id

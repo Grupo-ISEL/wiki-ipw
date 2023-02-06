@@ -19,13 +19,15 @@ export default function (servicesUsers) {
     // Create a new user
     async function createUser(req, rsp) {
         try {
-            const newUser = await servicesUsers.createUser(req.body.username, req.body.password, req.body.password)
-            debug(`Created user: ${newUser.id} - ${newUser.username} - ${newUser.token}`)
+            const user = await servicesUsers.createUser(req.body.username, req.body.email, req.body.password)
+            debug(`Created user: ${user.id} - ${user.username} - ${user.token}`)
             rsp.status(201).json({
                 status: `New user created`,
-                id: newUser.id,
-                username: newUser.username,
-                token: newUser.token
+                 id: user.id,
+                 username: user.username,
+                 email: user.email,
+                 password: user.password,
+                 token: user.token
             })
         } catch (e) {
             const httpError = getHTTPError(e.code, e.message)
