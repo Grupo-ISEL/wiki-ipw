@@ -1,26 +1,34 @@
 <h2>User Signup</h2>
-<div class="form-group">
+<div class="form-group justify-content-center">
     <form class="p-3" action="/signup" method="POST">
         <div class="input-group mb-3 justify-content-center">
-            <span class="input-group-text col-1">Username</span>
+            <div class="input-group-prepend">
+                <span class="input-group-text col-1">Username</span>
+            </div>
             <div class="col-sm-3">
                 <input type="text" name="username" class="form-control" value="{{username}}" placeholder="User">
             </div>
         </div>
         <div class="input-group mb-3 justify-content-center">
-            <span class="input-group-text col-1">Email</span>
+            <div class="input-group-prepend">
+                <span class="input-group-text col-1">Email</span>
+            </div>
             <div class="col-sm-3">
                 <input type="text" name="email" class="form-control" value="{{email}}" placeholder="User@domain.com">
             </div>
         </div>
         <div class="input-group mb-3 justify-content-center">
-            <span class="input-group-text col-1">Password</span>
+            <div class="input-group-prepend">
+                <span class="input-group-text col-1">Password</span>
+            </div>
             <div class="col-sm-3">
                 <input type="password" name="password" class="form-control" placeholder="Password">
             </div>
         </div>
         <div class="input-group mb-3 justify-content-center">
-            <span class="input-group-text col-1">Confirm</span>
+            <div class="input-group-prepend">
+                <span class="input-group-text col-1">Confirm</span>
+            </div>
             <div class="col-sm-3">
                 <input type="password" name="passwordConfirm" class="form-control" placeholder="Confirm Password">
             </div>

@@ -4,14 +4,18 @@
 <div class="form-group justify-content-center">
     <form class="p-3" action="/login" method="POST">
         <div class="input-group mb-3 justify-content-center">
-            <span class="input-group-text col-1">Username</span>
+            <div class="input-group-prepend">
+                <span class="input-group-text col-1">Username</span>
+            </div>
             <div class="col-xs2">
                 <input type="text" name="username" class="form-control" value="{{username}}">
             </div>
         </div>
 
         <div class="input-group mb-3 justify-content-center">
-            <span class="input-group-text col-1">Password</span>
+            <div class="input-group-prepend">
+                <span class="input-group-text col-1">Password</span>
+            </div>
             <div class="col-xs2">
                 <input type="password" name="password" class="form-control">
             </div>

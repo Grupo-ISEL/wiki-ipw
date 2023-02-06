@@ -1,11 +1,6 @@
-import debugInit from 'debug'
-
 import siteGroupsInit from './cmdb-site-groups.mjs'
 import siteMoviesInit from './cmdb-site-movies.mjs'
 import siteUsersInit from './cmdb-site-users.mjs'
-
-
-const debug = debugInit("cmdb:web:site")
 
 export default function (servicesGroups, servicesMovies, servicesUsers) {
     // Validate argument
