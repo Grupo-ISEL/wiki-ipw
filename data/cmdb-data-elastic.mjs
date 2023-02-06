@@ -62,7 +62,6 @@ export default function (elasticUrl) {
             description,
             movies: [],
             totalDuration: 0,
-            // users: [user.id]
         }
         const resp = await putDocument('groups', groupId, group)
         debug(`Created group in elastic: %O`, resp)
@@ -83,7 +82,6 @@ export default function (elasticUrl) {
         }
 
         const updateUser = await addGroupToUser(user.id, groupId)
-        // TODO: add group id from elastic response in users group list
         return group
     }
 
