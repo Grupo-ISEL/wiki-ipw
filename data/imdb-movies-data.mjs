@@ -12,21 +12,23 @@ export default function (fetchModule, apiKey) {
     if (!fetchModule)
         throw new Error("fetchModule is mandatory")
 
+    if (!apiKey)
+        throw new Error("apiKey is mandatory")
+
     const debug = debugInit("cmdb:imdb:data:movies")
 
-    // TODO: Init module with API key?
     //const API_KEY = "k_1234abcd"
     // const API_KEY = k_0v6pmbzj
-    // const API_KEY = apiKey
-    const API_KEY = getApiKey()
+    const API_KEY = apiKey
+    // const API_KEY = getApiKey()
 
     // Reads the IMDB API key from an environment variable if it exists
-    function getApiKey() {
-        if (process.env.hasOwnProperty("IMDB_API_KEY") && process.env["IMDB_API_KEY"] !== "")
-            return process.env.IMDB_API_KEY
-        else
-            throw error.UNKNOWN("IMDB_API_KEY not set")
-    }
+    // function getApiKey() {
+    //     if (process.env.hasOwnProperty("IMDB_API_KEY") && process.env["IMDB_API_KEY"] !== "")
+    //         return process.env.IMDB_API_KEY
+    //     else
+    //         throw error.UNKNOWN("IMDB_API_KEY not set")
+    // }
 
     const fetch = fetchModule
     debug(`fetchModule provided ${fetchModule.name}`)

@@ -2,7 +2,7 @@
 
 import cmdbDataMem from "./data/cmdb-data-mem.mjs";
 import cmdbDataElastic from "./data/cmdb-data-elastic.mjs"
-import moviesData from "./data/imdb-movies-data.mjs"
+import imdbData from "./data/imdb-movies-data.mjs"
 import mockFetch from "./data/imdb-mock-data.mjs"
 import servicesInit from "./services/cmdb-services.mjs"
 import apiInit from "./web/api/cmdb-api.mjs"
@@ -16,6 +16,7 @@ if (!process.env['ELASTIC_URL'])
    throw new Error("ELASTIC_URL environment variables are mandatory")
 
 const cmdbData = cmdbDataElastic(process.env['ELASTIC_URL'])
+const moviesData = imdbData(fetch, process.env.IMDB_API_KEY)
 // const cmdbData = cmdbDataMem()
 // mockFetch is optional
 
