@@ -22,8 +22,8 @@ const moviesData = imdbData(fetch, process.env.IMDB_API_KEY)
 
 const services = servicesInit(cmdbData, moviesData)
 // const services = servicesInit(cmdbData, moviesData, mockFetch)
-const api = apiInit(services.groups, services.movies, services.users)
-const site = siteInit(services.groups, services.movies, services.users)
+const api = apiInit(services)
+const site = siteInit(services)
 
 let app = createApp(services, api, site)
 

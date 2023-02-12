@@ -9,8 +9,6 @@ import swaggerUi from 'swagger-ui-express'
 import yamljs from 'yamljs'
 import morgan from 'morgan'
 
-
-
 function createApp(services, api, site) {
    const __dirname = url.fileURLToPath(new URL('.', import.meta.url));
    const swaggerDocument = yamljs.load('./docs/cmdb-api-spec.yaml')
