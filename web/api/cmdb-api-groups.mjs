@@ -17,14 +17,17 @@ export default function (cmdbServices) {
 
     const router = express.Router()
 
-    router.get('/', handleRequest(getGroups))
-    router.post('/', handleRequest(createGroup))
-    router.get('/:id', handleRequest(getGroup))
-    router.put('/:id', handleRequest(updateGroup))
-    router.delete('/:id', handleRequest(deleteGroup))
-    router.put('/:id/movies/:movieId', handleRequest(addMovieToGroup))
-    router.delete('/:id/movies/:movieId', handleRequest(removeMovieFromGroup))
-    
+    router.route('/')
+        .get(handleRequest(getGroups))
+        .post(handleRequest(createGroup))
+    router.route('/:id')
+        .get(handleRequest(getGroup))
+        .put(handleRequest(updateGroup))
+        .delete(handleRequest(deleteGroup))
+    router.route('/:id/movies/:movieId')
+        .put(handleRequest(addMovieToGroup))
+        .delete(handleRequest(removeMovieFromGroup))
+
     return router
 
     // Get a group

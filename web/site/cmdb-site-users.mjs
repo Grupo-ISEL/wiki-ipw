@@ -34,11 +34,13 @@ export default function (services) {
     passport.deserializeUser((user, done) => done(null, user))
 
     router.use('/groups', verifyAuthenticated)
-    router.get('/login', loginForm)
-    router.get('/signup', signUpForm)
-    router.post('/login', login)
+    router.route('/login')
+        .get(loginForm)
+        .post(login)
+    router.route('/signup')
+        .get(signUpForm)
+        .post(signup)
     router.post('/logout', logout)
-    router.post('/signup', signup)
 
     return router
 

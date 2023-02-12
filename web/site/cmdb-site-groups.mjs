@@ -29,8 +29,9 @@ export default function (servicesGroups, servicesMovies) {
     router.get('/new', getNewGroupForm)
     router.get('/:id/edit', handleRequest(getEditGroupForm))
     router.get('/:id', handleRequest(getGroup))
-    router.get('/', handleRequest(getGroups))
-    router.post('/', handleRequest(createGroup))
+    router.route('/')
+        .get(handleRequest(getGroups))
+        .post(handleRequest(createGroup))
     router.post('/edit', handleRequest(updateGroup))
     router.post('/delete', handleRequest(deleteGroup))
     router.post('/addMovie', handleRequest(addMovieToGroup))
@@ -45,20 +46,20 @@ export default function (servicesGroups, servicesMovies) {
     async function getUpdatedGroup(req) {
         let group = await servicesGroups.getGroup(req.user.token, req.params.id)
         group = await updateGroupMovies(group, req.session.movies)
-        req.session.groups = req.session.groups.map(sessionGroup => sessionGroup.id === group.id ? group : sessionGroup);
+        req.session.groups = req.session.groups.map(sessionGroup => sessionGroup.id === group.id ? group : sessionGroup)
         return group
     }
 
     async function updateGroupMovies(group, moviesSession) {
         // Only fetch movies that are not already in the session property movies
-        const moviesToFetch = group.movies.filter(movieId => !moviesSession[movieId]);
+        const moviesToFetch = group.movies.filter(movieId => !moviesSession[movieId])
         // Add movies to session property movies
         for (let movie of moviesToFetch) {
-            moviesSession[movie] = await servicesMovies.getMovie(movie);
+            moviesSession[movie] = await servicesMovies.getMovie(movie)
         }
         // Update the group with the movie details
-        group.movies = group.movies.map(movieId => moviesSession[movieId]);
-        return group;
+        group.movies = group.movies.map(movieId => moviesSession[movieId])
+        return group
     }
 
     async function getGroups(req, rsp) {
