@@ -1,22 +1,29 @@
 // Module contains all management logic for users
-import debugInit from 'debug';
-import error from "../errors.mjs";
+import debugInit from 'debug'
+import error from "../errors.mjs"
 
 export default function (cmdbData) {
     const debug = debugInit("cmdb:services:users")
 
-    if(!cmdbData)
+    if (!cmdbData)
         throw new Error("cmdbData is mandatory")
 
     return {
         createUser,
         signUp,
-        validateCredentials
+        validateCredentials,
     }
 
     // Create a new user
     async function createUser(username, email, password) {
         // Check if user already exists
+        if (!username)
+            throw error.INVALID_PARAMETER('username')
+        if (!email)
+            throw error.INVALID_PARAMETER('email')
+        if (!password)
+            throw error.INVALID_PARAMETER('password')
+
         if (await cmdbData.getUserByUsername(username)) {
             debug(`User already exists: '${username}'`)
             throw error.USERNAME_ALREADY_EXISTS(username)
@@ -43,9 +50,9 @@ export default function (cmdbData) {
     async function validateCredentials(username, password) {
         const user = await cmdbData.getUserByUsername(username)
         if (!user || user.password !== password) {
-           debug(`Error validating credentials username:'${username}' password:'${password}'`)
+            debug(`Error validating credentials username:'${username}' password:'${password}'`)
             return null
-           // throw error.INVALID_CREDENTIALS()
+            // throw error.INVALID_CREDENTIALS()
         }
         return user
     }
