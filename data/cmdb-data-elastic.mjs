@@ -168,7 +168,7 @@ export default function (elasticUrl) {
         const q = {query: {match: {username: username}}}
         const rsp = await searchDocument('users', q)
         // debug(`search Rsp: %O`, rsp)
-        if (rsp['total']['value'] === 1) {
+        if (rsp['total']['value'] >= 1) {
             const user = rsp['hits'][0]['_source']
             debug(`Found user in elastic: %O`, user)
             return user
