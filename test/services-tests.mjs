@@ -32,8 +32,7 @@ describe('CMDB - Services Users Tests', function () {
 
 
 describe('CMDB - Services Movies Tests', function () {
-    process.env.IMDB_API_KEY = "k_1234abcd"
-    const moviesData = moviesDataInit(mockFetch)
+    const moviesData = moviesDataInit(mockFetch, "k_1234abcd")
     const servicesMovies = servicesMoviesInit(moviesData)
 
     describe('getTopMovies', function () {
@@ -119,15 +118,15 @@ describe('CMDB - Services Movies Tests', function () {
     describe('getMovies/searchMovie', function () {
         let result
         it('valid search string', async function () {
-            result = await servicesMovies.getMovies({search: "shaw"})
+            result = await servicesMovies.getMovies({search: "shaw", offset: 0, limit: 10})
             expect(result).to.be.an('array').and.have.lengthOf(1)
             expect(result[0]).to.have.all.keys('id', 'title', 'year', 'runtimeMins', 'imdbRating', 'imageUrl', 'description', 'directors', 'writers', 'actors')
         })
         it('Invalid search string', async function () {
-            return expect(servicesMovies.getMovies({search: undefined})).to.be.rejectedWith(error.INVALID_PARAMETER(), "Invalid argument search string is required")
+            return expect(servicesMovies.getMovies({search: undefined, offset: 0, limit: 10})).to.be.rejectedWith(error.INVALID_PARAMETER(), "Invalid argument search string is required")
         })
         it('Empty search string', async function () {
-            return expect(servicesMovies.getMovies({search: "",})).to.be.rejectedWith(error.INVALID_PARAMETER(), "Invalid argument search string is required")
+            return expect(servicesMovies.getMovies({search: "", offset: 0, limit: 10})).to.be.rejectedWith(error.INVALID_PARAMETER(), "Invalid argument search string is required")
         })
     })
 
