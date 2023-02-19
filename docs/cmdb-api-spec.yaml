@@ -523,37 +523,32 @@ components:
           items:
             $ref: '#/components/schemas/Actor'
     SearchResults:
-      type: object
-      required:
-        - movies
-      properties:
-        movies:
-          type: array
-          description: movie list search results
-          items:
-            type: object
-            required:
-              - id
-              - title
-              - description
-              - imageUrl
-            properties:
-              id:
-                type: string
-                description: Movie ID
-                example: tt0111161
-              title:
-                type: string
-                description: Movie title
-                example: The Shawshank Redemption
-              description:
-                type: string
-                description: Group description
-                example: My favorite movies
-              imageUrl:
-                type: string
-                description: Movie image URL
-                example: https://image.tmdb.org/t/p/w500/9O7gLzmreU0nGkIB6K3BsJbzvNv.jpg
+      type: array
+      description: movie list search results
+      items:
+        type: object
+        required:
+          - id
+          - title
+          - description
+          - imageUrl
+        properties:
+          id:
+            type: string
+            description: Movie ID
+            example: tt0111161
+          title:
+            type: string
+            description: Movie title
+            example: The Shawshank Redemption
+          description:
+            type: string
+            description: Group description
+            example: My favorite movies
+          imageUrl:
+            type: string
+            description: Movie image URL
+            example: https://image.tmdb.org/t/p/w500/9O7gLzmreU0nGkIB6K3BsJbzvNv.jpg
     TopMovie:
       required:
         - id
