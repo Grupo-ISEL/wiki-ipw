@@ -3,7 +3,6 @@ import debugInit from 'debug'
 import error from '../errors.mjs'
 import fetch from 'node-fetch'
 
-
 export default function (elasticUrl) {
 
     if (!elasticUrl)
@@ -70,13 +69,13 @@ export default function (elasticUrl) {
 
         debug(`Created group: '${resp['_id']}' - '${group.name}'`)
 
-        async function addGroupToUser(userId, id) {
-            debug(`Adding group '${id}' to user '${userId}'`)
+        async function addGroupToUser(userId, groupId) {
+            debug(`Adding group '${groupId}' to user '${userId}'`)
             const user = await updateDocument('users', userId, {
                 script: {
                     source: "if (!ctx._source.groups.contains(params.groups)) {ctx._source.groups.add(params.groups)}",
                     lang: "painless",
-                    params: {groups: id},
+                    params: {groups: groupId},
                 },
             })
         }
@@ -93,13 +92,13 @@ export default function (elasticUrl) {
             throw error.GROUP_NOT_FOUND(groupId)
         debug(`Deleted group: %O`, rsp)
 
-        async function removeGroupFromUser(userId, id) {
-            debug(`Removing group '${id}' from user '${userId}'`)
+        async function removeGroupFromUser(userId, groupId) {
+            debug(`Removing group '${groupId}' from user '${userId}'`)
             const user = await updateDocument('users', userId, {
                 script: {
                     source: "if (ctx._source.groups.contains(params.groups)) {ctx._source.groups.remove(ctx._source.groups.indexOf(params.groups))}",
                     lang: "painless",
-                    params: {groups: id},
+                    params: {groups: groupId},
                 },
             })
         }
@@ -249,7 +248,7 @@ export default function (elasticUrl) {
             ...(body) && {body: JSON.stringify(body)},
         })
         if (response.status !== 200 && response.status !== 201)
-            throw error.UNKNOWN(`ElasticSearch '${ELASTIC_URL}/${url_path}' method '${method}' returned status code: ${response.status}`)
+            throw error.UNKNOWN(`ElasticSearch '${ELASTIC_URL}/${url_path}' method '${method}' returned non-200 status code: ${response.status}`)
         return await response.json()
     }
 }

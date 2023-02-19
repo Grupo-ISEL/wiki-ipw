@@ -13,7 +13,6 @@ export default function () {
             description: "Action movies",
             movies: ["tt0111161", "tt1375666"],
             totalDuration: 671,
-            userId: [1, 2],
         },
         {
             id: 2,
@@ -21,7 +20,6 @@ export default function () {
             description: "Drama movies",
             movies: ["tt0111161", "tt0068646", "tt0071562"],
             totalDuration: 519,
-            userId: [2],
         },
         {
             id: 3,
@@ -29,7 +27,6 @@ export default function () {
             description: "Comedy movies",
             movies: ["tt1375666", "tt0468569"],
             totalDuration: 317,
-            userId: [],
         },
         {
             id: 4,
@@ -37,7 +34,6 @@ export default function () {
             description: "Sci-Fi movies",
             movies: ["tt0071562", "tt0468569"],
             totalDuration: 671,
-            userId: [1],
         },
         {
             id: 5,
@@ -45,13 +41,12 @@ export default function () {
             description: "Horror movies",
             movies: ["tt0111161", "tt0468569"],
             totalDuration: 671,
-            userId: [2],
         },
     ]
 
     let users = [
         {id: 1, username: "Andre", email: "andre@example.com", password: "123qwe", token: "3280fcf9-eb87-4d44-b05e-12be5c7ba6e1", groups: [1, 4]},
-        {id: 2, username: "Monteiro", email: "monteiro@example.com", password: "123qwe", token: "3280fcf9-eb87-4d44-b05e-12be5c7ba6e2", groups: [2, 5, 1]},
+        {id: 2, username: "Monteiro", email: "monteiro@example.com", password: "123qwe", token: "3280fcf9-eb87-4d44-b05e-12be5c7ba6e2", groups: [2, 5, 3] },
     ]
     let nextUserId = users.length + 1
     let nextGroupId = groups.length + 1
@@ -91,9 +86,9 @@ export default function () {
             description,
             movies: [],
             totalDuration: 0,
-            // userId,
         }
         groups.push(group)
+        userId.groups.push(group.id)
         return group
     }
 
@@ -107,9 +102,9 @@ export default function () {
     }
 
     // Update a group name and description
-    async function updateGroup(groupId, name, description) {
-        debug(`Updating group '${groupId}'`)
-        const group = await getGroup(groupId)
+    async function updateGroup(group, name, description) {
+        debug(`Updating group '${group.id}'`)
+        // const updatedGroup = await getGroup(group.id)
         if (group) {
             group.name = name
             group.description = description
@@ -119,11 +114,11 @@ export default function () {
 
     // Add a movie to a group
     async function addMovieToGroup(groupId, movie) {
-        debug(`Adding Movie '${movie.id}' to group '${groupId}' with duration '${movie.duration}'`)
+        debug(`Adding Movie '${movie.id}' to group '${groupId}' with duration '${movie.runtimeMins}'`)
         const group = await getGroup(groupId)
         if (group) {
             group.movies.push(movie.id)
-            group.totalDuration += movie.duration
+            group.totalDuration += movie.runtimeMins
         }
         return group
     }
@@ -144,9 +139,9 @@ export default function () {
     }
 
     // Create a new user
-    async function createUser(username) {
+    async function createUser(username, email, password) {
         debug(`Creating user with id '${nextUserId} and '${username}'`)
-        const user = {id: nextUserId++, username: username || `user-${nextUserId}`, token: crypto.randomUUID()}
+        const user = {id: nextUserId++, username, email, password, token: crypto.randomUUID(), groups: []}
         debug(`Created user: '${user.id}' - username: '${user.username}' '${user.token}'`)
         users.push(user)
         return user

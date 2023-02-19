@@ -9,11 +9,12 @@ import servicesInit from "../services/cmdb-services.mjs"
 import apiInit from "../web/api/cmdb-api.mjs"
 import siteInit from "../web/site/cmdb-web-site.mjs"
 import createApp from '../cmdb.mjs'
+import {MAX_LIMIT} from "../services/cmdb-services-constants.mjs"
 
 // process.env.IMDB_API_KEY = 'k_0v6pmbzj'
 
 const cmdbData = cmdbDataElastic('http://localhost:9200')
-const moviesData = imdbData(mockFetch, 'k_1234abcd')
+const moviesData = imdbData(mockFetch, 'k_1234abcd', MAX_LIMIT)
 
 const services = servicesInit(cmdbData, moviesData)
 const api = apiInit(services)

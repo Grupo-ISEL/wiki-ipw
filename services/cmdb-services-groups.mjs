@@ -42,11 +42,6 @@ export default function (cmdbData, moviesData) {
         const groups = await cmdbData.getGroups(user)
         if (!groups)
             throw error.GROUPS_NOT_FOUND()
-        // TODO: NOT WORKING -> NEED TO RETURN MOVIES DETAILS
-        // for (const group of groups) {
-        //     group.movies = await Promise.all(group.movies.map(async id => await moviesData.getMovie(id)))
-        // }
-
         debug(`Found new_groups: %O`, groups)
         return groups
     }
@@ -62,15 +57,10 @@ export default function (cmdbData, moviesData) {
         const group = await cmdbData.getGroup(groupId)
         if (!group)
             throw error.GROUP_NOT_FOUND(groupId)
-        // TODO: NOT WORKING -> NEED TO RETURN MOVIES DETAILS
-        //const movies = await moviesData.getMovie(group.movies)
-        //group.movies = movies
-        // debug(`Found group movies: %O`, movies)
         return group
     }
 
     // Create a new group
-    // TODO: Better validation
     async function createGroup(user, name, description) {
         debug(`Creating new group for user: '${user.id}' with name: '${name}' description: '${description}'`)
         const group = await cmdbData.createGroup(user, name, description)
@@ -81,7 +71,6 @@ export default function (cmdbData, moviesData) {
     }
 
     // Delete a group
-    // TODO: Better error handling
     async function deleteGroup(user, groupId) {
         debug(`Deleting group '${groupId}' with user: '${user.id}'`)
         const group = await getGroup(user, groupId)

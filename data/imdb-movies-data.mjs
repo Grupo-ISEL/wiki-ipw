@@ -2,12 +2,11 @@
 // access to the Internet Movies Database API.
 import debugInit from 'debug'
 import error from '../errors.mjs'
-import {MAX_LIMIT} from "../services/cmdb-services-constants.mjs"
 
 // MusicVideo type is not valid
 // fetchFromImdb errMsg: Year is empty
 
-export default function (fetchModule, apiKey) {
+export default function (fetchModule, apiKey, maxLimit) {
 
     if (!fetchModule)
         throw new Error("fetchModule is mandatory")
@@ -17,18 +16,8 @@ export default function (fetchModule, apiKey) {
 
     const debug = debugInit("cmdb:imdb:data:movies")
 
-    //const API_KEY = "k_1234abcd"
     // const API_KEY = k_0v6pmbzj
     const API_KEY = apiKey
-    // const API_KEY = getApiKey()
-
-    // Reads the IMDB API key from an environment variable if it exists
-    // function getApiKey() {
-    //     if (process.env.hasOwnProperty("IMDB_API_KEY") && process.env["IMDB_API_KEY"] !== "")
-    //         return process.env.IMDB_API_KEY
-    //     else
-    //         throw error.UNKNOWN("IMDB_API_KEY not set")
-    // }
 
     const fetch = fetchModule
     debug(`fetchModule provided ${fetchModule.name}`)
@@ -111,7 +100,7 @@ export default function (fetchModule, apiKey) {
 
     // Fetches the top 250 movies from IMDB API
     async function getTopMovies(offset, limit) {
-        debug("getTopMovies")
+        debug(`getTopMovies with offset: ${offset}: limit: ${limit}`)
         const url = `https://imdb-api.com/en/API/Top250Movies/${API_KEY}`
         let topMovies = (await fetchFromImdb(url))["items"]
         topMovies = topMovies.map(m => {
@@ -154,6 +143,6 @@ export default function (fetchModule, apiKey) {
     }
 
     function calculateEnd(offset, limit, total) {
-        return limit < MAX_LIMIT ? offset + limit : total
+        return limit < maxLimit ? offset + limit : total
     }
 }
