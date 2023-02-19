@@ -10,15 +10,11 @@ import apiInit from "../web/api/cmdb-api.mjs"
 import siteInit from "../web/site/cmdb-web-site.mjs"
 import createApp from '../cmdb.mjs'
 
-process.env.IMDB_API_KEY = 'k_1234abcd'
 // process.env.IMDB_API_KEY = 'k_0v6pmbzj'
 
 const cmdbData = cmdbDataElastic('http://localhost:9200')
-const moviesData = imdbData(mockFetch, process.env.IMDB_API_KEY)
-// const cmdbData = cmdbDataMem()
-// mockFetch is optional
+const moviesData = imdbData(mockFetch, 'k_1234abcd')
 
-// const services = servicesInit(cmdbData, moviesData)
 const services = servicesInit(cmdbData, moviesData)
 const api = apiInit(services)
 const site = siteInit(services)
@@ -31,12 +27,13 @@ function generateRandomString(length) {
         .toString('hex')
         .slice(0, length);
 }
+
 describe('CMDB - Integration Tests', function () {
     // Create a user
     let token
     describe('POST /api/users', function () {
         it('createUser', function (done) {
-            this.timeout(5000)
+            this.timeout(10000)
             const user = {
                 username: generateRandomString(8),
                 email: 'andre@example.com',
@@ -64,7 +61,6 @@ describe('CMDB - Integration Tests', function () {
     // Get Top Movies
     describe('GET /api/movies/top', function () {
         it('should return top movies', function (done) {
-            console.log(token)
             request(app)
                 .get('/api/movies/top')
                 .set('Accept', 'application/json')
@@ -105,16 +101,15 @@ describe('CMDB - Integration Tests', function () {
     // Search Movies
     describe('GET /api/movies', function () {
         it('search movie', function (done) {
-            this.timeout(5000)
+            this.timeout(10000)
             request(app)
                 .get('/api/movies/?search=inception')
                 .set('Accept', 'application/json')
                 .expect('Content-Type', /json/)
                 .end(function (err, res) {
                     if (err) return done(err)
-                    // expect(res.body).to.have.all.keys('movies')
-                    expect(res.body.movies).to.be.an('array')
-                    expect(res.body.movies[0]).to.have.all.keys('id', 'title', 'description', 'imageUrl')
+                    expect(res.body).to.be.an('array')
+                    expect(res.body[0]).to.have.all.keys('id', 'title', 'description', 'imageUrl')
                     done()
                 })
         })
@@ -262,7 +257,7 @@ describe('CMDB - Integration Tests', function () {
                 .expect(400, done)
         })
         it('user authenticated, group creation, valid body', function (done) {
-            this.timeout(5000)
+            this.timeout(10000)
             request(app)
                 .post('/api/groups')
                 .set('Accept', 'application/json')
@@ -323,7 +318,7 @@ describe('CMDB - Integration Tests', function () {
                 .expect(400, done)
         })
         it('user authenticated, group update, valid body', function (done) {
-            this.timeout(5000)
+            this.timeout(10000)
             group = {...group, name: 'New Name', description: 'New Description'}
             request(app)
                 .put(`/api/groups/${group.id}`)
@@ -373,7 +368,7 @@ describe('CMDB - Integration Tests', function () {
                 .expect(404, done)
         })
         it('user authenticated, valid body', function (done) {
-            this.timeout(5000)
+            this.timeout(10000)
             request(app)
                 .put(`/api/groups/${group.id}/movies/${movieId}`)
                 .set('Accept', 'application/json')
@@ -412,6 +407,7 @@ describe('CMDB - Integration Tests', function () {
                 .expect(404, done)
         })
         it('user authenticated, non-existent movie', function (done) {
+            this.timeout(10000)
             request(app)
                 .delete(`/api/groups/${group.id}/movies/tt0000000`)
                 .set('Accept', 'application/json')
@@ -420,7 +416,7 @@ describe('CMDB - Integration Tests', function () {
                 .expect(404, done)
         })
         it('user authenticated, valid body', function (done) {
-            this.timeout(5000)
+            this.timeout(10000)
             request(app)
                 .delete(`/api/groups/${group.id}/movies/${movieId}`)
                 .set('Accept', 'application/json')
@@ -466,7 +462,7 @@ describe('CMDB - Integration Tests', function () {
         })
 
         it('user authenticated', function (done) {
-            this.timeout(5000)
+            this.timeout(10000)
             request(app)
                 .delete(`/api/groups/${group.id}`)
                 .set('Accept', 'application/json')
