@@ -13,6 +13,8 @@ import {MAX_LIMIT} from "../services/cmdb-services-constants.mjs"
 
 // process.env.IMDB_API_KEY = 'k_0v6pmbzj'
 
+process.env.NODE_ENV = 'test'
+
 const cmdbData = cmdbDataElastic('http://localhost:9200')
 const moviesData = imdbData(mockFetch, 'k_1234abcd', MAX_LIMIT)
 

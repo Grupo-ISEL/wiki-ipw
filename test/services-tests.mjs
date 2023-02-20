@@ -18,20 +18,21 @@ const cmdbData = cmdbDataMem()
 // const services = servicesInit(cmdbDataMem, moviesData, mockFetch)
 const moviesData = moviesDataInit(mockFetch, "k_1234abcd", MAX_LIMIT)
 
+process.env.NODE_ENV = 'test'
 
-describe('CMDB - Services Tests', function () {
-    describe('Services Users Tests', function () {
+describe('CMDB - Services', function () {
+    describe('Services Users', function () {
         const servicesUsers = servicesUsersInit(cmdbData)
         describe('createUser', function () {
             it('Creates a valid user', async function () {
                 const result = await servicesUsers.createUser("andre", "andre@example.com", "1234")
                 expect(result, "createUser should return user with all properties").to.have.all.keys('id', 'username', 'email', 'password', 'token', 'groups')
                 expect(result.username, "createUser should return user with correct username").to.be.eql("andre")
-                expect(result.email, "createUser should return user with correct username").to.be.eql("andre@example.com")
-                expect(result.password, "createUser should return user with correct username").to.be.eql("1234")
+                expect(result.email, "createUser should return user with correct email").to.be.eql("andre@example.com")
+                expect(result.password, "createUser should return user with correct password").to.be.eql("1234")
                 expect(result.token, "createUser should return user with correct token").to.be.a('string')
                 expect(result.id, "createUser should return user id of type Number").to.be.a('Number')
-                expect(result.groups, "createUser should return user id of type Number").to.be.an('Array').and.is.empty
+                expect(result.groups, "createUser should return a groups array").to.be.an('Array').and.is.empty
             })
         })
     })
@@ -100,12 +101,7 @@ describe('CMDB - Services Tests', function () {
                     limit: -1,
                 }), "getTopMovies should throw an error").to.be.rejectedWith(error.INVALID_PARAMETER(), "Invalid argument Offset and limit must be positive")
             })
-            /* it('Offset is not an integer', function () {
-                 return expect(servicesMovies.getTopMovies({offset: 0.1, limit: 10}), "getTopMovies should throw an error").to.be.rejectedWith(error.INVALID_PARAMETER(), "Invalid argument Offset and limit must be numbers")
-             })
-             it('Limit is not an integer', function () {
-                 return expect(servicesMovies.getTopMovies({offset: 0, limit: 10.1}), "getTopMovies should throw an error").to.be.rejectedWith(error.INVALID_PARAMETER(), "Invalid argument Offset and limit must be numbers")
-             })*/
+
             it('Offset is larger than MAX_LIMIT', function () {
                 return expect(servicesMovies.getTopMovies({
                     offset: MAX_LIMIT + 1,
@@ -173,14 +169,8 @@ describe('CMDB - Services Tests', function () {
             })
         })
     })
-    describe('CMDB - Services Groups Tests', function () {
-        // getGroup
-        // getGroups
-        // createGroup
-        // deleteGroup
-        // updateGroup
-        // addMovieToGroup
-        // removeMovieFromGroup
+
+    describe('Services Groups', function () {
 
         const token = '3280fcf9-eb87-4d44-b05e-12be5c7ba6e1'
         let groupId
@@ -210,6 +200,7 @@ describe('CMDB - Services Tests', function () {
             })
 
         })
+
         describe('getGroups', function () {
             it('Get user groups', async function () {
                 const groups = await servicesGroups.getGroups(token)
@@ -242,7 +233,7 @@ describe('CMDB - Services Tests', function () {
                 expect(group.id).to.equal(1)
                 expect(group.movies).to.be.an('array').and.have.lengthOf(3)
                 expect(group.movies[2]).to.equal("tt0071562")
-                expect(group.totalDuration).to.equal(671+202)
+                expect(group.totalDuration).to.equal(671 + 202)
             })
         })
 
@@ -253,10 +244,9 @@ describe('CMDB - Services Tests', function () {
                 expect(group.id).to.equal(1)
                 expect(group.movies).to.be.an('array').and.have.lengthOf(1)
                 expect(group.movies[0]).to.equal("tt1375666")
-                expect(group.totalDuration).to.equal(671-142)
+                expect(group.totalDuration).to.equal(671 - 142)
             })
         })
-
 
         describe('deleteGroup', function () {
             it('Delete group with valid id', async function () {

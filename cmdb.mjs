@@ -23,7 +23,7 @@ function createApp(services, api, site) {
    app.use(cors())
    app.use(express.json())
    app.use(express.urlencoded({extended: false}))
-   app.use(morgan('dev'))
+   app.use(morgan('dev', { skip: (req, res) => process.env.NODE_ENV === 'test' }));
    app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument))
 
    // app.use(express.static(`${__dirname}./web/site/resources`, {redirect: false, index: 'index.html'}))
