@@ -241,25 +241,33 @@ describe('CMDB - Services Tests', function () {
                 expect(group).to.be.an('object').and.have.all.keys('id', 'name', 'description', 'movies', 'totalDuration')
                 expect(group.id).to.equal(1)
                 expect(group.movies).to.be.an('array').and.have.lengthOf(3)
-                expect(group.movies[2]).to.be.an('object').and.have.all.keys('id', 'title', 'imageUrl', 'description')
-                expect(group.movies[2].id).to.equal("tt0071562")
-                expect(group.movies[2].title).to.equal("The Godfather: Part II")
-                expect(group.movies[2].imageUrl).to.equal("https://m.media-amazon.com/images/M/MV5BMTMwNjQ5NjQxN15BMl5BanBnXkFtZTgwNjQ2NjUyMzE@._V1_SX300.jpg")
-                expect(group.movies[2].description).to.equal("The early life and bla bla")
+                expect(group.movies[2]).to.equal("tt0071562")
                 expect(group.totalDuration).to.equal(671+202)
             })
         })
 
         describe('removeMovieFromGroup', function () {
-
+            it('Remove movie from group with valid data', async function () {
+                const group = await servicesGroups.removeMovieFromGroup(token, 1, "tt0111161")
+                expect(group).to.be.an('object').and.have.all.keys('id', 'name', 'description', 'movies', 'totalDuration')
+                expect(group.id).to.equal(1)
+                expect(group.movies).to.be.an('array').and.have.lengthOf(1)
+                expect(group.movies[0]).to.equal("tt1375666")
+                expect(group.totalDuration).to.equal(671-142)
+            })
         })
 
 
         describe('deleteGroup', function () {
-
+            it('Delete group with valid id', async function () {
+                const deletedGroup = await servicesGroups.deleteGroup(token, 1)
+                expect(deletedGroup).to.be.an('object').and.have.all.keys('id', 'name', 'description', 'movies', 'totalDuration')
+                expect(deletedGroup.id).to.equal(1)
+                const groups = await servicesGroups.getGroups(token)
+                expect(groups).to.be.an('array').and.have.lengthOf(1)
+                expect(groups.find(group => group.id === 1)).to.be.undefined
+            })
         })
-
-
     })
 })
 
