@@ -78,7 +78,7 @@ export default function () {
     }
 
     // Create a new group
-    async function createGroup(userId, name, description) {
+    async function createGroup(user, name, description) {
         debug(`Creating group with id '${nextGroupId}' name '${name}' description '${description}'`)
         const group = {
             id: nextGroupId++,
@@ -88,23 +88,26 @@ export default function () {
             totalDuration: 0,
         }
         groups.push(group)
-        userId.groups.push(group.id)
+        user.groups.push(group.id)
         return group
     }
 
     // Delete a group
-    async function deleteGroup(groupId) {
+    async function deleteGroup(user, groupId) {
         debug(`Deleting group '${groupId}'`)
         const group = await getGroup(groupId)
-        if (group)
+        if (group) {
             groups = groups.filter(group => group.id !== groupId)
+            const userIdx = users.indexOf(user)
+            const groupIdx = users[userIdx].groups.indexOf(groupId)
+            users[userIdx].groups.splice(groupIdx, 1)
+        }
         return group
     }
 
     // Update a group name and description
     async function updateGroup(group, name, description) {
         debug(`Updating group '${group.id}'`)
-        // const updatedGroup = await getGroup(group.id)
         if (group) {
             group.name = name
             group.description = description
@@ -128,12 +131,12 @@ export default function () {
         debug(`Removing movie '${movie.id}' from group '${groupId}'`)
         const group = await getGroup(groupId)
         if (group) {
-            const movie = group.movies.find(movie => movie === movie.id)
-            if (!movie) {
+            const groupLength = group.movies.length
+            group.movies = group.movies.filter(m => m !== movie.id)
+
+            if (groupLength === group.movies.length)
                 throw error.MOVIE_NOT_FOUND(`Movie '${movie.id}' not found in group '${groupId}'`)
-            }
-            group.movies = group.movies.filter(movie => movie !== movie.id)
-            group.totalDuration -= movie.duration
+            group.totalDuration -= movie.runtimeMins
         }
         return group
     }

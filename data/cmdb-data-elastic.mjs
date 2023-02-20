@@ -143,7 +143,6 @@ export default function (elasticUrl) {
     async function createUser(username, email, password) {
         const user = {id: await getNextId('users'), username: username, email: email, password: password, token: crypto.randomUUID(), groups: []}
         const rsp = await putDocument('users', user.id, user)
-        debug(`Created user in elastic: %O`, rsp)
         debug(`Created user: '${user.id}' - username: '${user.username}' - '${user.token}'`)
         return user
     }
