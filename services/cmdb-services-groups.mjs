@@ -23,7 +23,6 @@ export default function (cmdbData, moviesData) {
     }
 
     // Handle token validation. Calls the action if token is valid
-    // TODO: Better error handling
     function handleTokenValidation(action) {
         return async function (token, groupId, movieId, name, description) {
             debug(`Handling token validation for action: '${action.name}'`)
