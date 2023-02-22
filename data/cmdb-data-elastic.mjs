@@ -18,8 +18,7 @@ export default function (elasticUrl) {
     }
 
     // Make sure users and groups indexes exist
-    createIndex('users')
-    createIndex('groups')
+    init().then(() => debug('Elastic indexes creation complete')).catch(err => debug('Error creating indexes: %O', err))
 
     return {
         getGroups,
@@ -34,6 +33,11 @@ export default function (elasticUrl) {
         getUserByUsername
     }
 
+    async function init() {
+        // ElasticSearch was throwing ECONNRESET errors when requests where submitted in quick succession.
+        setTimeout(() => createIndex('users'), 0)
+        await createIndex('groups')
+    }
     // Return all groups
     async function getGroups(user) {
         debug(`getGroups for user: %O`, user)
@@ -166,16 +170,17 @@ export default function (elasticUrl) {
 
     // Create index in ElasticSearch DB
     async function createIndex(index) {
-        debug(`Creating index: '${index}'`)
-        const rsp = await fetch(`http://localhost:9200/${index}`, {method: 'PUT', ...DEFAULT_HEADERS});
-
-        if (rsp.status === 200) {
-            console.log(`Index '${index}' created successfully.`);
-        } else if (rsp.status === 400) {
-            console.log(`Index '${index}' already exists.`);
-        } else {
-            throw error.UNKNOWN(`Error creating index '${index}'`)
+        const idx = await fetch(`${elasticUrl}/${index}`, {method: 'HEAD', ...DEFAULT_HEADERS})
+        if (idx.status === 200) {
+            debug(`Index '${index}' already exists.`)
+            return
         }
+        debug(`Creating index: '${index}'`)
+        const rsp = await fetch(`${elasticUrl}/${index}`, {method: 'PUT',  ...DEFAULT_HEADERS})
+        if (rsp.status === 200)
+            debug(`Index '${index}' created successfully.`)
+         else
+            throw error.UNKNOWN(`Error creating index '${index}'`)
     }
 
     // Get user by username from ElasticSearch DB

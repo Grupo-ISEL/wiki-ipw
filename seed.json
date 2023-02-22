@@ -1,0 +1,122 @@
+{
+  "users": [
+    {
+      "username": "alicejones",
+      "email": "alicejones@example.com",
+      "password": "dandelion",
+      "groups": [
+        {
+          "name": "Horror Movies",
+          "description": "My favorite horror movies",
+          "movies": [
+            "tt0077651",
+            "tt0084516"
+          ]
+        },
+        {
+          "name": "Documentaries",
+          "description": "Interesting documentaries",
+          "movies": []
+        }
+      ]
+    },
+    {
+      "username": "bobsmith",
+      "email": "bobsmith@example.com",
+      "password": "bluebird",
+      "groups": [
+        {
+          "name": "Fantasy Movies",
+          "description": "My favorite fantasy movies",
+          "movies": [
+            "tt0120737",
+            "tt0167260",
+            "tt0076759"
+          ]
+        }
+      ]
+    },
+    {
+      "username": "charliebrown",
+      "email": "charliebrown@example.com",
+      "password": "peanutbutter",
+      "groups": [
+        {
+          "name": "Romantic Comedies",
+          "description": "My favorite romantic comedies",
+          "movies": [
+            "tt0092099",
+            "tt0098635",
+            "tt0118715",
+            "tt0199725"
+          ]
+        }
+      ]
+    },
+    {
+      "username": "davidwilson",
+      "email": "davidwilson@example.com",
+      "password": "sunflower",
+      "groups": [
+        {
+          "name": "Western Movies",
+          "description": "My favorite western movies",
+          "movies": [
+            "tt0064116",
+            "tt0056217",
+            "tt0053125"
+          ]
+        },
+        {
+          "name": "Drama Movies",
+          "description": "My favorite drama movies",
+          "movies": [
+            "tt0111161",
+            "tt0468569",
+            "tt0108052",
+            "tt0110912"
+          ]
+        }
+      ]
+    },
+    {
+      "username": "ellabaker",
+      "email": "ellabaker@example.com",
+      "password": "butterfly",
+      "groups": [
+        {
+          "name": "Sci-Fi Movies",
+          "description": "My favorite sci-fi movies",
+          "movies": [
+            "tt0062622",
+            "tt0070047",
+            "tt0075860",
+            "tt0083658",
+            "tt0088763",
+            "tt0120611",
+            "tt0816692"
+          ]
+        },
+        {
+          "name": "Comedy Movies",
+          "description": "My favorite comedy movies",
+          "movies": [
+            "tt0068646",
+            "tt0071562",
+            "tt0050083"
+          ]
+        },
+        {
+          "name": "Action Movies",
+          "description": "My favorite action movies",
+          "movies": [
+            "tt0105236",
+            "tt0087469",
+            "tt0103064",
+            "tt0108399"
+          ]
+        }
+      ]
+    }
+  ]
+}
