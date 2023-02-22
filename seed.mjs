@@ -5,6 +5,7 @@ import cmdbDataElastic from "./data/cmdb-data-elastic.mjs"
 import {MAX_LIMIT} from "./services/cmdb-services-constants.mjs"
 import servicesGroupsInit from "./services/cmdb-services-groups.mjs"
 import servicesUsersInit from "./services/cmdb-services-users.mjs"
+import fetch from "node-fetch"
 
 const filename = process.argv[2]
 const elasticUrl = process.argv[3]
