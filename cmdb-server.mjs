@@ -10,14 +10,15 @@ import siteInit from "./web/site/cmdb-web-site.mjs"
 import createApp from './cmdb.mjs'
 import {MAX_LIMIT} from "./services/cmdb-services-constants.mjs"
 
-// process.env.IMDB_API_KEY = 'k_1234abcd'
-process.env.IMDB_API_KEY = 'k_0v6pmbzj'
-process.env['ELASTIC_URL'] = 'http://localhost:9200'
 if (!process.env['ELASTIC_URL'])
-   throw new Error("ELASTIC_URL environment variables are mandatory")
+   process.env['ELASTIC_URL'] = 'http://localhost:9200'
+
+if (!process.env['IMDB_API_KEY'])
+// process.env.IMDB_API_KEY = 'k_1234abcd'
+   process.env['IMDB_API_KEY']= 'k_0v6pmbzj'
 
 const cmdbData = cmdbDataElastic(process.env['ELASTIC_URL'])
-const moviesData = imdbData(fetch, process.env.IMDB_API_KEY, MAX_LIMIT)
+const moviesData = imdbData(fetch, process.env['IMDB_API_KEY'], MAX_LIMIT)
 // const cmdbData = cmdbDataMem()
 // mockFetch is optional
 
