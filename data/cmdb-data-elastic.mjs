@@ -17,6 +17,10 @@ export default function (elasticUrl) {
         },
     }
 
+    // Make sure users and groups indexes exist
+    createIndex('users')
+    createIndex('groups')
+
     return {
         getGroups,
         getGroup,
@@ -160,12 +164,26 @@ export default function (elasticUrl) {
         }
     }
 
+    // Create index in ElasticSearch DB
+    async function createIndex(index) {
+        debug(`Creating index: '${index}'`)
+        const rsp = await fetch(`http://localhost:9200/${index}`, {method: 'PUT', ...DEFAULT_HEADERS});
+
+        if (rsp.status === 200) {
+            console.log(`Index '${index}' created successfully.`);
+        } else if (rsp.status === 400) {
+            console.log(`Index '${index}' already exists.`);
+        } else {
+            throw error.UNKNOWN(`Error creating index '${index}'`)
+        }
+    }
+
     // Get user by username from ElasticSearch DB
     async function getUserByUsername(username) {
         debug(`getUserByUsername with username: '${username}'`)
         const q = {query: {match: {username: username}}}
         const rsp = await searchDocument('users', q)
-        // debug(`search Rsp: %O`, rsp)
+        debug(`search Rsp: %O`, rsp)
         if (rsp['total']['value'] >= 1) {
             const user = rsp['hits'][0]['_source']
             debug(`Found user in elastic: %O`, user)
@@ -224,7 +242,7 @@ export default function (elasticUrl) {
     async function searchDocument(index, query) {
         debug(`searchDocument on index: '${index}' query: %O`, query)
         const data = await fetchFromES(`${index}/_search?_source`, 'POST', query)
-        // debug(`searchDocument response: %O`, data)
+        debug(`searchDocument response: %O`, data)
         return data['hits']
     }
 
@@ -246,8 +264,10 @@ export default function (elasticUrl) {
             method: method, ...DEFAULT_HEADERS,
             ...(body) && {body: JSON.stringify(body)},
         })
-        if (response.status !== 200 && response.status !== 201)
+        if (response.status !== 200 && response.status !== 201) {
+            debug(`ElasticSearch '${ELASTIC_URL}/${url_path}' method '${method}' returned non-200 status code: ${response.status}`)
             throw error.UNKNOWN(`ElasticSearch '${ELASTIC_URL}/${url_path}' method '${method}' returned non-200 status code: ${response.status}`)
+        }
         return await response.json()
     }
 }

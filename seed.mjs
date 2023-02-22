@@ -11,12 +11,13 @@ const elasticUrl = process.argv[3]
 
 if (!filename || !elasticUrl) {
     console.error("Usage: node seed.mjs <filename> <elasticUrl>")
-    console.error("Example: node seed.mjs seed.json http://localhost:9200/")
+    console.error("Example: node seed.mjs seed.json http://localhost:9200")
     process.exit(1)
 }
 
 const cmdbData = cmdbDataElastic(elasticUrl)
-const moviesData = moviesDataInit(mockFetch, "k_1234abcd", MAX_LIMIT)
+const moviesData = moviesDataInit(fetch, 'k_0v6pmbzj', MAX_LIMIT)
+// const moviesData = moviesDataInit(mockFetch, "k_1234abcd", MAX_LIMIT)
 const servicesGroups = servicesGroupsInit(cmdbData, moviesData)
 const servicesUsers = servicesUsersInit(cmdbData)
 
@@ -27,7 +28,7 @@ async function seed() {
 
         for (const userObj of json.users) {
             const user = await servicesUsers.createUser(userObj.username, userObj.email, userObj.password)
-            console.log(`Created user: ${user.id}`)
+            console.log(`Created user: ${user.id} token: ${user.token}`)
 
             for (const groupObj of userObj.groups) {
                 const group = await servicesGroups.createGroup(user.token, groupObj.name, groupObj.description)
